@@ -15,7 +15,7 @@ import Link from 'next/link'
 type LoginForm = z.infer<typeof loginSchema>
 
 function LoginContent() {
-  const { loginWithGoogle, user, loading: authLoading } = useAuth()
+  const { loginWithGoogle, user, loading: authLoading, isAdmin } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = React.useState(false)
@@ -24,9 +24,9 @@ function LoginContent() {
 
   React.useEffect(() => {
     if (!authLoading && user) {
-      router.push(redirect)
+      router.push(isAdmin ? '/admin' : redirect)
     }
-  }, [user, authLoading, router, redirect])
+  }, [user, authLoading, router, redirect, isAdmin])
 
   const {
     register,
@@ -43,7 +43,7 @@ function LoginContent() {
       const { signInWithEmailAndPassword } = await import('firebase/auth')
       const { auth } = await import('@/lib/firebase')
       await signInWithEmailAndPassword(auth, data.email, data.password)
-      router.push(redirect)
+      router.push(isAdmin ? '/admin' : redirect)
     } catch (error: any) {
       const msg = error.code === 'auth/invalid-credential'
         ? 'Invalid email or password'
