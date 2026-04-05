@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { X, Home, Package, ShoppingCart, MessageCircle, User, Heart, LogOut, Settings, LayoutDashboard, Users, BarChart3 } from 'lucide-react'
+import { X, Home, Package, MessageCircle, User, LogOut, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 
@@ -19,16 +19,6 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   const mainLinks = [
     { icon: Home, label: 'Home', href: '/' },
     { icon: Package, label: 'Products', href: '/products' },
-  ]
-
-  const adminLinks = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-    { icon: Package, label: 'Products', href: '/admin/products' },
-    { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
-    { icon: Users, label: 'Customers', href: '/admin/customers' },
-    { icon: MessageCircle, label: 'Live Chat', href: '/admin/chat' },
-    { icon: BarChart3, label: 'Reports', href: '/admin/reports' },
-    { icon: Settings, label: 'Settings', href: '/admin/settings' },
   ]
 
   const customerLinks = [
@@ -85,19 +75,33 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         </nav>
 
         {user && (
-          <nav className="p-4 space-y-1 border-t border-slate-100">
-            {(isAdmin ? adminLinks : customerLinks).map(link => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
-              >
-                <link.icon className="w-4 h-4" />
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <>
+            {isAdmin && (
+              <div className="p-4 border-t border-slate-100">
+                <Link
+                  href="/admin"
+                  onClick={onClose}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm font-medium text-mango bg-mango-50 hover:bg-mango-100 rounded-md transition-colors"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Go to Admin Panel
+                </Link>
+              </div>
+            )}
+            <nav className="p-4 space-y-1 border-t border-slate-100">
+              {customerLinks.map(link => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
+                >
+                  <link.icon className="w-4 h-4" />
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </>
         )}
 
         {user && (

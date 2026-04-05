@@ -178,9 +178,8 @@ This file documents every single file in the project, what components it uses, w
      - If logged in: Avatar + Name + Email
      - If guest: "Sign In" button → /login
   └─ Main links (always shown): Home, Products
-  └─ Role-specific links (if logged in):
-     - Admin: Dashboard, Products, Orders, Customers, Live Chat, Reports, Settings
-     - Customer: Chat, My Orders, Profile, Wishlist
+  └─ If admin: "Go to Admin Panel" button → /admin
+  └─ Customer links (if logged in): Chat, My Orders, Profile
   └─ Sign Out button (if logged in)
 ```
 
@@ -191,19 +190,11 @@ This file documents every single file in the project, what components it uses, w
 3. **Sign In button (guest only)** → Redirects to `/login`, then closes drawer
 4. **Home link** → Redirects to `/`, then closes drawer
 5. **Products link** → Redirects to `/products`, then closes drawer
-6. **Admin links (if isAdmin):**
-   - Dashboard → `/admin`
-   - Products → `/admin/products`
-   - Orders → `/admin/orders`
-   - Customers → `/admin/customers`
-   - Live Chat → `/admin/chat`
-   - Reports → `/admin/reports`
-   - Settings → `/admin/settings`
+6. **"Go to Admin Panel" button (admin only)** → Redirects to `/admin`, then closes drawer
 7. **Customer links (if not admin):**
    - Chat → `/chat`
    - My Orders → `/customer`
    - Profile → `/customer/profile`
-   - Wishlist → `/customer/wishlist`
 8. **Sign Out button** → Calls `logout()` then `onClose()` → Logs out and closes drawer
 
 ### Conditional Rendering:
