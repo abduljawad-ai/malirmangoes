@@ -72,6 +72,7 @@ export interface OrderItem {
   price: number
   qty: number
   image: string
+  total?: number
 }
 
 export interface CustomerSnapshot {

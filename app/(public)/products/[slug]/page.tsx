@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, notFound } from 'next/navigation'
 import {
   ShoppingBag,
   ChevronLeft,
@@ -59,13 +59,7 @@ export default function ProductDetailPage() {
   }
 
   if (error || !product) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Product Not Found</h2>
-        <p className="text-slate-500 mb-6">This variety might be out of season.</p>
-        <Button onClick={() => router.push('/products')}>Back to Shop</Button>
-      </div>
-    )
+    notFound()
   }
 
   const handleAddToCart = () => {
