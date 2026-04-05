@@ -216,7 +216,7 @@ export default function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Featured Products</h2>
               <p className="text-sm text-slate-500 mt-1">Our most popular picks</p>
             </div>
-            <Link href="/products" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mango hover:text-mango-600 transition-colors">
+            <Link href="/products" className="flex items-center gap-1 text-sm font-medium text-mango hover:text-mango-600 transition-colors">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
@@ -236,12 +236,6 @@ export default function HomePage() {
               ))}
             </motion.div>
           )}
-
-          <div className="sm:hidden text-center mt-6">
-            <Button variant="outline" asChild>
-              <Link href="/products">View All Products</Link>
-            </Button>
-          </div>
         </section>
       )}
 
