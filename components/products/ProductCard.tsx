@@ -11,9 +11,10 @@ import toast from 'react-hot-toast'
 
 interface ProductCardProps {
   product: Product
+  showFeatured?: boolean
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, showFeatured = false }: ProductCardProps) {
   const { addItem, toggleCart, items, updateQuantity, removeItem } = useCart()
   const [imgLoaded, setImgLoaded] = useState(false)
 
@@ -71,6 +72,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           {/* Badges */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {showFeatured && (
+              <span className="bg-mango text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">
+                Featured
+              </span>
+            )}
             {discount > 0 && (
               <span className="bg-danger text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">
                 -{discount}%

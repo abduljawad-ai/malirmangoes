@@ -60,7 +60,8 @@ export default function HomePage() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const featured = products.filter(p => p.isFeatured).slice(0, 4)
-  const allProducts = products.filter(p => p.isActive && !featured.find(f => f.id === p.id))
+  const rest = products.filter(p => p.isActive && !p.isFeatured)
+  const mergedProducts = [...featured, ...rest].slice(0, 8)
 
   const carouselSlides = !loading && settings.carouselImages && settings.carouselImages.length > 0
     ? settings.carouselImages.map((img, i) => ({
@@ -225,37 +226,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
+      {/* Our Mangoes */}
+      {mergedProducts.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-between mb-8"
-          >
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="text-xs font-semibold text-mango uppercase tracking-wider">Bestsellers</span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Featured Products</h2>
-              <p className="text-sm text-slate-500 mt-1">Our most popular picks</p>
+              <span className="text-xs font-semibold text-mango uppercase tracking-wider">Fresh & Delicious</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Our Mangoes</h2>
             </div>
             <Link href="/products" className="flex items-center gap-1 text-sm font-medium text-mango hover:text-mango-600 transition-colors">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
-          </motion.div>
+          </div>
 
           {loading ? (
-            <ProductGridSkeleton count={4} />
+            <ProductGridSkeleton count={8} />
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
               className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
             >
-              {featured.map(product => (
-                <ProductCard key={product.id} product={product} />
+              {mergedProducts.map(product => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  showFeatured={product.isFeatured}
+                />
               ))}
             </motion.div>
           )}
@@ -320,40 +318,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* All Products */}
-      {allProducts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-between mb-8"
-          >
-            <div>
-              <span className="text-xs font-semibold text-mango uppercase tracking-wider">Shop</span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">All Varieties</h2>
-              <p className="text-sm text-slate-500 mt-1">{allProducts.length} products available</p>
-            </div>
-          </motion.div>
 
-          {loading ? (
-            <ProductGridSkeleton count={8} />
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
-            >
-              {allProducts.slice(0, 8).map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </motion.div>
-          )}
-
-
-        </section>
-      )}
 
       {/* CTA */}
       <section className="relative bg-slate-900 overflow-hidden">
