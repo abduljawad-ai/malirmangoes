@@ -45,6 +45,11 @@ This file documents every single file in the project, what components it uses, w
 - `ChatWidget` is rendered after main, before footer — floating widget
 - Admin and customer layouts set `hideNavbar=true` and `hideFooter=true` to hide these
 
+### Metadata (SEO):
+- Title: 'Malir Mangoes — Premium Pakistani Mangoes Delivered Fresh'
+- Description: 'Order fresh Chaunsa, Sindhri, Anwar Ratol and Langra mangoes direct from Malir orchards. Free delivery on orders above minimum.'
+- OpenGraph: title, description, url: https://malirmangoes.vercel.app, siteName, type: website
+
 **Status:** ✅ Reviewed
 
 ---
