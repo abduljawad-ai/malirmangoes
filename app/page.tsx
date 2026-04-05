@@ -381,11 +381,11 @@ export default function HomePage() {
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" asChild className="bg-mango hover:bg-mango-600">
                 <Link href="/products">
-                  Start Shopping <ArrowRight className="w-4 h-4 ml-1" />
+                  Shop Now <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="border-white/30 text-white hover:bg-white/10">
-                <Link href="/chat">Talk to Us</Link>
+                <Link href="/chat">Chat With Us</Link>
               </Button>
             </div>
           </motion.div>
