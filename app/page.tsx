@@ -351,15 +351,7 @@ export default function HomePage() {
             </motion.div>
           )}
 
-          {allProducts.length > 8 && (
-            <div className="text-center mt-8">
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/products">
-                  View All Products <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
-            </div>
-          )}
+
         </section>
       )}
 

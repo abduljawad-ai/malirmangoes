@@ -1671,7 +1671,16 @@ export default SignupPage() {
 
 ---
 
-**TOTAL FRONT-END FILES DOCUMENTED: 58**
+## FILE 59: app/sitemap.ts
+**Path:** `/app/sitemap.ts`
+**Type:** Server component — Next.js sitemap generator
+**Purpose:** Generates `/sitemap.xml` for SEO. Returns static routes (/, /products, /login, /signup) plus dynamic `/products/[slug]` routes fetched from RTDB. Revalidates every hour.
+
+**Status:** ✅ Reviewed
+
+---
+
+**TOTAL FRONT-END FILES DOCUMENTED: 59**
 
 # PRODUCTION AUDIT & FIXES
 
