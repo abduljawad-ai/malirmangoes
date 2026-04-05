@@ -11,9 +11,15 @@ import ChatWidget from '@/components/chat/ChatWidget'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Malir Mangoes | Fresh Farm Delivery in Karachi',
-  description: 'Order farm-fresh, premium mangoes directly from Malir orchards to your doorstep in Karachi. Sindhri, Chaunsa, Anwar Ratol and more — delivered to Malir, Gulshan, Clifton, DHA and all Karachi areas.',
-  keywords: ['fresh mangoes Malir', 'mango delivery Karachi', 'Sindhri mangoes', 'Chaunsa mangoes', 'farm fresh mangoes Karachi', 'Malir mangoes'],
+  title: 'Malir Mangoes — Premium Pakistani Mangoes Delivered Fresh',
+  description: 'Order fresh Chaunsa, Sindhri, Anwar Ratol and Langra mangoes direct from Malir orchards. Free delivery on orders above minimum.',
+  openGraph: {
+    title: 'Malir Mangoes',
+    description: 'Premium Pakistani mangoes delivered fresh to your door.',
+    url: 'https://malirmangoes.vercel.app',
+    siteName: 'Malir Mangoes',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({
