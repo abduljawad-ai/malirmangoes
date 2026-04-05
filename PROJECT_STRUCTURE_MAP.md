@@ -1249,7 +1249,7 @@ Each field has an input + Save button:
 **Purpose:** Message thread with real-time chat, image attachment, typing indicators.
 
 ### Click Behavior:
-1. **Click: Back arrow (mobile)** → Redirects to `/products`
+1. **Click: Back arrow (mobile)** → Calls `router.back()` → Returns to previous page in browser history
 2. **Click: "Go to Dashboard" button** (admin mode) → Redirects to `/admin/chat`
 3. **Click: Product image/link** → Redirects to `/products/[slug]`
 4. **Click: Image attachment button** → Opens file picker

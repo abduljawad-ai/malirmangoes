@@ -201,12 +201,12 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
       )}
 
       <div className="flex items-center gap-4 p-4 border-b border-border bg-gradient-to-r from-mango/5 to-transparent">
-        <Link 
-          href="/products" 
+        <button 
+          onClick={() => router.back()} 
           className="p-2 hover:bg-mango/10 rounded-xl transition-colors lg:hidden"
         >
           <ArrowLeft className="w-5 h-5 text-muted" />
-        </Link>
+        </button>
         
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-gradient-to-br from-mango to-mango-dark rounded-xl flex items-center justify-center">
