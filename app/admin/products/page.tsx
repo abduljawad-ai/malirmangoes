@@ -18,6 +18,7 @@ export default function AdminProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   
   const { products, loading, refresh } = useProducts({ category: categoryFilter !== 'all' ? categoryFilter : undefined })
 
@@ -32,10 +33,10 @@ export default function AdminProductsPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return
     try {
       await remove(ref(rtdb, `products/${id}`))
       toast.success('Product deleted')
+      setConfirmDeleteId(null)
       refresh()
     } catch (error) {
       toast.error('Failed to delete product')
@@ -169,7 +170,7 @@ export default function AdminProductsPage() {
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => handleDelete(p.id)}
+                          onClick={() => setConfirmDeleteId(p.id)}
                           className="p-1.5 text-slate-400 hover:text-danger hover:bg-danger-50 rounded-md transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -177,6 +178,29 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
                   </tr>
+                  {confirmDeleteId === p.id && (
+                    <tr className="bg-danger-50">
+                      <td colSpan={6} className="px-4 py-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-danger">Are you sure you want to delete &quot;{p.name}&quot;?</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="px-3 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => handleDelete(p.id)}
+                              className="px-3 py-1 text-xs font-medium text-white bg-danger rounded-md hover:bg-danger/90 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 ))
               ) : (
                 <tr>

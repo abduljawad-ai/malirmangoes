@@ -458,11 +458,10 @@ This file documents every single file in the project, what components it uses, w
 4. **Click: Edit icon (pencil) on a product row** → Calls `handleEdit(product)`:
    - Sets `selectedProduct = product` (edit mode)
    - Opens ProductModal
-5. **Click: Delete icon (trash) on a product row** → Calls `handleDelete(id)`:
-   - Shows `window.confirm('Are you sure...')` dialog
-   - If confirmed: Deletes product from RTDB at `products/{id}`
-   - Shows toast success/error
-   - Calls `refresh()` to reload product list
+5. **Click: Delete icon (trash) on a product row** → Sets `confirmDeleteId` → Shows inline confirmation row below:
+   - Shows message: "Are you sure you want to delete '{name}'?"
+   - **Click: "Cancel"** → Clears `confirmDeleteId` → Hides confirmation
+   - **Click: "Delete"** → Calls `handleDelete(id)` → Removes product from RTDB, shows toast, refreshes list
 6. **Click: "Reset Filters" button** (shown when no products found) → Clears `searchTerm` and `categoryFilter`
 7. **ProductModal interactions** → Handled inside ProductModal component
 
