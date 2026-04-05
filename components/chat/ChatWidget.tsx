@@ -22,7 +22,7 @@ export default function ChatWidget() {
   }, [])
 
   if (!isVisible || isAdmin) return null
-  if (pathname === '/checkout' || pathname === '/checkout/success') return null
+  if (pathname === '/checkout' || pathname === '/checkout/success' || pathname === '/login' || pathname === '/signup') return null
 
   return (
     <div className="fixed bottom-6 right-6 z-40">

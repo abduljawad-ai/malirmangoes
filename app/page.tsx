@@ -46,7 +46,7 @@ const defaultSlides = [
   },
 ]
 
-const features = [
+const defaultFeatures = [
   { icon: Leaf, title: 'Farm Fresh', desc: 'Hand-picked daily from our orchards' },
   { icon: Truck, title: 'Fast Delivery', desc: 'Delivered within 24 hours' },
   { icon: Shield, title: 'Quality Guarantee', desc: '100% fresh or full refund' },
@@ -203,8 +203,26 @@ export default function HomePage() {
       {/* Features */}
       <section className="border-b border-slate-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 py-8">
+          {(settings.featureTitle || settings.featureDescription) && (
+            <div className="mb-6 text-center">
+              {settings.featureTitle && (
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900">{settings.featureTitle}</h2>
+              )}
+              {settings.featureDescription && (
+                <p className="text-sm text-slate-500 mt-1 max-w-xl mx-auto">{settings.featureDescription}</p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {features.map((f, i) => (
+            {(settings.featureTitle || settings.featureDescription
+              ? [
+                  { icon: Leaf, title: settings.feature1Title || 'Farm Fresh', desc: settings.feature1Desc || 'Hand-picked daily from our orchards' },
+                  { icon: Truck, title: settings.feature2Title || 'Fast Delivery', desc: settings.feature2Desc || 'Delivered within 24 hours' },
+                  { icon: Shield, title: settings.feature3Title || 'Quality Guarantee', desc: settings.feature3Desc || '100% fresh or full refund' },
+                  { icon: Star, title: settings.feature4Title || 'Premium Quality', desc: settings.feature4Desc || 'Only the finest mangoes selected' },
+                ]
+              : defaultFeatures
+            ).map((f, i) => (
               <motion.div
                 key={f.title}
                 initial={{ opacity: 0, y: 20 }}

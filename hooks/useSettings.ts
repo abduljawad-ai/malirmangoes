@@ -34,6 +34,14 @@ export interface SiteSettings {
   // Features
   featureTitle: string
   featureDescription: string
+  feature1Title: string
+  feature1Desc: string
+  feature2Title: string
+  feature2Desc: string
+  feature3Title: string
+  feature3Desc: string
+  feature4Title: string
+  feature4Desc: string
   
   // CTA
   ctaTitle: string
@@ -71,6 +79,14 @@ const defaultSettings: SiteSettings = {
   siteDescription: 'Fresh Pakistani mangoes delivered to your door',
   featureTitle: 'Why Choose MangoStore?',
   featureDescription: 'We are committed to delivering the freshest, most flavorful mangoes right to your door.',
+  feature1Title: 'Farm Fresh',
+  feature1Desc: 'Hand-picked daily from our orchards',
+  feature2Title: 'Fast Delivery',
+  feature2Desc: 'Delivered within 24 hours',
+  feature3Title: 'Quality Guarantee',
+  feature3Desc: '100% fresh or full refund',
+  feature4Title: 'Premium Quality',
+  feature4Desc: 'Only the finest mangoes selected',
   ctaTitle: 'Ready to Taste the Best?',
   ctaDescription: 'Order now and experience the authentic flavor of premium Pakistani mangoes delivered fresh to your door. Limited harvest season!',
   footerText: 'Delivering the finest Chaunsa, Sindhri, and Anwar Ratol mangoes from our orchards in Pakistan directly to your doorstep.',
