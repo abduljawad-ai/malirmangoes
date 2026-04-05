@@ -11,7 +11,7 @@ import { useSettings } from '@/hooks/useSettings'
 import Button from '@/components/ui/Button'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
-const heroSlides = [
+const defaultSlides = [
   {
     image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/hero.jpg',
     tagline: 'Fresh Harvest 2026',
@@ -62,25 +62,45 @@ export default function HomePage() {
   const featured = products.filter(p => p.isFeatured).slice(0, 4)
   const allProducts = products.filter(p => p.isActive && !featured.find(f => f.id === p.id))
 
+  const carouselSlides = !loading && settings.carouselImages && settings.carouselImages.length > 0
+    ? settings.carouselImages.map((img, i) => ({
+        image: img.src,
+        tagline: img.tagline,
+        title: img.name,
+        highlight: '',
+        subtitle: '',
+        cta: 'Shop Now',
+      }))
+    : defaultSlides
+
+  // Guard: if carouselSlides becomes empty somehow, use defaults
+  const safeSlides = carouselSlides.length > 0 ? carouselSlides : defaultSlides
+
+  // Reset to first slide when slides source changes
+  useEffect(() => {
+    setCurrentSlide(0)
+  }, [safeSlides.length])
+
   // Auto-rotate carousel every 4 seconds
   useEffect(() => {
+    if (safeSlides.length <= 1) return
     intervalRef.current = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % heroSlides.length)
+      setCurrentSlide(prev => (prev + 1) % safeSlides.length)
     }, 4000)
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [])
+  }, [safeSlides.length])
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index)
     if (intervalRef.current) clearInterval(intervalRef.current)
     intervalRef.current = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % heroSlides.length)
+      setCurrentSlide(prev => (prev + 1) % safeSlides.length)
     }, 4000)
   }
 
-  const slide = heroSlides[currentSlide]
+  const slide = safeSlides[currentSlide]
 
   return (
     <div>
@@ -129,12 +149,15 @@ export default function HomePage() {
 
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-4">
                   {slide.title}{' '}
-                  <span className="text-mango">{slide.highlight}</span>
+                  {slide.highlight && <span className="text-mango">{slide.highlight}</span>}
+                  {!slide.highlight && slide.tagline && <span className="text-mango">{slide.tagline}</span>}
                 </h1>
 
-                <p className="text-base sm:text-lg text-white/80 leading-relaxed mb-8 max-w-md">
-                  {slide.subtitle}
-                </p>
+                {slide.subtitle && (
+                  <p className="text-base sm:text-lg text-white/80 leading-relaxed mb-8 max-w-md">
+                    {slide.subtitle}
+                  </p>
+                )}
 
                 <div className="flex flex-wrap gap-3">
                   <Button size="lg" asChild className="bg-mango hover:bg-mango-600 text-white">
@@ -153,7 +176,7 @@ export default function HomePage() {
 
         {/* Slide Indicators */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
-          {heroSlides.map((_, index) => (
+          {safeSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -171,7 +194,7 @@ export default function HomePage() {
         <div className="absolute bottom-8 right-8 z-10 hidden sm:block">
           <span className="text-white/60 text-sm font-medium">
             <span className="text-white font-bold">{String(currentSlide + 1).padStart(2, '0')}</span>
-            {' / '}{String(heroSlides.length).padStart(2, '0')}
+            {' / '}{String(safeSlides.length).padStart(2, '0')}
           </span>
         </div>
       </section>
