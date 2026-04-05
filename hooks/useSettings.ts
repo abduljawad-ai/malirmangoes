@@ -1,0 +1,221 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { db, storage } from '@/lib/firebase'
+import toast from 'react-hot-toast'
+
+export interface SiteSettings {
+  // Hero Section
+  heroTitle: string
+  heroSubtitle: string
+  heroDescription: string
+  heroImages: string[]
+  
+  // Branding
+  logoUrl: string
+  faviconUrl: string
+  
+  // Contact Info
+  phone: string
+  email: string
+  address: string
+  
+  // Social Links
+  whatsapp: string
+  facebook: string
+  instagram: string
+  
+  // SEO
+  siteTitle: string
+  siteDescription: string
+  
+  // Features
+  featureTitle: string
+  featureDescription: string
+  
+  // CTA
+  ctaTitle: string
+  ctaDescription: string
+  
+  // Footer
+  footerText: string
+  
+  // Carousel
+  carouselImages: { src: string; name: string; tagline: string; color: string }[]
+}
+
+const defaultSettings: SiteSettings = {
+  heroTitle: 'Taste the Golden Standard of Mangoes',
+  heroSubtitle: 'Premium Organic Harvest 2026',
+  heroDescription: 'Experience the legendary sweetness of authentic Pakistani mangoes. Hand-selected from Multan\'s finest orchards, naturally ripened, and delivered fresh to your table.',
+  heroImages: ['/images/hero.png', '/images/chaunsa.png', '/images/sindhri.png', '/images/anwar-ratol.png'],
+  logoUrl: '/logo.png',
+  faviconUrl: '/favicon.ico',
+  phone: '+92 300 1234567',
+  email: 'hello@mangostore.pk',
+  address: 'Mango District, Multan, Pakistan',
+  whatsapp: '+92 300 1234567',
+  facebook: 'https://facebook.com/mangostore',
+  instagram: 'https://instagram.com/mangostore',
+  siteTitle: 'MangoStore - Premium Pakistani Mangoes',
+  siteDescription: 'Fresh Pakistani mangoes delivered to your door',
+  featureTitle: 'Why Choose MangoStore?',
+  featureDescription: 'We are committed to delivering the freshest, most flavorful mangoes right to your door.',
+  ctaTitle: 'Ready to Taste the Best?',
+  ctaDescription: 'Order now and experience the authentic flavor of premium Pakistani mangoes delivered fresh to your door. Limited harvest season!',
+  footerText: 'Delivering the finest Chaunsa, Sindhri, and Anwar Ratol mangoes from our orchards in Pakistan directly to your doorstep.',
+  carouselImages: [
+    { src: '/images/hero.png', name: 'Premium Selection', tagline: 'Finest Quality', color: 'from-orange-500 to-amber-500' },
+    { src: '/images/honey-mango.png', name: 'Chaunsa', tagline: 'King of Mangoes', color: 'from-amber-400 to-orange-500' },
+    { src: '/images/mango-box.png', name: 'Sindhri', tagline: 'Honey Sweet', color: 'from-yellow-400 to-amber-500' },
+    { src: '/images/premium_mango_box.png', name: 'Anwar Ratol', tagline: 'Extra Sweet', color: 'from-orange-400 to-red-400' },
+  ],
+}
+
+export function useSettings() {
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  // Fetch settings from Firestore
+  const fetchSettings = useCallback(async () => {
+    try {
+      setLoading(true)
+      const docRef = doc(db, 'settings', 'site')
+      const docSnap = await getDoc(docRef)
+      
+      if (docSnap.exists()) {
+        const data = { ...defaultSettings, ...docSnap.data() as Partial<SiteSettings> }
+        setSettings(data)
+        // Cache to localStorage for offline use
+        localStorage.setItem('siteSettings', JSON.stringify(data))
+      } else {
+        // Initialize with default settings
+        try {
+          await setDoc(docRef, defaultSettings)
+        } catch (initError) {
+        }
+      }
+    } catch (error: any) {
+      // Try to load from localStorage cache when offline
+      const cached = localStorage.getItem('siteSettings')
+      if (cached) {
+        try {
+          setSettings({ ...defaultSettings, ...JSON.parse(cached) })
+        } catch {
+          setSettings(defaultSettings)
+        }
+      }
+      // Only show toast for non-offline errors
+      if (!error?.message?.includes('offline') && !error?.code?.includes('unavailable')) {
+        toast.error('Failed to load settings')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchSettings()
+  }, [fetchSettings])
+
+  // Update a single setting field
+  const updateSetting = useCallback(async (key: keyof SiteSettings, value: any) => {
+    try {
+      setSaving(true)
+      const docRef = doc(db, 'settings', 'site')
+      await updateDoc(docRef, { [key]: value })
+      setSettings(prev => ({ ...prev, [key]: value }))
+      toast.success('Setting updated successfully')
+    } catch (error) {
+      toast.error('Failed to update setting')
+    } finally {
+      setSaving(false)
+    }
+  }, [])
+
+  // Update multiple settings at once
+  const updateSettings = useCallback(async (newSettings: Partial<SiteSettings>) => {
+    try {
+      setSaving(true)
+      const docRef = doc(db, 'settings', 'site')
+      await updateDoc(docRef, newSettings)
+      setSettings(prev => ({ ...prev, ...newSettings }))
+      toast.success('Settings updated successfully')
+    } catch (error) {
+      toast.error('Failed to update settings')
+    } finally {
+      setSaving(false)
+    }
+  }, [])
+
+  // Upload image to Firebase Storage
+  const uploadImage = useCallback(async (file: File, path: string): Promise<string> => {
+    try {
+      const storageRef = ref(storage, `site-images/${path}/${Date.now()}_${file.name}`)
+      await uploadBytes(storageRef, file)
+      const downloadUrl = await getDownloadURL(storageRef)
+      return downloadUrl
+    } catch (error) {
+      toast.error('Failed to upload image')
+      throw error
+    }
+  }, [])
+
+  // Upload and update hero image
+  const updateHeroImage = useCallback(async (index: number, file: File) => {
+    try {
+      const url = await uploadImage(file, 'hero')
+      const newImages = [...settings.heroImages]
+      newImages[index] = url
+      await updateSetting('heroImages', newImages)
+      return url
+    } catch (error) {
+      throw error
+    }
+  }, [settings.heroImages, updateSetting, uploadImage])
+
+  // Upload and update logo
+  const updateLogo = useCallback(async (file: File) => {
+    try {
+      const url = await uploadImage(file, 'logo')
+      await updateSetting('logoUrl', url)
+      return url
+    } catch (error) {
+      throw error
+    }
+  }, [updateSetting, uploadImage])
+
+  // Upload and update carousel image
+  const updateCarouselImage = useCallback(async (index: number, file: File, name: string, tagline: string) => {
+    try {
+      const url = await uploadImage(file, 'carousel')
+      const newImages = [...settings.carouselImages]
+      newImages[index] = { 
+        ...newImages[index], 
+        src: url,
+        name: name || newImages[index].name,
+        tagline: tagline || newImages[index].tagline
+      }
+      await updateSetting('carouselImages', newImages)
+      return url
+    } catch (error) {
+      throw error
+    }
+  }, [settings.carouselImages, updateSetting, uploadImage])
+
+  return {
+    settings,
+    loading,
+    saving,
+    updateSetting,
+    updateSettings,
+    updateHeroImage,
+    updateLogo,
+    updateCarouselImage,
+    uploadImage,
+    refreshSettings: fetchSettings,
+  }
+}

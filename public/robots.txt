@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /customer/
+Disallow: /api/
+Disallow: /checkout/
+
+Sitemap: https://mangostore.pk/sitemap.xml
