@@ -45,3 +45,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .ui-backup
+AGENTS.md
+CLAUDE.md
+CLOUDINARY_PLAN.md
+PROJECT_NAVIGATION_AUDIT.md
+PROJECT_STRUCTURE_MAP.md
