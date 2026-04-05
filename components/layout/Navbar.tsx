@@ -31,11 +31,11 @@ export default function Navbar() {
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-14">
-            {/* Left: Menu (mobile) + Logo */}
+            {/* Left: Menu + Logo */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-1.5 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+                className="p-1.5 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
               >
                 <Menu className="w-5 h-5" />
               </button>
