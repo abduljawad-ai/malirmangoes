@@ -170,6 +170,57 @@ export default function AdminSettingsPage() {
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Why Choose Us Cards</h2>
+            <div className="space-y-6">
+              {[
+                { num: 1, titleKey: 'whyUs1Title', descKey: 'whyUs1Desc' },
+                { num: 2, titleKey: 'whyUs2Title', descKey: 'whyUs2Desc' },
+                { num: 3, titleKey: 'whyUs3Title', descKey: 'whyUs3Desc' },
+              ].map(({ num, titleKey, descKey }) => (
+                <div key={num} className="border-b border-gray-100 last:border-0 pb-5 last:pb-0">
+                  <p className="text-sm font-semibold text-gray-500 mb-3">Card {num}</p>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <input
+                        type="text"
+                        defaultValue={settings[titleKey as keyof typeof settings] as string}
+                        onChange={(e) => handleTextChange(titleKey, e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                      />
+                      {editForm[titleKey] !== undefined && (
+                        <div className="mt-1.5 flex justify-end">
+                          <Button size="sm" onClick={() => saveTextSetting(titleKey)} disabled={saving}>
+                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                            Save
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea
+                        defaultValue={settings[descKey as keyof typeof settings] as string}
+                        onChange={(e) => handleTextChange(descKey, e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                        rows={2}
+                      />
+                      {editForm[descKey] !== undefined && (
+                        <div className="mt-1.5 flex justify-end">
+                          <Button size="sm" onClick={() => saveTextSetting(descKey)} disabled={saving}>
+                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                            Save
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">CTA Section</h2>
             <div className="space-y-4">
               <div>

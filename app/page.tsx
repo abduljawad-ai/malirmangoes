@@ -277,18 +277,18 @@ export default function HomePage() {
             {[
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/farm_harvest.jpg',
-                title: 'Tree to Table Freshness',
-                desc: 'Hand-picked at peak ripeness, packed same day. You\'ll taste the difference from the first bite.',
+                title: settings.whyUs1Title || 'Tree to Table Freshness',
+                desc: settings.whyUs1Desc || "Hand-picked at peak ripeness, packed same day. You'll taste the difference from the first bite.",
               },
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/honey-mango.jpg',
-                title: 'Authentic Pakistani Varieties',
-                desc: 'True Chaunsa, Sindhri, Dusehri and Langra — the real deal, not imitation varieties.',
+                title: settings.whyUs2Title || 'Authentic Pakistani Varieties',
+                desc: settings.whyUs2Desc || "True Chaunsa, Sindhri, Dusehri and Langra — the real deal, not imitation varieties.",
               },
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/mango-box.jpg',
-                title: 'Hassle-Free Guarantee',
-                desc: 'Not happy with your order? We\'ll replace it or refund you, no questions asked.',
+                title: settings.whyUs3Title || 'Hassle-Free Guarantee',
+                desc: settings.whyUs3Desc || "Not happy with your order? We'll replace it or refund you, no questions asked.",
               },
             ].map((item, i) => (
               <motion.div

@@ -41,6 +41,14 @@ export interface SiteSettings {
   
   // Footer
   footerText: string
+
+  // Why Choose Us (homepage section)
+  whyUs1Title: string
+  whyUs1Desc: string
+  whyUs2Title: string
+  whyUs2Desc: string
+  whyUs3Title: string
+  whyUs3Desc: string
   
   // Carousel
   carouselImages: { src: string; name: string; tagline: string; color: string }[]
@@ -66,6 +74,12 @@ const defaultSettings: SiteSettings = {
   ctaTitle: 'Ready to Taste the Best?',
   ctaDescription: 'Order now and experience the authentic flavor of premium Pakistani mangoes delivered fresh to your door. Limited harvest season!',
   footerText: 'Delivering the finest Chaunsa, Sindhri, and Anwar Ratol mangoes from our orchards in Pakistan directly to your doorstep.',
+  whyUs1Title: 'Tree to Table Freshness',
+  whyUs1Desc: "Hand-picked at peak ripeness, packed same day. You'll taste the difference from the first bite.",
+  whyUs2Title: 'Authentic Pakistani Varieties',
+  whyUs2Desc: "True Chaunsa, Sindhri, Dusehri and Langra — the real deal, not imitation varieties.",
+  whyUs3Title: 'Hassle-Free Guarantee',
+  whyUs3Desc: "Not happy with your order? We'll replace it or refund you, no questions asked.",
   carouselImages: [
     { src: '/images/hero.png', name: 'Premium Selection', tagline: 'Finest Quality', color: 'from-orange-500 to-amber-500' },
     { src: '/images/honey-mango.png', name: 'Chaunsa', tagline: 'King of Mangoes', color: 'from-amber-400 to-orange-500' },
