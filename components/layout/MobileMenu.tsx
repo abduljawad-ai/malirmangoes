@@ -35,7 +35,6 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
     { icon: MessageCircle, label: 'Chat', href: '/chat' },
     { icon: Package, label: 'My Orders', href: '/customer' },
     { icon: User, label: 'Profile', href: '/customer/profile' },
-    { icon: Heart, label: 'Wishlist', href: '/customer/wishlist' },
   ]
 
   return (

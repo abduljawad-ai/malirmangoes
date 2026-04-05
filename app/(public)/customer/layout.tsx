@@ -12,7 +12,6 @@ const customerLinks = [
   { icon: Home, label: 'Home', href: '/' },
   { icon: Package, label: 'My Orders', href: '/customer' },
   { icon: User, label: 'Profile', href: '/customer/profile' },
-  { icon: Heart, label: 'Wishlist', href: '/customer/wishlist' },
   { icon: MessageCircle, label: 'Chat', href: '/chat' },
 ]
 

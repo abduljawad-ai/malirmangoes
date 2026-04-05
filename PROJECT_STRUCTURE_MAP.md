@@ -80,8 +80,7 @@ This file documents every single file in the project, what components it uses, w
 - Filters products where `isFeatured === true`, shows first 4
 - Each product rendered as `ProductCard`
 - **Click: Any ProductCard** → Redirects to `/products/[slug]` (handled inside ProductCard)
-- **Click: "View All" link** → Redirects to `/products`
-- **Click: "View All Products" button (mobile)** → Redirects to `/products`
+- **Click: "View All" link** → Redirects to `/products` (visible on all screen sizes)
 
 #### 4. Why Choose Us (3 cards with images)
 - Direct from Farm, Hand-Selected Quality, Safe Delivery
@@ -970,7 +969,6 @@ Each field has an input + Save button:
    - Home → `/`
    - My Orders → `/customer`
    - Profile → `/customer/profile`
-   - Wishlist → `/customer/wishlist`
    - Chat → `/chat`
    - All links call `setDrawerOpen(false)` after click (closes drawer)
 5. **Click: Sign Out button** → Calls `logout()` then `setDrawerOpen(false)` → Logs out and closes drawer
