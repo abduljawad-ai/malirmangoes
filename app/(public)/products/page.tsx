@@ -66,35 +66,6 @@ function ProductsContent() {
         </Button>
       </div>
 
-      {/* Category Pills (Mobile) */}
-      {categories.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-3 mb-6 lg:hidden scrollbar-hide">
-          <button
-            onClick={() => setSelectedCategory('')}
-            className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
-              selectedCategory === ''
-                ? 'bg-mango text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            All
-          </button>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full capitalize transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-mango text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {cat.replace(/-/g, ' ')}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div className="flex gap-6">
         {/* Sidebar */}
         <FilterSidebar

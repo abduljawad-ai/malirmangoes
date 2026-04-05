@@ -85,7 +85,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Carousel */}
-      <section className="relative h-[85vh] min-h-[500px] max-h-[800px] overflow-hidden bg-slate-900">
+      <section className="relative h-[70vh] md:h-[85vh] min-h-[500px] max-h-[800px] overflow-hidden bg-slate-900">
         {/* Background Images */}
         <AnimatePresence mode="wait">
           <motion.div

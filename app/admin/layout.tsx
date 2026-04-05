@@ -148,14 +148,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main */}
       <div className="flex-1 lg:ml-0">
         {/* Top bar */}
-        <header className="h-14 bg-white border-b border-slate-200 sticky top-0 z-20 px-4 flex items-center justify-between">
+        <header className="h-14 bg-white border-b border-slate-200 sticky top-0 z-20 px-4 flex items-center">
           <button onClick={() => setSidebarOpen(true)} className="p-1.5 text-slate-600 hover:bg-slate-50 rounded-md">
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex-1" />
-          <Link href="/" className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors">
-            Visit Store →
-          </Link>
         </header>
 
         {/* Content */}

@@ -65,7 +65,7 @@ This file documents every single file in the project, what components it uses, w
 
 ### Sections (top to bottom):
 
-#### 1. Hero Carousel (full-screen, 85vh)
+#### 1. Hero Carousel (responsive height: 70vh on mobile, 85vh on desktop)
 - 4 hardcoded slides with Cloudinary images
 - Auto-rotates every 4 seconds
 - **Click: Slide indicators (dots)** → Jumps to that slide, resets timer
@@ -344,9 +344,9 @@ This file documents every single file in the project, what components it uses, w
     └─ Header: Logo "M Admin" + X close button (mobile only)
     └─ Nav links: Overview, Products, Orders, Customers, Live Chat (with unread badge), Reports, CMS, Settings
     └─ User section: Avatar + Name + Email + Sign Out + Visit Store icon
-  [Main content area]
-    └─ Top bar: Hamburger menu button (top-left) + "Visit Store →" link (right)
-    └─ Page content: {children}
+   [Main content area]
+     └─ Top bar: Hamburger menu button (top-left)
+     └─ Page content: {children}
 </div>
 ```
 
@@ -363,10 +363,9 @@ This file documents every single file in the project, what components it uses, w
    - Reports → `/admin/reports`
    - Settings → `/admin/settings`
    - All links call `setSidebarOpen(false)` after click (closes sidebar on mobile)
-4. **Sign Out button** → Calls `logout()` → Logs out user
-5. **Visit Store icon (Store icon in sidebar footer)** → Redirects to `/` (user-facing homepage)
-6. **Hamburger menu button (top bar, top-left)** → Calls `setSidebarOpen(true)` → Opens sidebar
-7. **"Visit Store →" link (top bar, right)** → Redirects to `/`
+ 4. **Sign Out button** → Calls `logout()` → Logs out user
+ 5. **Visit Store icon (Store icon in sidebar footer)** → Redirects to `/` (user-facing homepage)
+ 6. **Hamburger menu button (top bar, top-left)** → Calls `setSidebarOpen(true)` → Opens sidebar
 
 ### Conditional Rendering:
 - If `loading || !user || !isAdmin` → Shows spinner, then redirects to `/login?redirect=/admin`
@@ -1111,11 +1110,10 @@ Each field has an input + Save button:
 ### Click Behavior:
 1. **Click: Search input** → Filters products by name (client-side)
 2. **Click: Filters button (mobile)** → Opens mobile filter sidebar
-3. **Click: Category pills (mobile)** → Sets `selectedCategory`
-4. **Click: Category in FilterSidebar** → Updates URL `?category=X` and re-fetches
-5. **Click: Sort dropdown** → Sorts by price-asc, price-desc, name-asc, or newest
-6. **Click: ProductCard** → Redirects to `/products/[slug]`
-7. **Click: "Clear Filters" button** → Resets category and search
+3. **Click: Category in FilterSidebar** → Updates URL `?category=X` and re-fetches
+4. **Click: Sort dropdown** → Sorts by price-asc, price-desc, name-asc, or newest
+5. **Click: ProductCard** → Redirects to `/products/[slug]`
+6. **Click: "Clear Filters" button** → Resets category and search
 
 **Status:** ✅ Reviewed
 
