@@ -1,20 +1,33 @@
 'use client'
 
 import React from 'react'
-import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, Truck } from 'lucide-react'
+import { X, ShoppingBag, Plus, Minus, Trash2, Truck, MessageCircle } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 import { formatPKR, getValidImageUrl } from '@/lib/utils'
 import Button from '@/components/ui/Button'
-import Link from 'next/link'
 import Image from 'next/image'
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923XXXXXXXXX'
+
+function buildWhatsAppMessage(items: { name: string; qty: number; salePrice?: number; price: number }[], total: number) {
+  const itemsList = items.map((i) => `${i.name} x${i.qty}`).join(', ')
+  return `Assalam o Alaikum! I want to order: ${itemsList}. Total: ${formatPKR(total)}. My address is...`
+}
 
 const FREE_SHIPPING_THRESHOLD = 5000
 
 export default function CartDrawer() {
-  const { items, isCartOpen, toggleCart, removeItem, updateQuantity, totalPrice, totalItems } = useCart()
+  const { items, isCartOpen, toggleCart, removeItem, updateQuantity, totalPrice, totalItems, clearCart } = useCart()
 
   const progress = Math.min((totalPrice / FREE_SHIPPING_THRESHOLD) * 100, 100)
   const remaining = Math.max(FREE_SHIPPING_THRESHOLD - totalPrice, 0)
+
+  const handleWhatsAppCheckout = () => {
+    const message = buildWhatsAppMessage(items, totalPrice)
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+    clearCart()
+  }
 
   if (!isCartOpen) return null
 
@@ -124,10 +137,8 @@ export default function CartDrawer() {
               <span className="text-sm text-slate-500">Subtotal</span>
               <span className="text-lg font-bold text-slate-900">{formatPKR(totalPrice)}</span>
             </div>
-            <Button className="w-full h-11" asChild onClick={toggleCart}>
-              <Link href="/checkout">
-                Checkout <ArrowRight className="w-4 h-4 ml-1" />
-              </Link>
+            <Button className="w-full h-11" onClick={handleWhatsAppCheckout}>
+              <MessageCircle className="w-4 h-4 mr-1" /> Order via WhatsApp
             </Button>
           </div>
         )}

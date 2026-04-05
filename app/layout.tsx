@@ -11,8 +11,9 @@ import ChatWidget from '@/components/chat/ChatWidget'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MangoStore — Premium Fresh Mangoes',
-  description: 'Pure, fresh, and hand-picked mangoes delivered from our farm to your doorstep.',
+  title: 'Malir Mangoes | Fresh Farm Delivery in Karachi',
+  description: 'Order farm-fresh, premium mangoes directly from Malir orchards to your doorstep in Karachi. Sindhri, Chaunsa, Anwar Ratol and more — delivered to Malir, Gulshan, Clifton, DHA and all Karachi areas.',
+  keywords: ['fresh mangoes Malir', 'mango delivery Karachi', 'Sindhri mangoes', 'Chaunsa mangoes', 'farm fresh mangoes Karachi', 'Malir mangoes'],
 }
 
 export default function RootLayout({
