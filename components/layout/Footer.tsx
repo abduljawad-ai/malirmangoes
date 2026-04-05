@@ -11,6 +11,8 @@ const shopLinks = [
   { label: 'Chaunsa', href: '/products?category=chaunsa' },
   { label: 'Sindhri', href: '/products?category=sindhri' },
   { label: 'Anwar Ratol', href: '/products?category=anwar-ratol' },
+  { label: 'Langra', href: '/products?category=langra' },
+  { label: 'Dasheri', href: '/products?category=dasheri' },
 ]
 
 const infoLinks = [
