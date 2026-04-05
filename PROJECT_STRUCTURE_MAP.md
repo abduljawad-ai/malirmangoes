@@ -245,56 +245,42 @@ This file documents every single file in the project, what components it uses, w
 ## FILE 6: components/layout/Footer.tsx
 **Path:** `/components/layout/Footer.tsx`
 **Type:** Client component — Site footer
-**Purpose:** Displays brand info, shop links, support links, company links, newsletter subscription, contact info, and copyright. Hidden on admin/customer pages via `hideFooter`.
+**Purpose:** Displays brand info, shop links, and contact info. Hidden on admin/customer pages via `hideFooter`.
 
 ### Components/Hooks Used:
-- `useAuth` (from `@/hooks/useAuth`) — Gets `user` (not actively used in rendering)
 - `useLayout` (from `./LayoutContext`) — Gets `hideFooter` to conditionally render
-- `Button` (from `@/components/ui/Button`) — Subscribe button
 - `Link` (from `next/link`) — Navigation links
 
 ### Layout Structure:
 ```
 <footer bg-slate-900 mt-auto>
-  └─ Newsletter section (email input + Subscribe button)
-  └─ 4-column grid:
-     - Brand: Logo + description + social icons (WhatsApp, Facebook, Website, YouTube)
+  └─ 3-column grid:
+     - Brand: Logo + description
      - Shop: All Products, Chaunsa, Sindhri, Anwar Ratol
-     - Support: Track Order, Shipping Info, Returns, FAQ
-     - Company: About Us, Our Orchards, Contact
-  └─ Contact info: Address (Multan), Phone, Email
-  └─ Bottom bar: Copyright + Privacy + Terms links
+     - Contact: Address, Phone, Email
+  └─ Bottom bar: Copyright
 </footer>
 ```
 
 ### Click Behavior (every clickable element):
 
 1. **Logo ("MangoStore")** → Redirects to `/`
-2. **Social icons (WhatsApp, Facebook, Website, YouTube)** → All link to `#` (placeholder, not configured yet)
-3. **Shop links:**
+2. **Shop links:**
    - All Products → `/products`
    - Chaunsa → `/products?category=chaunsa`
    - Sindhri → `/products?category=sindhri`
    - Anwar Ratol → `/products?category=anwar-ratol`
-4. **Support links:**
-   - Track Order → `/customer`
-   - Shipping Info → `#` (placeholder)
-   - Returns → `#` (placeholder)
-   - FAQ → `#` (placeholder)
-5. **Company links:**
-   - About Us → `#` (placeholder)
-   - Our Orchards → `#` (placeholder)
-   - Contact → `#` (placeholder)
-6. **Subscribe button** → Calls `handleSubscribe()`:
-   - Prevents default form submission
-   - If email is entered: Shows "Thanks for subscribing!" message for 3 seconds
-   - Currently does NOT send data to any backend (placeholder functionality)
-7. **Privacy link** → `#` (placeholder)
-8. **Terms link** → `#` (placeholder)
+
+### Removed (cleaned up dead links):
+- Newsletter subscribe section (fake functionality removed)
+- Social icons (all were `#` placeholders)
+- Support links (Shipping Info, Returns, FAQ — all `#` placeholders)
+- Company links (About Us, Our Orchards, Contact — all `#` placeholders)
+- Privacy/Terms links (no pages exist yet)
+- Contact section moved into main grid instead of separate bar
 
 ### Conditional Rendering:
 - If `hideFooter === true` → Returns `null` (hidden on admin/customer pages)
-- `subscribed` state → Shows temporary success message after subscribing
 
 **Status:** ✅ Reviewed
 
