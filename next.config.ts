@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    formats: ['image/webp', 'image/avif'],
+    formats: ['image/webp'],
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],

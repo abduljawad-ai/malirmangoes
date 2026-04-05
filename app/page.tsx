@@ -64,14 +64,16 @@ export default function HomePage() {
   const mergedProducts = [...featured, ...rest].slice(0, 8)
 
   const carouselSlides = !loading && settings.carouselImages && settings.carouselImages.length > 0
-    ? settings.carouselImages.map((img, i) => ({
-        image: img.src,
-        tagline: img.tagline,
-        title: img.name,
-        highlight: '',
-        subtitle: '',
-        cta: 'Shop Now',
-      }))
+    ? settings.carouselImages
+        .filter(img => img.src && img.src.trim() !== '')
+        .map((img, i) => ({
+          image: img.src,
+          tagline: img.tagline,
+          title: img.name,
+          highlight: '',
+          subtitle: '',
+          cta: 'Shop Now',
+        }))
     : defaultSlides
 
   // Guard: if carouselSlides becomes empty somehow, use defaults
@@ -294,7 +296,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/farm_harvest.jpg',
+                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_400/mangostore/mangostore/farm_harvest.jpg',
                 title: settings.whyUs1Title || 'Tree to Table Freshness',
                 desc: settings.whyUs1Desc || "Hand-picked at peak ripeness, packed same day. You'll taste the difference from the first bite.",
               },
