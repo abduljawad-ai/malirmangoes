@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X, User, Package, Heart, LogOut, Home, MessageCircle } from 'lucide-react'
+import { Menu, X, User, Package, LogOut, Home, MessageCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useLayout } from '@/components/layout/LayoutContext'
 import { cn } from '@/lib/utils'
