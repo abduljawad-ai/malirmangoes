@@ -410,9 +410,10 @@ This file documents every single file in the project, what components it uses, w
 - **Click: "Store Settings"** → Redirects to `/admin/settings`
 
 #### 4. Recent Orders Table (up to 5 orders)
-- Shows: Order ID, Date, Customer name, Total, Status badge
+- Shows: Order ID, Date, Customer name, Total, Status badge, View link
+- **Click: Any order row** → Redirects to `/admin/orders`
+- **Click: "View" link** → Redirects to `/admin/orders`
 - **Click: "View All" link** → Redirects to `/admin/orders`
-- Table rows are display-only (no click handlers on rows)
 
 **Status:** ✅ Reviewed
 

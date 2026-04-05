@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { DollarSign, ShoppingBag, Package, Users, Clock, CheckCircle2, Truck, ArrowUpRight, TrendingUp, TrendingDown } from 'lucide-react'
+import { DollarSign, ShoppingBag, Package, Users, Clock, CheckCircle2, Truck, ArrowUpRight, TrendingUp, TrendingDown, ChevronRight } from 'lucide-react'
 import { formatPKR, cn } from '@/lib/utils'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import { useProducts } from '@/hooks/useProducts'
 import { useUsers } from '@/hooks/useUsers'
@@ -21,6 +22,7 @@ const orderStatusIcons: Record<string, React.ElementType> = {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const { products, loading: productsLoading } = useProducts()
   const { users, loading: usersLoading } = useUsers()
   const { orders, loading: ordersLoading } = useAdminOrders()
@@ -110,13 +112,14 @@ export default function AdminDashboard() {
                   <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500 hidden sm:table-cell">Customer</th>
                   <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500">Total</th>
                   <th className="text-left px-4 py-2.5 text-xs font-medium text-slate-500">Status</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-medium text-slate-500">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.slice(0, 5).map(order => {
                   const StatusIcon = orderStatusIcons[order.orderStatus] || Clock
                   return (
-                    <tr key={order.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                    <tr key={order.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => router.push(`/admin/orders`)}>
                       <td className="px-4 py-3">
                         <p className="font-mono text-xs font-medium text-slate-900">#{order.id.slice(-6).toUpperCase()}</p>
                         <p className="text-xs text-slate-400">{new Date(order.createdAt as any).toLocaleDateString()}</p>
@@ -127,6 +130,11 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3 font-semibold text-slate-900">{formatPKR(order.total)}</td>
                       <td className="px-4 py-3">
                         <OrderStatusBadge status={order.orderStatus} />
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Link href="/admin/orders" className="text-xs font-medium text-mango hover:underline flex items-center gap-0.5 justify-end">
+                          View <ChevronRight className="w-3 h-3" />
+                        </Link>
                       </td>
                     </tr>
                   )
