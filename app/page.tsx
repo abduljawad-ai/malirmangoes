@@ -60,7 +60,7 @@ export default function HomePage() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const featured = products.filter(p => p.isFeatured).slice(0, 4)
-  const allProducts = products.filter(p => p.isActive)
+  const allProducts = products.filter(p => p.isActive && !featured.find(f => f.id === p.id))
 
   // Auto-rotate carousel every 4 seconds
   useEffect(() => {

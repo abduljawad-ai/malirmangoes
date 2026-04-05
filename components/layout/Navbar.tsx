@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { ShoppingCart, Menu, Search, Home, Package, MessageCircle } from 'lucide-react'
+import { ShoppingCart, Menu, Home, Package, MessageCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useChatUnreadCount } from '@/hooks/useChatUnreadCount'
@@ -11,7 +11,6 @@ import MobileMenu from './MobileMenu'
 
 const navItems = [
   { icon: Home, label: 'Home', href: '/' },
-  { icon: Search, label: 'Search', href: '/products' },
   { icon: Package, label: 'Products', href: '/products' },
   { icon: ShoppingCart, label: 'Cart', href: '#', isCart: true },
 ]

@@ -101,7 +101,7 @@ This file documents every single file in the project, what components it uses, w
 - `useProducts()` → Fetches from RTDB `/products` path
 - `useSettings()` → Fetches from RTDB `/settings` path
 - `featured = products.filter(p => p.isFeatured).slice(0, 4)`
-- `allProducts = products.filter(p => p.isActive)`
+- `allProducts = products.filter(p => p.isActive && !featured.find(f => f.id === p.id))` — excludes featured products to prevent duplicates
 
 **Status:** ✅ Reviewed
 
@@ -123,7 +123,7 @@ This file documents every single file in the project, what components it uses, w
 ```
 <header sticky top-0 z-40>
   [Left]  Hamburger button + Logo (link to /)
-  [Center] Desktop nav links: Home, Search, Products, Cart (hidden on mobile)
+  [Center] Desktop nav links: Home, Products, Cart (hidden on mobile)
   [Right] Cart icon (mobile only) + Chat link (desktop, if logged in) + Profile/Sign In
 </header>
 <MobileMenu open={isMobileMenuOpen} />
@@ -134,14 +134,13 @@ This file documents every single file in the project, what components it uses, w
 1. **Hamburger button (☰, top-left)** → Opens `MobileMenu` drawer (slide-in from LEFT)
 2. **Logo ("MangoStore")** → Redirects to `/` (home page)
 3. **Home link (desktop)** → Redirects to `/`
-4. **Search link (desktop)** → Redirects to `/products`
-5. **Products link (desktop)** → Redirects to `/products`
-6. **Cart button (desktop)** → Calls `toggleCart()` → Opens CartDrawer (slide-up cart panel)
-7. **Cart icon (mobile, top-right)** → Calls `toggleCart()` → Opens CartDrawer
-8. **Chat link (desktop, only if logged in)** → Redirects to `/chat`
-9. **Profile avatar (circle with initial, if logged in)** → Redirects to `/admin` (if admin) or `/customer` (if regular user)
-10. **Sign In link (if not logged in)** → Redirects to `/login`
-11. **MobileMenu items** → Handled inside MobileMenu component
+4. **Products link (desktop)** → Redirects to `/products`
+5. **Cart button (desktop)** → Calls `toggleCart()` → Opens CartDrawer (slide-up cart panel)
+6. **Cart icon (mobile, top-right)** → Calls `toggleCart()` → Opens CartDrawer
+7. **Chat link (desktop, only if logged in)** → Redirects to `/chat`
+8. **Profile avatar (circle with initial, if logged in)** → Redirects to `/admin` (if admin) or `/customer` (if regular user)
+9. **Sign In link (if not logged in)** → Redirects to `/login`
+10. **MobileMenu items** → Handled inside MobileMenu component
 
 ### Conditional Rendering:
 - If `hideNavbar === true` → Returns `null` (hidden on admin/customer pages)
@@ -150,6 +149,9 @@ This file documents every single file in the project, what components it uses, w
 - Chat link → Only shown if user is logged in
 - Profile avatar → Shown if logged in; "Sign In" link shown if not logged in
 - Profile links to `/admin` for admins, `/customer` for regular users
+
+### Note:
+- "Search" link was removed from navItems. Users access product search via the Products page.
 
 **Status:** ✅ Reviewed
 
