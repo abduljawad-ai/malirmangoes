@@ -15,9 +15,15 @@ import Link from 'next/link'
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { loginWithGoogle } = useAuth()
+  const { loginWithGoogle, user, loading: authLoading } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!authLoading && user) {
+      router.push('/')
+    }
+  }, [user, authLoading, router])
 
   const {
     register,
