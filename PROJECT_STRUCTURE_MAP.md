@@ -1232,10 +1232,16 @@ Each field has an input + Save button:
 ## FILE 33: components/chat/ChatWidget.tsx
 **Path:** `/components/chat/ChatWidget.tsx`
 **Type:** Client component — Floating chat bubble
-**Purpose:** Bottom-right floating button that opens chat when clicked. Hidden on admin/customer pages.
+**Purpose:** Bottom-right floating button that opens chat when clicked. Hidden on admin/customer pages and checkout pages.
 
 ### Click Behavior:
 1. **Click: Chat bubble** → Redirects to `/chat`
+
+### Conditional Rendering:
+- Hidden if `!isVisible` (first 2 seconds)
+- Hidden if `!user` (not logged in)
+- Hidden if `isAdmin` (admin users don't need it)
+- Hidden if `pathname === '/checkout'` or `pathname === '/checkout/success'` (clean checkout)
 
 **Status:** ✅ Reviewed
 

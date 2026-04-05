@@ -6,12 +6,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { useChatUnreadCount } from '@/hooks/useChatUnreadCount'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 export default function ChatWidget() {
   const { user, isAdmin } = useAuth()
   const unreadCount = useChatUnreadCount(user?.uid || '')
   const [isVisible, setIsVisible] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     // Show after 2 seconds
@@ -20,6 +22,7 @@ export default function ChatWidget() {
   }, [])
 
   if (!isVisible || !user || isAdmin) return null
+  if (pathname === '/checkout' || pathname === '/checkout/success') return null
 
   return (
     <div className="fixed bottom-6 right-6 z-40">
