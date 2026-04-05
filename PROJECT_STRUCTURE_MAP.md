@@ -1044,11 +1044,10 @@ Each field has an input + Save button:
 ## FILE 24: app/(public)/customer/wishlist/page.tsx
 **Path:** `/app/(public)/customer/wishlist/page.tsx`
 **Type:** Client component — Customer Wishlist page
-**Purpose:** Placeholder wishlist page. Currently always shows "Your Wishlist is Empty" message since wishlist functionality is not implemented yet.
+**Purpose:** Placeholder wishlist page with "Coming Soon" banner so users know the feature is under development.
 
 ### Components/Hooks Used:
 - `useAuth` (from `@/hooks/useAuth`) — Gets `user`, `loading`
-- `Card` (from `@/components/ui/Card`) — Card wrapper
 - `Button` (from `@/components/ui/Button`) — Action button
 - `Link` (from `next/link`) — Navigation links
 - `Suspense` (from `react`) — Loading fallback
@@ -1056,12 +1055,12 @@ Each field has an input + Save button:
 ### Click Behavior (every clickable element):
 
 1. **Click: "Sign In" button** (shown if not logged in) → Redirects to `/login?redirect=/customer/wishlist`
-2. **Click: "Browse Products" button** (shown if logged in) → Redirects to `/products`
+2. **Click: "Browse Products" button** → Redirects to `/products`
 
 ### Conditional Rendering:
 - If loading → Shows spinner
 - If not logged in → Shows "Please sign in" with Sign In button
-- If logged in → Always shows "Your Wishlist is Empty" card (wishlist feature not implemented)
+- If logged in → Shows "Coming Soon" banner + "Not available yet" card with Browse Products link
 
 **Status:** ✅ Reviewed
 

@@ -2,9 +2,8 @@
 
 import React, { Suspense } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { Heart, User } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import Link from 'next/link'
-import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 
 function WishlistContent() {
@@ -22,11 +21,11 @@ function WishlistContent() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="w-16 h-16 bg-mango-soft rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-mango-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <Heart className="w-8 h-8 text-mango" />
           </div>
-          <h2 className="text-2xl font-bold text-dark">Please sign in</h2>
-          <p className="text-muted mt-2 mb-6">You need to be logged in to view your wishlist.</p>
+          <h2 className="text-2xl font-bold text-slate-900">Please sign in</h2>
+          <p className="text-slate-500 mt-2 mb-6">You need to be logged in to view your wishlist.</p>
           <Link href="/login?redirect=/customer/wishlist">
             <Button>Sign In</Button>
           </Link>
@@ -37,23 +36,31 @@ function WishlistContent() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-dark">Wishlist</h1>
-        <p className="text-muted mt-1 text-sm">Your saved mango varieties</p>
+      {/* Coming Soon Banner */}
+      <div className="bg-gradient-to-r from-mango-50 to-orange-50 border border-mango/20 rounded-lg p-6 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-mango/10 rounded-full flex items-center justify-center flex-shrink-0">
+            <Heart className="w-5 h-5 text-mango" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-slate-900">Wishlist feature coming soon!</h2>
+            <p className="text-sm text-slate-500 mt-0.5">We're working on a way for you to save your favorite mangoes. Check back soon.</p>
+          </div>
+        </div>
       </div>
 
-      <Card className="p-12 text-center bg-white border-border/40">
-        <div className="w-14 h-14 bg-mango-soft rounded-full flex items-center justify-center mx-auto mb-4">
-          <Heart className="w-7 h-7 text-mango" />
+      <div className="text-center py-16 bg-white border border-slate-200 rounded-lg">
+        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="w-8 h-8 text-slate-300" />
         </div>
-        <h3 className="text-lg font-bold text-dark">Your Wishlist is Empty</h3>
-        <p className="text-sm text-muted mt-2 mb-6 max-w-sm mx-auto">
-          Save your favorite mango varieties to quickly find them later.
+        <h3 className="text-lg font-bold text-slate-900 mb-2">Not available yet</h3>
+        <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto">
+          The wishlist feature is under construction. In the meantime, browse our available products.
         </p>
         <Link href="/products">
-          <Button>Browse Products</Button>
+          <Button variant="outline">Browse Products</Button>
         </Link>
-      </Card>
+      </div>
     </div>
   )
 }
