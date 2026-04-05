@@ -1488,10 +1488,18 @@ export default SignupPage() {
 ## FILE 55: app/not-found.tsx
 **Path:** `/app/not-found.tsx`
 **Type:** Client component — 404 page
-**Purpose:** Shows "Page Not Found" with link back to home.
+**Purpose:** Custom branded 404 page with mango emoji, friendly messaging, and action buttons. Navbar and Footer are rendered via the root layout.
+
+### Layout:
+- Large 🥭 emoji with floating 🍃 decoration
+- "404" in mango brand color
+- Friendly headline: "Looks like this page went mango-ing!"
+- Subtext explaining the page wasn't found
+- Two action buttons: Homepage + Browse Products
 
 ### Click Behavior:
-1. **Click: "Go Home" button** → Redirects to `/`
+1. **Click: "Go to Homepage" button** → Redirects to `/`
+2. **Click: "Browse Products" button** → Redirects to `/products`
 
 **Status:** ✅ Reviewed
 
