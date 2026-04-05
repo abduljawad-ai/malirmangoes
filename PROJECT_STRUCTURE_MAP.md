@@ -375,7 +375,6 @@ This file documents every single file in the project, what components it uses, w
    - Customers → `/admin/customers`
    - Live Chat → `/admin/chat` (shows red unread badge if `totalUnread > 0`)
    - Reports → `/admin/reports`
-   - CMS → `/admin/cms`
    - Settings → `/admin/settings`
    - All links call `setSidebarOpen(false)` after click (closes sidebar on mobile)
 4. **Sign Out button** → Calls `logout()` → Logs out user

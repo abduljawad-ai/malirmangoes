@@ -29,7 +29,6 @@ const navigation = [
   { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Live Chat', href: '/admin/chat', icon: MessageSquare, showBadge: true },
   { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
-  { name: 'CMS', href: '/admin/cms', icon: FileText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
 
