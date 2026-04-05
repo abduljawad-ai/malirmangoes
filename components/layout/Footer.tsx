@@ -110,16 +110,24 @@ export default function Footer() {
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Contact</h4>
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="w-4 h-4 text-mango flex-shrink-0" />
-              <span className="text-slate-400">Multan, Pakistan</span>
+              <span className="text-slate-400">{settings.address || 'Multan, Pakistan'}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Phone className="w-4 h-4 text-mango flex-shrink-0" />
-              <span className="text-slate-400">+92 300 1234567</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Mail className="w-4 h-4 text-mango flex-shrink-0" />
-              <span className="text-slate-400">hello@mangostore.pk</span>
-            </div>
+            {settings.phone && (
+              <div className="flex items-center gap-2 text-sm">
+                <Phone className="w-4 h-4 text-mango flex-shrink-0" />
+                <a href={`tel:${settings.phone}`} className="text-slate-400 hover:text-white transition-colors">
+                  {settings.phone}
+                </a>
+              </div>
+            )}
+            {settings.email && (
+              <div className="flex items-center gap-2 text-sm">
+                <Mail className="w-4 h-4 text-mango flex-shrink-0" />
+                <a href={`mailto:${settings.email}`} className="text-slate-400 hover:text-white transition-colors">
+                  {settings.email}
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
