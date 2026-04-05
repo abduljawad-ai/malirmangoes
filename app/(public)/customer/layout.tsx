@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X, User, Package, LogOut, Home, MessageCircle } from 'lucide-react'
+import { Menu, X, User, Package, LogOut, MessageCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useLayout } from '@/components/layout/LayoutContext'
 import { cn } from '@/lib/utils'
 
 const customerLinks = [
-  { icon: Home, label: 'Home', href: '/' },
   { icon: Package, label: 'My Orders', href: '/customer' },
   { icon: User, label: 'Profile', href: '/customer/profile' },
   { icon: MessageCircle, label: 'Chat', href: '/chat' },
