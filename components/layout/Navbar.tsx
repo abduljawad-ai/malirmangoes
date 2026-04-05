@@ -8,6 +8,7 @@ import { useCart } from '@/hooks/useCart'
 import { useChatUnreadCount } from '@/hooks/useChatUnreadCount'
 import { useLayout } from './LayoutContext'
 import MobileMenu from './MobileMenu'
+import SearchOverlay from './SearchOverlay'
 
 const navItems = [
   { icon: Home, label: 'Home', href: '/' },
@@ -17,6 +18,7 @@ const navItems = [
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { user, isAdmin, loading } = useAuth()
   const { totalItems, toggleCart } = useCart()
   const chatUnreadCount = useChatUnreadCount(user?.uid || '')
@@ -78,17 +80,25 @@ export default function Navbar() {
                   </Link>
                 )
               ))}
-              <Link
-                href="/products"
+              <button
+                onClick={() => setIsSearchOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
               >
                 <Search className="w-4 h-4" />
                 <span>Search</span>
-              </Link>
+              </button>
             </nav>
 
             {/* Right Side */}
             <div className="flex items-center gap-2">
+              {/* Search (mobile) */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="md:hidden p-1.5 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
               {/* Cart (mobile only) */}
               <button
                 onClick={toggleCart}
@@ -137,6 +147,7 @@ export default function Navbar() {
       </header>
 
       <MobileMenu open={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      <SearchOverlay open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   )
 }
