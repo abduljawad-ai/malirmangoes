@@ -21,7 +21,7 @@ export default function ChatWidget() {
     return () => clearTimeout(timer)
   }, [])
 
-  if (!isVisible || !user || isAdmin) return null
+  if (!isVisible || isAdmin) return null
   if (pathname === '/checkout' || pathname === '/checkout/success') return null
 
   return (

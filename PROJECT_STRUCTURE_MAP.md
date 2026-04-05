@@ -98,11 +98,10 @@ This file documents every single file in the project, what components it uses, w
 - Shows first 8 active products
 - Each product rendered as `ProductCard`
 - **Click: Any ProductCard** → Redirects to `/products/[slug]`
-- **Click: "View All Products" button** (only if > 8 products) → Redirects to `/products`
 
 #### 6. CTA Section (dark background)
-- **Click: "Start Shopping" button** → Redirects to `/products`
-- **Click: "Talk to Us" button** → Redirects to `/chat`
+- **Click: "Shop Now" button** → Redirects to `/products`
+- **Click: "Chat With Us" button** → Redirects to `/chat`
 
 ### Data Flow:
 - `useProducts()` → Fetches from RTDB `/products` path
