@@ -244,20 +244,22 @@ This file documents every single file in the project, what components it uses, w
 ## FILE 6: components/layout/Footer.tsx
 **Path:** `/components/layout/Footer.tsx`
 **Type:** Client component — Site footer
-**Purpose:** Displays brand info, shop links, and contact info. Hidden on admin/customer pages via `hideFooter`.
+**Purpose:** Displays brand info, shop links, info links, and contact info. Hidden on admin/customer pages via `hideFooter`.
 
 ### Components/Hooks Used:
 - `useLayout` (from `./LayoutContext`) — Gets `hideFooter` to conditionally render
+- `useSettings` (from `@/hooks/useSettings`) — Gets `settings.facebook` and `settings.instagram` for social icons
 - `Link` (from `next/link`) — Navigation links
 
 ### Layout Structure:
 ```
 <footer bg-slate-900 mt-auto>
-  └─ 3-column grid:
-     - Brand: Logo + description
+  └─ 4-column grid (2-col mobile, 4-col desktop):
+     - Brand: Logo + description + social icons (Facebook, Instagram if set in settings)
      - Shop: All Products, Chaunsa, Sindhri, Anwar Ratol
+     - Info: About Us, Contact
      - Contact: Address, Phone, Email
-  └─ Bottom bar: Copyright
+  └─ Bottom bar: Copyright (year is dynamic)
 </footer>
 ```
 
@@ -269,17 +271,16 @@ This file documents every single file in the project, what components it uses, w
    - Chaunsa → `/products?category=chaunsa`
    - Sindhri → `/products?category=sindhri`
    - Anwar Ratol → `/products?category=anwar-ratol`
-
-### Removed (cleaned up dead links):
-- Newsletter subscribe section (fake functionality removed)
-- Social icons (all were `#` placeholders)
-- Support links (Shipping Info, Returns, FAQ — all `#` placeholders)
-- Company links (About Us, Our Orchards, Contact — all `#` placeholders)
-- Privacy/Terms links (no pages exist yet)
-- Contact section moved into main grid instead of separate bar
+3. **Info links:**
+   - About Us → `/about`
+   - Contact → `/chat`
+4. **Social icons** (if configured in settings):
+   - Facebook icon → Opens `settings.facebook` URL in new tab
+   - Instagram icon → Opens `settings.instagram` URL in new tab
 
 ### Conditional Rendering:
 - If `hideFooter === true` → Returns `null` (hidden on admin/customer pages)
+- Social icons only rendered if `settings.facebook` or `settings.instagram` are non-empty strings
 
 **Status:** ✅ Reviewed
 
@@ -1542,8 +1543,9 @@ export default SignupPage() {
 26. `app/(public)/products/[slug]/page.tsx` — Product detail
 27. `app/(public)/checkout/page.tsx` — Checkout
 28. `app/(public)/checkout/success/page.tsx` — Order success
-29. `app/chat/page.tsx` — Chat
-30. `app/not-found.tsx` — 404
+ 29. `app/chat/page.tsx` — Chat
+ 30. `app/not-found.tsx` — 404
+ 31. `app/(public)/about/page.tsx` — About Us
 
 ## Components (19 files)
 31. `components/products/ProductCard.tsx`
@@ -1679,7 +1681,27 @@ export default SignupPage() {
 
 ---
 
-**TOTAL FRONT-END FILES DOCUMENTED: 59**
+## FILE 60: app/(public)/about/page.tsx
+**Path:** `/app/(public)/about/page.tsx`
+**Type:** Client component — About Us page
+**Purpose:** Informational page about Malir Mangoes — brand story, values, team, and CTA to shop.
+
+### Sections:
+1. **Hero** — Dark bg with mango orchard image, headline, and "Shop Mangoes" CTA
+2. **Story** — Prose about the mission and sourcing philosophy
+3. **Values** — 4 cards: Farm Fresh, Fast Delivery, Quality Guarantee, Premium Selection
+4. **Team/Partners** — Farm partners info
+5. **CTA** — Mango-colored section linking to /products
+
+### Click Behavior:
+1. **Click: "Shop Mangoes" in hero** → Redirects to `/products`
+2. **Click: "Shop Mangoes" in bottom CTA** → Redirects to `/products`
+
+**Status:** ✅ Reviewed
+
+---
+
+**TOTAL FRONT-END FILES DOCUMENTED: 60**
 
 # PRODUCTION AUDIT & FIXES
 
