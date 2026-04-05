@@ -27,7 +27,7 @@ export default function RootLayout({
         <LayoutProvider>
           <Providers>
             <Navbar />
-            <main className="flex-grow pb-20 md:pb-0">
+            <main className="flex-grow">
               {children}
             </main>
             <ChatWidget />

@@ -41,7 +41,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-50" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-72 bg-white z-50 shadow-xl">
+      <div className="fixed inset-y-0 left-0 w-72 bg-white z-50 shadow-xl">
         <div className="flex items-center justify-between p-4 border-b border-slate-100">
           <span className="text-base font-semibold text-slate-900">Menu</span>
           <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition-colors">
