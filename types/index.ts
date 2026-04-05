@@ -121,6 +121,7 @@ export interface Review {
 export interface CartItem {
   productId: string
   name: string
+  slug: string
   price: number
   salePrice?: number
   image: string

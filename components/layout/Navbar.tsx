@@ -13,7 +13,6 @@ import SearchOverlay from './SearchOverlay'
 const navItems = [
   { icon: Home, label: 'Home', href: '/' },
   { icon: Package, label: 'Products', href: '/products' },
-  { icon: ShoppingCart, label: 'Cart', href: '#', isCart: true },
 ]
 
 export default function Navbar() {
@@ -51,35 +50,29 @@ export default function Navbar() {
             {/* Nav Items (Desktop only) */}
             <nav className="hidden md:flex items-center gap-1">
               {navItems.map(item => (
-                item.isCart ? (
-                  <button
-                    key={item.label}
-                    onClick={toggleCart}
-                    className={cn(
-                      'flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors',
-                    )}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                    {totalItems > 0 && (
-                      <span className="ml-1 min-w-[18px] h-[18px] flex items-center justify-center bg-mango text-white text-[10px] font-bold rounded-full px-1">
-                        {totalItems}
-                      </span>
-                    )}
-                  </button>
-                ) : (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className={cn(
-                      'flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors',
-                    )}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </Link>
-                )
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors',
+                  )}
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
               ))}
+              <Link
+                href="/cart"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Cart</span>
+                {totalItems > 0 && (
+                  <span className="ml-1 min-w-[18px] h-[18px] flex items-center justify-center bg-mango text-white text-[10px] font-bold rounded-full px-1">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"

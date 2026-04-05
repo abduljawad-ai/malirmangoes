@@ -28,6 +28,7 @@ export default function ProductCard({ product, showFeatured = false }: ProductCa
       addItem({
         productId: product.id,
         name: product.name,
+        slug: product.slug,
         price: product.price,
         salePrice: product.salePrice,
         image: getValidImageUrl(product.images[0]?.webp, '/images/honey-mango.png'),
