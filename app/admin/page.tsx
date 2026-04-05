@@ -119,7 +119,7 @@ export default function AdminDashboard() {
                 {orders.slice(0, 5).map(order => {
                   const StatusIcon = orderStatusIcons[order.orderStatus] || Clock
                   return (
-                    <tr key={order.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => router.push(`/admin/orders/${order.id}`)}>
+                    <tr key={order.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => router.push(`/admin/orders?highlight=${order.id}`)}>
                       <td className="px-4 py-3">
                         <p className="font-mono text-xs font-medium text-slate-900">#{order.id.slice(-6).toUpperCase()}</p>
                         <p className="text-xs text-slate-400">{new Date(order.createdAt as any).toLocaleDateString()}</p>
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                         <OrderStatusBadge status={order.orderStatus} />
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Link href={`/admin/orders/${order.id}`} className="text-xs font-medium text-mango hover:underline flex items-center gap-0.5 justify-end">
+                        <Link href={`/admin/orders?highlight=${order.id}`} className="text-xs font-medium text-mango hover:underline flex items-center gap-0.5 justify-end">
                           View <ChevronRight className="w-3 h-3" />
                         </Link>
                       </td>
