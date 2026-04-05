@@ -57,56 +57,32 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left - Branding (desktop only) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-mango-50 to-orange-100 items-center justify-center p-12">
-        <div className="max-w-sm text-center">
-          <div className="w-16 h-16 bg-mango rounded-xl flex items-center justify-center mx-auto mb-6">
-            <span className="text-white text-2xl font-bold">M</span>
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">Welcome Back</h1>
-          <p className="text-slate-600">Sign in to access your orders, wishlist, and account settings.</p>
-        </div>
+    <div>
+      <h2 className="text-xl font-bold text-slate-900 mb-1">Sign In</h2>
+      <p className="text-sm text-slate-500 mb-6">Enter your credentials to continue</p>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Input label="Email" type="email" placeholder="you@example.com" error={errors.email?.message} {...register('email')} />
+        <Input label="Password" type="password" placeholder="••••••••" error={errors.password?.message} {...register('password')} />
+
+        <Button type="submit" className="w-full h-11" loading={loading}>
+          Sign In
+        </Button>
+      </form>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
+        <div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-slate-400">or</span></div>
       </div>
 
-      {/* Right - Form */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-sm">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-mango rounded-md flex items-center justify-center">
-              <span className="text-white text-sm font-bold">M</span>
-            </div>
-            <span className="text-base font-semibold text-slate-900">MangoStore</span>
-          </div>
+      <Button variant="outline" className="w-full h-11" onClick={loginWithGoogle}>
+        Continue with Google
+      </Button>
 
-          <h2 className="text-xl font-bold text-slate-900 mb-1">Sign In</h2>
-          <p className="text-sm text-slate-500 mb-6">Enter your credentials to continue</p>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input label="Email" type="email" placeholder="you@example.com" error={errors.email?.message} {...register('email')} />
-            <Input label="Password" type="password" placeholder="••••••••" error={errors.password?.message} {...register('password')} />
-
-            <Button type="submit" className="w-full h-11" loading={loading}>
-              Sign In
-            </Button>
-          </form>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-slate-400">or</span></div>
-          </div>
-
-          <Button variant="outline" className="w-full h-11" onClick={loginWithGoogle}>
-            Continue with Google
-          </Button>
-
-          <p className="text-center text-sm text-slate-500 mt-6">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-mango font-medium hover:underline">Sign Up</Link>
-          </p>
-        </div>
-      </div>
+      <p className="text-center text-sm text-slate-500 mt-6">
+        Don&apos;t have an account?{' '}
+        <Link href="/signup" className="text-mango font-medium hover:underline">Sign Up</Link>
+      </p>
     </div>
   )
 }
