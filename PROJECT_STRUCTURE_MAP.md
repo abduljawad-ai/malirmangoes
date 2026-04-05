@@ -872,8 +872,19 @@ Each field has an input + Save button:
 
 ## FILE 20: app/(auth)/signup/page.tsx
 **Path:** `/app/(auth)/signup/page.tsx`
-**Type:** Client component — Signup page
-**Purpose:** Email/password registration form with Google Sign-In option. Creates user in Firebase Auth and stores profile in RTDB. Redirects to home if already logged in.
+**Type:** Server component wrapper — Signup page
+**Purpose:** Wraps `SignupContent` (client component) in a `Suspense` boundary to handle `useSearchParams` properly. Email/password registration form with Google Sign-In option. Creates user in Firebase Auth and stores profile in RTDB. Redirects to home if already logged in.
+
+### Structure:
+```
+export default SignupPage() {
+  return (
+    <Suspense fallback={spinner}>
+      <SignupContent />  ← Contains all form logic + useSearchParams
+    </Suspense>
+  )
+}
+```
 
 ### Components/Hooks Used:
 - `useAuth` (from `@/hooks/useAuth`) — Gets `loginWithGoogle`, `user`, `authLoading`

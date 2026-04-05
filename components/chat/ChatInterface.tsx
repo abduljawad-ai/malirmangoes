@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Send, ShoppingBag, ArrowLeft, MessageCircle, X, Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useChat } from '@/hooks/useChat'
 import { useAuth } from '@/hooks/useAuth'
 import { cn, formatPKR, getValidImageUrl } from '@/lib/utils'
@@ -23,6 +24,7 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
   const { user, isAdmin } = useAuth()
+  const router = useRouter()
   const [inputText, setInputText] = useState('')
   const [pendingImage, setPendingImage] = useState<{ file: File; preview: string } | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
