@@ -35,7 +35,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-mango rounded-md flex items-center justify-center">
                 <span className="text-white text-sm font-bold">M</span>
               </div>
-              <span className="text-base font-semibold text-white">MangoStore</span>
+              <span className="text-base font-semibold text-white">Malir Mangoes</span>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed">
               Fresh Pakistani mangoes delivered to your doorstep.

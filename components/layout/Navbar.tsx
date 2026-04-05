@@ -42,7 +42,7 @@ export default function Navbar() {
                 <div className="w-8 h-8 bg-mango rounded-md flex items-center justify-center">
                   <span className="text-white text-sm font-bold">M</span>
                 </div>
-                <span className="text-base font-semibold text-slate-900">MangoStore</span>
+                <span className="text-base font-semibold text-slate-900">Malir Mangoes</span>
               </Link>
             </div>
 

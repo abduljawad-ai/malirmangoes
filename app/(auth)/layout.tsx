@@ -40,7 +40,7 @@ export default function AuthLayout({
             <Link href="/">
               <img 
                 src="/logo.png" 
-                alt="MangoStore Logo"
+                alt="Malir Mangoes Logo"
                 className="w-32 h-32 object-contain mb-8 drop-shadow-2xl"
               />
             </Link>
@@ -52,7 +52,7 @@ export default function AuthLayout({
             transition={{ delay: 0.2 }}
             className="text-4xl xl:text-5xl font-extrabold text-white mb-4"
           >
-            MangoStore
+            Malir Mangoes
           </motion.h1>
           
           <motion.p 
@@ -104,11 +104,11 @@ export default function AuthLayout({
             <Link href="/" className="inline-block">
               <img 
                 src="/logo.png" 
-                alt="MangoStore Logo"
+                alt="Malir Mangoes Logo"
                 className="w-20 h-20 object-contain mx-auto drop-shadow-lg"
               />
             </Link>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">MangoStore</h2>
+            <h2 className="mt-4 text-2xl font-bold text-gray-900">Malir Mangoes</h2>
           </div>
           
           <div className="bg-white p-8 sm:p-10 rounded-3xl shadow-xl shadow-orange-500/10 border border-orange-100">

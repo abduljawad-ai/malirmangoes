@@ -215,7 +215,7 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
             <span className="text-xl">🥭</span>
           </div>
           <div>
-            <h1 className="font-bold text-dark">MangoStore Support</h1>
+            <h1 className="font-bold text-dark">Malir Mangoes Support</h1>
             <p className="text-xs text-muted">
               {chat.isAdminTyping ? (
                 <span className="text-mango flex items-center gap-1">

@@ -2,7 +2,7 @@ import ChatInterface from '@/components/chat/ChatInterface'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Chat with Us | MangoStore',
+  title: 'Chat with Us | Malir Mangoes',
   description: 'Get in touch with our support team for any questions about our premium mangoes',
 }
 

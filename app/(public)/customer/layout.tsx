@@ -60,7 +60,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             <div className="w-7 h-7 bg-mango rounded-md flex items-center justify-center">
               <span className="text-white text-xs font-bold">M</span>
             </div>
-            <span className="text-sm font-semibold text-slate-900">MangoStore</span>
+            <span className="text-sm font-semibold text-slate-900">Malir Mangoes</span>
           </Link>
           <button onClick={() => setDrawerOpen(false)} className="p-1 text-slate-400 hover:text-slate-600">
             <X className="w-5 h-5" />
