@@ -337,7 +337,7 @@ This file documents every single file in the project, what components it uses, w
   [Mobile Backdrop overlay] (click to close sidebar)
   [Sidebar - fixed left, w-60]
     └─ Header: Logo "M Admin" + X close button (mobile only)
-    └─ Nav links: Overview, Products, Orders, Customers, Live Chat (with unread badge), Reports, CMS, Settings
+    └─ Nav links: Overview, Products, Orders, Customers, Live Chat (with unread badge), Reports, Settings
     └─ User section: Avatar + Name + Email + Sign Out + Visit Store icon
    [Main content area]
      └─ Top bar: Hamburger menu button (top-left)
@@ -349,7 +349,7 @@ This file documents every single file in the project, what components it uses, w
 
 1. **Mobile backdrop overlay** → Calls `setSidebarOpen(false)` → Closes sidebar
 2. **X close button in sidebar header (mobile only)** → Calls `setSidebarOpen(false)` → Closes sidebar
-3. **Sidebar nav links (8 links):**
+ 3. **Sidebar nav links (7 links):**
    - Overview → `/admin`
    - Products → `/admin/products`
    - Orders → `/admin/orders`
@@ -926,7 +926,7 @@ export default SignupPage() {
 ## FILE 21: app/(public)/customer/layout.tsx
 **Path:** `/app/(public)/customer/layout.tsx`
 **Type:** Client component — Customer area layout wrapper
-**Purpose:** Wraps ALL customer pages (/customer, /customer/profile, /customer/wishlist, /customer/orders/[id]). Provides top bar with hamburger menu, slide-in drawer from left, and protects against non-logged-in access.
+**Purpose:** Wraps ALL customer pages (/customer, /customer/profile, /customer/orders/[id]). Wishlist page (`/customer/wishlist`) exists but is not linked from navigation. Provides top bar with hamburger menu, slide-in drawer from left, and protects against non-logged-in access.
 
 ### Components/Hooks Used:
 - `useAuth` (from `@/hooks/useAuth`) — Gets `user`, `loading`, `logout`
@@ -940,7 +940,7 @@ export default SignupPage() {
 [Drawer - fixed left, w-60]
   └─ Header: Logo "MangoStore" + X close button
   └─ User Info: Avatar + Name + Email
-  └─ Nav Links: Home, My Orders, Profile, Wishlist, Chat
+  └─ Nav Links: Home, My Orders, Profile, Chat
   └─ Sign Out button
 [Top Bar - sticky top-0]
   └─ Left: Hamburger menu button
@@ -955,7 +955,7 @@ export default SignupPage() {
 1. **Click: Mobile backdrop overlay** → Calls `setDrawerOpen(false)` → Closes drawer
 2. **Click: X close button in drawer header** → Calls `setDrawerOpen(false)` → Closes drawer
 3. **Click: Logo in drawer header** → Redirects to `/` (home page)
-4. **Click: Drawer nav links (5 links):**
+ 4. **Click: Drawer nav links (4 links):**
    - Home → `/`
    - My Orders → `/customer`
    - Profile → `/customer/profile`
@@ -1205,12 +1205,12 @@ export default SignupPage() {
 ## FILE 31: components/products/ProductCard.tsx
 **Path:** `/components/products/ProductCard.tsx`
 **Type:** Client component — Product card (used in grids)
-**Purpose:** Shows product image, name, price, sale price, and "Add to Cart" button.
+**Purpose:** Shows product image, name, price, sale price, and "Add to Cart" button. No wishlist/heart icon — that feature is not implemented.
 
 ### Click Behavior:
 1. **Click: Card body (image, name, price area)** → Redirects to `/products/[slug]`
 2. **Click: "Add to Cart" button** → Calls `addItem()` from cart context, shows toast, opens cart drawer
-3. **Click: Heart/wishlist icon** → Not implemented (placeholder)
+3. **Click: Quantity +/- buttons** → Increments/decrements cart quantity
 
 **Status:** ✅ Reviewed
 

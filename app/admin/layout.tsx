@@ -9,7 +9,6 @@ import {
   ShoppingBag,
   Users,
   Settings,
-  FileText,
   LogOut,
   Menu,
   X,
