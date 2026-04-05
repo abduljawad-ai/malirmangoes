@@ -865,15 +865,15 @@ Each field has an input + Save button:
 
 1. **Click: "Sign In" button (form submit)** → Calls `onSubmit(data)`:
    - Calls `signInWithEmailAndPassword(auth, email, password)`
-   - On success: Redirects to `/` (home page)
+   - On success: Redirects to `?redirect=` param (defaults to `/`)
    - On failure: Shows toast error ("Invalid email or password", "No account found", or "Login failed")
 2. **Click: "Continue with Google" button** → Calls `loginWithGoogle()`:
    - Opens Firebase Google Sign-In popup
-   - On success: Redirects to `/` (handled by `useEffect` watching `user`)
+   - On success: Redirects to `?redirect=` param (defaults to `/`) (handled by `useEffect` watching `user`)
 3. **Click: "Sign Up" link** → Redirects to `/signup`
 
 ### Auto-redirect:
-- If user is already logged in (`user` exists and `authLoading` is false) → Automatically redirects to `/`
+- If user is already logged in (`user` exists and `authLoading` is false) → Automatically redirects to `?redirect=` param (defaults to `/`)
 
 **Status:** ✅ Reviewed
 
@@ -903,15 +903,15 @@ Each field has an input + Save button:
    - Creates user via `createUserWithEmailAndPassword(auth, email, password)`
    - Sets display name via `updateProfile(cred.user, { displayName: data.name })`
    - Stores user profile in RTDB at `users/{uid}` with: `name`, `email`, `role: 'customer'`, `createdAt`
-   - On success: Shows toast "Account created!" → Redirects to `/`
+   - On success: Shows toast "Account created!" → Redirects to `?redirect=` param (defaults to `/`)
    - On failure: Shows toast error ("Email already registered" or "Signup failed")
 2. **Click: "Continue with Google" button** → Calls `loginWithGoogle()`:
    - Opens Firebase Google Sign-In popup
-   - On success: Redirects to `/` (handled by `useEffect` watching `user`)
+   - On success: Redirects to `?redirect=` param (defaults to `/`) (handled by `useEffect` watching `user`)
 3. **Click: "Sign In" link** → Redirects to `/login`
 
 ### Auto-redirect:
-- If user is already logged in (`user` exists and `authLoading` is false) → Automatically redirects to `/`
+- If user is already logged in (`user` exists and `authLoading` is false) → Automatically redirects to `?redirect=` param (defaults to `/`)
 
 **Status:** ✅ Reviewed
 

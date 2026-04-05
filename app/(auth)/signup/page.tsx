@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signupSchema } from '@/lib/validations'
@@ -17,13 +17,16 @@ type SignupForm = z.infer<typeof signupSchema>
 export default function SignupPage() {
   const { loginWithGoogle, user, loading: authLoading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = React.useState(false)
+
+  const redirect = searchParams.get('redirect') || '/'
 
   React.useEffect(() => {
     if (!authLoading && user) {
-      router.push('/')
+      router.push(redirect)
     }
-  }, [user, authLoading, router])
+  }, [user, authLoading, router, redirect])
 
   const {
     register,
@@ -53,7 +56,7 @@ export default function SignupPage() {
       })
 
       toast.success('Account created!')
-      router.push('/')
+      router.push(redirect)
     } catch (error: any) {
       const msg = error.code === 'auth/email-already-in-use'
         ? 'Email already registered'

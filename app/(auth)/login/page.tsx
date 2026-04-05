@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from '@/lib/validations'
@@ -17,13 +17,16 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const { loginWithGoogle, user, loading: authLoading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = React.useState(false)
+
+  const redirect = searchParams.get('redirect') || '/'
 
   React.useEffect(() => {
     if (!authLoading && user) {
-      router.push('/')
+      router.push(redirect)
     }
-  }, [user, authLoading, router])
+  }, [user, authLoading, router, redirect])
 
   const {
     register,
@@ -40,7 +43,7 @@ export default function LoginPage() {
       const { signInWithEmailAndPassword } = await import('firebase/auth')
       const { auth } = await import('@/lib/firebase')
       await signInWithEmailAndPassword(auth, data.email, data.password)
-      router.push('/')
+      router.push(redirect)
     } catch (error: any) {
       const msg = error.code === 'auth/invalid-credential'
         ? 'Invalid email or password'
