@@ -226,7 +226,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <Button className="w-full h-11" onClick={handleSubmit(onSubmit)} loading={loading}>
+            <Button className="w-full h-11" onClick={handleSubmit(onSubmit)} loading={loading} disabled={loading}>
               Place Order <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
 

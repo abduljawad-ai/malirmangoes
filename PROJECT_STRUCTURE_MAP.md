@@ -701,31 +701,42 @@ Pending → Confirmed → Packed → Shipped → Delivered (or Cancelled at any 
 - `useUsers` (from `@/hooks/useUsers`) — Fetches all users
 - `recharts` — BarChart, LineChart, PieChart, Tooltip, ResponsiveContainer, etc.
 
+### State:
+- `dateRange`: 'this-week' | 'this-month' | 'last-month' | 'all-time' (default: 'this-week')
+
+### Date Filtering:
+- `getDateRange(range)` — Returns `{ start, end }` Date objects for each range option
+- `filteredOrders` — All orders filtered to the selected date range using `order.createdAt`
+- Revenue, avg order value, status distribution, and daily charts all use `filteredOrders`
+- Products by category is **not** filtered (shows all products regardless of date)
+- Weekly chart adapts: shows day names (Sun-Sat) for ≤7 days, shows M/D labels for up to 31 days
+
 ### Data Computed:
-- `totalRevenue` = Sum of verified orders
-- `avgOrderValue` = Total revenue / number of verified orders
-- `statusData` = Count of orders per status (Pending, Confirmed, Packed, Shipped, Delivered, Cancelled)
-- `categoryData` = Count of products per category
-- `weeklyData` = Revenue and order count per day of current week (Sun-Sat)
+- `totalRevenue` = Sum of verified orders in date range
+- `avgOrderValue` = Total revenue / number of verified orders in date range
+- `statusData` = Count of orders per status in date range (Pending, Confirmed, Packed, Shipped, Delivered, Cancelled)
+- `categoryData` = Count of products per category (unfiltered)
+- `weeklyData` = Revenue and order count per day in date range
 
 ### Sections (top to bottom):
 
-#### 1. Header
-- Title: "Reports & Analytics"
-- Static display — no click handlers
+#### 1. Header + Date Range Selector
+- Title: "Reports & Analytics" with subtitle
+- Date range toggle buttons: This Week, This Month, Last Month, All Time
+- Active range highlighted in mango color
 
 #### 2. Stats Cards (4 cards)
-- Revenue, Avg Order, Products, Customers
+- Revenue, Avg Order (filtered), Products (unfiltered), Customers (unfiltered)
 - Static display — no click handlers
 
 #### 3. Charts (2x2 grid):
-- **Revenue Trend (Line Chart)** — Shows daily revenue this week
-- **Order Status Distribution (Pie Chart)** — Shows order count by status
-- **Orders Per Day (Bar Chart)** — Shows order count per day this week
-- **Products by Category (Pie Chart)** — Shows product count by category
+- **Revenue Trend (Line Chart)** — Shows daily revenue for selected range
+- **Order Status Distribution (Pie Chart)** — Shows order count by status in range
+- **Orders Per Day (Bar Chart)** — Shows order count per day in selected range
+- **Products by Category (Pie Chart)** — Shows product count by category (unfiltered)
 
 ### Click Behavior:
-- **NO click handlers on this page** — All charts and stats are display-only
+1. **Click: Date range button** → Sets `dateRange` state → Filters all order-based data
 - Charts have built-in tooltips from recharts (hover to see values)
 
 **Status:** ✅ Reviewed
