@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Send, ShoppingBag, ArrowLeft, MessageCircle, X, Loader2 } from 'lucide-react'
+import { Send, ShoppingBag, ArrowLeft, MessageCircle, X, Loader2, Phone, Mail, MessageSquare } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useChat } from '@/hooks/useChat'
 import { useAuth } from '@/hooks/useAuth'
+import { useSettings } from '@/hooks/useSettings'
 import { cn, formatPKR, getValidImageUrl } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -24,6 +25,7 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
   const { user, isAdmin } = useAuth()
+  const { settings } = useSettings()
   const router = useRouter()
   const [inputText, setInputText] = useState('')
   const [pendingImage, setPendingImage] = useState<{ file: File; preview: string } | null>(null)
@@ -170,14 +172,53 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
         <div className="w-20 h-20 bg-mango/10 rounded-full flex items-center justify-center mb-6">
           <MessageCircle className="w-10 h-10 text-mango" />
         </div>
-        <h2 className="text-2xl font-bold text-dark mb-2">Sign in to Chat</h2>
-        <p className="text-muted mb-6">Please sign in to start a conversation with our team</p>
+        <h2 className="text-2xl font-bold text-dark mb-2">Chat with Us</h2>
+        <p className="text-muted mb-8 max-w-sm">
+          Sign in to start a conversation with our team, or reach us directly below.
+        </p>
         <Link 
           href="/login?redirect=/chat"
-          className="px-8 py-3 bg-mango text-white font-semibold rounded-xl hover:bg-mango-dark transition-colors"
+          className="px-8 py-3 bg-mango text-white font-semibold rounded-xl hover:bg-mango-dark transition-colors mb-10"
         >
-          Sign In
+          Sign In to Chat
         </Link>
+
+        {(settings.phone || settings.whatsapp || settings.email) && (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted uppercase tracking-wider">Or contact us directly</p>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              {settings.whatsapp && (
+                <a
+                  href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-green-50 text-green-700 border border-green-200 rounded-xl text-sm font-medium hover:bg-green-100 transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  WhatsApp
+                </a>
+              )}
+              {settings.phone && (
+                <a
+                  href={`tel:${settings.phone}`}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-100 transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  {settings.phone}
+                </a>
+              )}
+              {settings.email && (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-100 transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  {settings.email}
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     )
   }
