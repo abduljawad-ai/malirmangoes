@@ -1248,9 +1248,9 @@ export default SignupPage() {
 
 ### Conditional Rendering:
 - Hidden if `!isVisible` (first 2 seconds)
-- Hidden if `!user` (not logged in)
 - Hidden if `isAdmin` (admin users don't need it)
 - Hidden if `pathname === '/checkout'` or `pathname === '/checkout/success'` (clean checkout)
+- Visible to all other users including guests (guests land on /chat which shows a Sign In prompt)
 
 **Status:** ✅ Reviewed
 
