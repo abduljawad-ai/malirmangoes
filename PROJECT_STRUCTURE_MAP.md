@@ -66,8 +66,11 @@ This file documents every single file in the project, what components it uses, w
 ### Sections (top to bottom):
 
 #### 1. Hero Carousel (responsive height: 70vh on mobile, 85vh on desktop)
-- 4 hardcoded slides with Cloudinary images
-- Auto-rotates every 4 seconds
+- Reads slides from `settings.carouselImages` (Firestore `settings/site` → `carouselImages` array)
+- Each slide: `{ src, name, tagline, color }` → mapped to `{ image, tagline, title, highlight, subtitle, cta }`
+- **Fallback:** 4 hardcoded Cloudinary slides shown while settings are loading or if RTDB has no carousel data
+- Auto-rotates every 4 seconds (pauses if only 1 slide)
+- Title uses `name` from settings; falls back to `tagline` for mango-colored highlight if `highlight` is empty
 - **Click: Slide indicators (dots)** → Jumps to that slide, resets timer
 - **Click: "Shop Now" / "Order Chaunsa" / "View Boxes" / "Shop Ratol" button** → Redirects to `/products`
 - **Click: "Contact Us" button** → Redirects to `/chat`
@@ -98,7 +101,8 @@ This file documents every single file in the project, what components it uses, w
 
 ### Data Flow:
 - `useProducts()` → Fetches from RTDB `/products` path
-- `useSettings()` → Fetches from RTDB `/settings` path
+- `useSettings()` → Fetches from Firestore `settings/site` document
+- `carouselSlides = settings.carouselImages` → mapped to slide format (fallback to hardcoded slides if not loaded)
 - `featured = products.filter(p => p.isFeatured).slice(0, 4)`
 - `allProducts = products.filter(p => p.isActive && !featured.find(f => f.id === p.id))` — excludes featured products to prevent duplicates
 
