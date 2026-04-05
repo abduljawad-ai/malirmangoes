@@ -8,22 +8,26 @@ const values = [
   {
     icon: Leaf,
     title: 'Farm Fresh',
-    desc: 'Hand-picked daily from our orchards in Multan, Pakistan\'s mango heartland. We source directly from farmers we trust.',
+    desc: 'We hand-pick every mango at the exact moment of peak ripeness. No early picking, no artificial ripening. What you receive is exactly what you\'d pick from the tree — fragrant, sweet, and full of flavour.',
+    story: 'Our farmers have spent decades learning to read a mango. They know by touch and color when a Chaunsa is ready to leave the branch. That instinct takes years to develop — and it\'s what makes all the difference.',
   },
   {
     icon: Truck,
     title: 'Fast Delivery',
-    desc: 'Your mangoes are packed and shipped within hours of harvest. We use temperature-controlled packaging to ensure they arrive perfectly ripe.',
+    desc: 'From tree to your doorstep in the shortest time possible. Your mangoes are packed within hours of harvest and shipped the same day.',
+    story: 'Most store-bought mangoes are picked green and ripened in cold storage during transit. Ours never touch a cold chain. That\'s why they taste the way mangoes should.',
   },
   {
     icon: Shield,
     title: 'Quality Guarantee',
-    desc: 'Every box is inspected before shipping. If you\'re not completely satisfied, we\'ll make it right — no questions asked.',
+    desc: 'Every single box is checked before it leaves our packing house. If anything isn\'t right, we make it right — no quibbling, no fine print.',
+    story: 'We\'ve been doing this long enough to know what can go wrong. That\'s why we inspect every order personally. If a mango arrives bruised or underripe, we replace it. Simple as that.',
   },
   {
     icon: Star,
-    title: 'Premium Selection',
-    desc: 'We work exclusively with growers who share our commitment to quality. Only the finest mangoes bear the Malir Mangoes name.',
+    title: 'Genuine Variety',
+    desc: 'We work only with verified growers and sell true-to-type Chaunsa, Sindhri, Dusehri, and Langra — not imitation varieties from other regions.',
+    story: 'Pakistan\'s mango reputation has suffered from counterfeit exports. When you order Malir Mangoes, you\'re getting the real thing — verified provenance from orchards we know by name.',
   },
 ]
 
@@ -97,23 +101,26 @@ export default function AboutPage() {
 
       {/* Values */}
       <section className="bg-slate-50 border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 py-16 sm:py-20">
+        <div className="max-w-4xl mx-auto px-4 py-16 sm:py-20">
           <div className="text-center mb-12">
             <span className="text-xs font-semibold text-mango uppercase tracking-wider">What We Stand For</span>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">Our Values</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-8">
             {values.map((value, i) => (
               <div
                 key={value.title}
-                className="bg-white rounded-xl p-6 border border-slate-200 text-center"
+                className="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 flex gap-5 items-start"
               >
-                <div className="w-12 h-12 bg-mango-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-mango-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <value.icon className="w-6 h-6 text-mango" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">{value.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{value.desc}</p>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{value.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mb-3">{value.desc}</p>
+                  <p className="text-xs text-slate-400 leading-relaxed italic border-l-2 border-mango/20 pl-3">{value.story}</p>
+                </div>
               </div>
             ))}
           </div>

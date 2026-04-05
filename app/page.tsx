@@ -270,25 +270,25 @@ export default function HomePage() {
             className="text-center mb-10"
           >
             <span className="text-xs font-semibold text-mango uppercase tracking-wider">Why Us</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Why Choose Malir Mangoes?</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Why Order From Us?</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/farm_harvest.jpg',
-                title: 'Direct from Farm',
-                desc: 'We source directly from our own orchards in Multan, ensuring the freshest mangoes reach your doorstep within hours of harvest.',
+                title: 'Tree to Table Freshness',
+                desc: 'Hand-picked at peak ripeness, packed same day. You\'ll taste the difference from the first bite.',
               },
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/honey-mango.jpg',
-                title: 'Hand-Selected Quality',
-                desc: 'Every mango is carefully hand-picked at peak ripeness by our experienced farmers. Only the best make it to your box.',
+                title: 'Authentic Pakistani Varieties',
+                desc: 'True Chaunsa, Sindhri, Dusehri and Langra — the real deal, not imitation varieties.',
               },
               {
                 image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/mango-box.jpg',
-                title: 'Safe Delivery',
-                desc: 'Our premium packaging ensures your mangoes arrive in perfect condition. Temperature-controlled shipping keeps them fresh.',
+                title: 'Hassle-Free Guarantee',
+                desc: 'Not happy with your order? We\'ll replace it or refund you, no questions asked.',
               },
             ].map((item, i) => (
               <motion.div
