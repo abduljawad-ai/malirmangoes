@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { ShoppingCart, Menu, Home, Package, MessageCircle } from 'lucide-react'
+import { ShoppingCart, Menu, Home, Package, MessageCircle, Search } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useChatUnreadCount } from '@/hooks/useChatUnreadCount'
@@ -78,6 +78,13 @@ export default function Navbar() {
                   </Link>
                 )
               ))}
+              <Link
+                href="/products"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
+              >
+                <Search className="w-4 h-4" />
+                <span>Search</span>
+              </Link>
             </nav>
 
             {/* Right Side */}

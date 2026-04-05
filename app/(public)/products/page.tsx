@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, Suspense, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Filter } from 'lucide-react'
 import ProductCard from '@/components/products/ProductCard'
@@ -17,10 +17,17 @@ function ProductsContent() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [sortBy, setSortBy] = useState('newest')
   const [search, setSearch] = useState('')
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const cat = searchParams.get('category') || ''
     setSelectedCategory(cat)
+  }, [searchParams])
+
+  useEffect(() => {
+    if (searchParams.get('focus') === 'search') {
+      searchInputRef.current?.focus()
+    }
   }, [searchParams])
 
   const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)))
@@ -48,7 +55,8 @@ function ProductsContent() {
 
       {/* Search + Filter Bar */}
       <div className="flex items-center gap-3 mb-6">
-        <input
+          <input
+          ref={searchInputRef}
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
