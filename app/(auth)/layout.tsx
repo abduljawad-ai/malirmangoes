@@ -37,11 +37,13 @@ export default function AuthLayout({
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-12 text-center">
           <FloatingElement amplitude={20} duration={5}>
-            <img 
-              src="/logo.png" 
-              alt="MangoStore Logo"
-              className="w-32 h-32 object-contain mb-8 drop-shadow-2xl"
-            />
+            <Link href="/">
+              <img 
+                src="/logo.png" 
+                alt="MangoStore Logo"
+                className="w-32 h-32 object-contain mb-8 drop-shadow-2xl"
+              />
+            </Link>
           </FloatingElement>
           
           <motion.h1 

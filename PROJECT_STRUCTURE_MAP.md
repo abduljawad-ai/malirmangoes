@@ -834,7 +834,7 @@ Each field has an input + Save button:
 ```
 
 ### Click Behavior:
-1. **Click: Logo (desktop, left side)** → No click handler (just an `<img>`, not a link)
+1. **Click: Logo (desktop, left side)** → Redirects to `/` (home page)
 2. **Click: Logo (mobile, right side)** → Redirects to `/` (home page)
 
 ### Conditional Rendering:
