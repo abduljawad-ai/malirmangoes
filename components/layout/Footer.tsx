@@ -126,7 +126,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-slate-800 pt-6">
           <p className="text-xs text-slate-500 flex items-center justify-center gap-1">
-            © {new Date().getFullYear()} MangoStore. Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> in Pakistan
+            © {new Date().getFullYear()} Malir Mangoes. All rights reserved.
           </p>
         </div>
       </div>
