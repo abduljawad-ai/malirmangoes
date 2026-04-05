@@ -16,6 +16,11 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   if (!open) return null
 
+  const mainLinks = [
+    { icon: Home, label: 'Home', href: '/' },
+    { icon: Package, label: 'Products', href: '/products' },
+  ]
+
   const adminLinks = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
     { icon: Package, label: 'Products', href: '/admin/products' },
@@ -67,7 +72,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         </div>
 
         <nav className="p-4 space-y-1">
-          {(isAdmin ? adminLinks : customerLinks).map(link => (
+          {mainLinks.map(link => (
             <Link
               key={link.label}
               href={link.href}
@@ -79,6 +84,22 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             </Link>
           ))}
         </nav>
+
+        {user && (
+          <nav className="p-4 space-y-1 border-t border-slate-100">
+            {(isAdmin ? adminLinks : customerLinks).map(link => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={onClose}
+                className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
+              >
+                <link.icon className="w-4 h-4" />
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         {user && (
           <div className="p-4 border-t border-slate-100">
