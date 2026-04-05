@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       total: calculatedTotal,
       status: 'pending',
       orderStatus: 'Pending',
-      paymentStatus: 'Verified',
+      paymentStatus: 'Pending',
       paymentMethod: 'COD',
       createdAt: now,
       updatedAt: now,

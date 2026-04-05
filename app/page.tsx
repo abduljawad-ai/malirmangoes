@@ -8,12 +8,13 @@ import { ArrowRight, Truck, Shield, Leaf, Star, Play } from 'lucide-react'
 import ProductCard from '@/components/products/ProductCard'
 import { useProducts } from '@/hooks/useProducts'
 import { useSettings } from '@/hooks/useSettings'
+import { getCloudinaryUrl } from '@/lib/cloudinary-url'
 import Button from '@/components/ui/Button'
 import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
 const defaultSlides = [
   {
-    image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/hero.jpg',
+    image: getCloudinaryUrl('mangostore/mangostore/hero.jpg', { width: 1920, format: 'auto', quality: 'auto' }),
     tagline: 'Fresh Harvest 2026',
     title: 'Premium Pakistani',
     highlight: 'Mangoes',
@@ -21,7 +22,7 @@ const defaultSlides = [
     cta: 'Shop Now',
   },
   {
-    image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/honey-mango.jpg',
+    image: getCloudinaryUrl('mangostore/mangostore/honey-mango.jpg', { width: 1920, format: 'auto', quality: 'auto' }),
     tagline: 'King of Mangoes',
     title: 'Authentic',
     highlight: 'Chaunsa',
@@ -29,7 +30,7 @@ const defaultSlides = [
     cta: 'Order Chaunsa',
   },
   {
-    image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/mango-box.jpg',
+    image: getCloudinaryUrl('mangostore/mangostore/mango-box.jpg', { width: 1920, format: 'auto', quality: 'auto' }),
     tagline: 'Gift Ready',
     title: 'Premium',
     highlight: 'Gift Boxes',
@@ -37,7 +38,7 @@ const defaultSlides = [
     cta: 'View Boxes',
   },
   {
-    image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/premium_mango_box.jpg',
+    image: getCloudinaryUrl('mangostore/mangostore/premium_mango_box.jpg', { width: 1920, format: 'auto', quality: 'auto' }),
     tagline: 'Extra Sweet',
     title: 'Anwar',
     highlight: 'Ratol',
@@ -296,17 +297,17 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_400/mangostore/mangostore/farm_harvest.jpg',
+                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/farm_harvest.jpg',
                 title: settings.whyUs1Title || 'Tree to Table Freshness',
                 desc: settings.whyUs1Desc || "Hand-picked at peak ripeness, packed same day. You'll taste the difference from the first bite.",
               },
               {
-                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/honey-mango.jpg',
+                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg',
                 title: settings.whyUs2Title || 'Authentic Pakistani Varieties',
                 desc: settings.whyUs2Desc || "True Chaunsa, Sindhri, Dusehri and Langra — the real deal, not imitation varieties.",
               },
               {
-                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_600/mangostore/mangostore/mango-box.jpg',
+                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/mango-box.jpg',
                 title: settings.whyUs3Title || 'Hassle-Free Guarantee',
                 desc: settings.whyUs3Desc || "Not happy with your order? We'll replace it or refund you, no questions asked.",
               },
@@ -326,6 +327,7 @@ export default function HomePage() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    unoptimized
                   />
                 </div>
                 <div className="p-5">
@@ -344,11 +346,12 @@ export default function HomePage() {
       <section className="relative bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/hero.jpg"
+            src="https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/hero.jpg"
             alt=""
             fill
             sizes="100vw"
             className="object-cover"
+            unoptimized
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 py-16 sm:py-20 text-center">

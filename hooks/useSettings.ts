@@ -67,10 +67,10 @@ const defaultSettings: SiteSettings = {
   heroSubtitle: 'Premium Organic Harvest 2026',
   heroDescription: 'Experience the legendary sweetness of authentic Pakistani mangoes. Hand-selected from Multan\'s finest orchards, naturally ripened, and delivered fresh to your table.',
   heroImages: [
-    'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/hero.jpg',
-    'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/honey-mango.jpg',
-    'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/mango-box.jpg',
-    'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/premium_mango_box.jpg',
+    'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/hero.jpg',
+    'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg',
+    'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/mango-box.jpg',
+    'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/premium_mango_box.jpg',
   ],
   logoUrl: '/logo.png',
   faviconUrl: '/favicon.ico',
@@ -103,7 +103,7 @@ const defaultSettings: SiteSettings = {
   whyUs3Desc: "Not happy with your order? We'll replace it or refund you, no questions asked.",
   carouselImages: [
     { src: '/images/hero.png', name: 'Premium Selection', tagline: 'Finest Quality', color: 'from-orange-500 to-amber-500' },
-    { src: 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_800/mangostore/mangostore/honey-mango.jpg', name: 'Chaunsa', tagline: 'King of Mangoes', color: 'from-amber-400 to-orange-500' },
+    { src: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg', name: 'Chaunsa', tagline: 'King of Mangoes', color: 'from-amber-400 to-orange-500' },
     { src: '/images/mango-box.png', name: 'Sindhri', tagline: 'Honey Sweet', color: 'from-yellow-400 to-amber-500' },
     { src: '/images/premium_mango_box.png', name: 'Anwar Ratol', tagline: 'Extra Sweet', color: 'from-orange-400 to-red-400' },
   ],

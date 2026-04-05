@@ -31,7 +31,7 @@ export default function ProductCard({ product, showFeatured = false }: ProductCa
         slug: product.slug,
         price: product.price,
         salePrice: product.salePrice,
-        image: getValidImageUrl(product.images[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_800/mangostore/mangostore/honey-mango.jpg'),
+        image: getValidImageUrl(product.images[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg'),
         qty: 1,
         stock: product.stock
       })
@@ -63,7 +63,7 @@ export default function ProductCard({ product, showFeatured = false }: ProductCa
         <div className="relative aspect-square bg-slate-100 overflow-hidden">
           {!imgLoaded && <div className="absolute inset-0 bg-slate-200 animate-pulse" />}
           <Image
-            src={getValidImageUrl(product.images[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_800/mangostore/mangostore/honey-mango.jpg')}
+            src={getValidImageUrl(product.images[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg')}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

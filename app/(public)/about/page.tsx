@@ -46,11 +46,12 @@ export default function AboutPage() {
       <section className="relative bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <Image
-            src="https://res.cloudinary.com/dzimmsjyx/image/upload/f_auto,q_auto,w_1920/mangostore/mangostore/hero.jpg"
+            src="https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/hero.jpg"
             alt="Mango orchard"
             fill
             sizes="100vw"
             className="object-cover"
+            unoptimized
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 py-20 sm:py-28 text-center">
