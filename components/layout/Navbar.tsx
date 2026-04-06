@@ -73,13 +73,6 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors"
-              >
-                <Search className="w-4 h-4" />
-                <span>Search</span>
-              </button>
             </nav>
 
             {/* Right Side */}

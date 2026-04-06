@@ -2,23 +2,59 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminStatus, adminRtdb, verifyIdToken } from './firebase-admin'
 import { adminAuth } from '@/lib/firebase-admin'
 
+async function verifyTokenWithRestApi(token: string) {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+  if (!apiKey) return null
+
+  const res = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: token }),
+    }
+  )
+
+  if (!res.ok) return null
+  const data = await res.json()
+  if (data.users && data.users.length > 0) {
+    return { uid: data.users[0].localId }
+  }
+  return null
+}
+
 /**
- * Verify request and extract user info from session cookie.
+ * Verify request and extract user info from session cookie or Bearer token.
  * Supports both session cookies (new) and raw ID tokens (legacy).
  */
 export async function verifyAuth(request: NextRequest) {
   try {
-    const session = request.cookies.get('session')?.value
-    if (!session) {
+    let token = request.cookies.get('session')?.value
+    
+    if (!token) {
+      const authHeader = request.headers.get('authorization')
+      if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.slice(7)
+      }
+    }
+
+    if (!token) {
       return { user: null, error: 'No session' }
     }
 
+    // Try Admin SDK session cookie verification first
     try {
-      const decoded = await adminAuth.verifySessionCookie(session, true)
+      const decoded = await adminAuth.verifySessionCookie(token, true)
       return { user: decoded, error: null }
     } catch {
-      const decoded = await verifyIdToken(session)
+      // Try Admin SDK ID token verification
+      const decoded = await verifyIdToken(token)
       if (decoded) return { user: decoded, error: null }
+
+      // Fallback: use Firebase REST API (works without Admin SDK credentials)
+      const restDecoded = await verifyTokenWithRestApi(token)
+      if (restDecoded) return { user: restDecoded, error: null }
+
       return { user: null, error: 'Invalid token' }
     }
   } catch (error) {

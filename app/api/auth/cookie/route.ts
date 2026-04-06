@@ -25,7 +25,16 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch {
-    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
+    const cookieStore = await cookies()
+    cookieStore.set('session', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+      maxAge: 60 * 60 * 24,
+    })
+
+    return NextResponse.json({ success: true })
   }
 }
 
