@@ -63,6 +63,7 @@ export function useProducts(options: UseProductsOptions = {}) {
       }
       setError(null)
     } catch (err: unknown) {
+      console.error('[useProducts] Failed to fetch products:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch products')
     } finally {
       setLoading(false)
@@ -108,6 +109,7 @@ export function useProduct(slug: string) {
           setProduct(null)
         }
       } catch (err: unknown) {
+        console.error('[useProduct] Failed to fetch product:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch product')
       } finally {
         setLoading(false)
