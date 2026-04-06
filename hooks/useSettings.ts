@@ -134,7 +134,6 @@ export function useSettings() {
         }
       }
     } catch (error: any) {
-      // Try to load from localStorage cache when offline
       const cached = localStorage.getItem('siteSettings')
       if (cached) {
         try {
@@ -142,10 +141,6 @@ export function useSettings() {
         } catch {
           setSettings(defaultSettings)
         }
-      }
-      // Only show toast for non-offline errors
-      if (!error?.message?.includes('offline') && !error?.code?.includes('unavailable')) {
-        toast.error('Failed to load settings')
       }
     } finally {
       setLoading(false)
