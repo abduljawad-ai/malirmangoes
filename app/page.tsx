@@ -128,6 +128,7 @@ export default function HomePage() {
               className="object-cover"
               priority
               loading="eager"
+              unoptimized
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
