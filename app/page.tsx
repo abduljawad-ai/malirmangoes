@@ -126,8 +126,7 @@ export default function HomePage() {
               fill
               sizes="100vw"
               className="object-cover"
-              priority
-              loading="eager"
+              priority={currentSlide === 0}
               unoptimized
             />
             {/* Gradient overlay */}

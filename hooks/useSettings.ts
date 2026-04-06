@@ -102,7 +102,7 @@ const defaultSettings: SiteSettings = {
   whyUs3Title: 'Hassle-Free Guarantee',
   whyUs3Desc: "Not happy with your order? We'll replace it or refund you, no questions asked.",
   carouselImages: [
-    { src: '/images/hero.png', name: 'Premium Selection', tagline: 'Finest Quality', color: 'from-orange-500 to-amber-500' },
+    { src: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/hero.jpg', name: 'Premium Selection', tagline: 'Finest Quality', color: 'from-orange-500 to-amber-500' },
     { src: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg', name: 'Chaunsa', tagline: 'King of Mangoes', color: 'from-amber-400 to-orange-500' },
     { src: '/images/mango-box.png', name: 'Sindhri', tagline: 'Honey Sweet', color: 'from-yellow-400 to-amber-500' },
     { src: '/images/premium_mango_box.png', name: 'Anwar Ratol', tagline: 'Extra Sweet', color: 'from-orange-400 to-red-400' },
