@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/hooks/useAuth'
-import { auth } from '@/lib/firebase'
 import { checkoutSchema } from '@/lib/validations'
 import { z } from 'zod'
 import { formatPKR } from '@/lib/utils'
@@ -69,18 +68,9 @@ export default function CheckoutPage() {
 
     setLoading(true)
     try {
-      const token = await auth.currentUser?.getIdToken()
-      if (!token) {
-        toast.error('Session expired, please sign in again')
-        setLoading(false)
-        return
-      }
       const response = await fetch('/api/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
           items,

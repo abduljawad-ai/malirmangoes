@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAdminStatus, verifyIdToken, adminRtdb } from './firebase-admin'
+import { verifyAdminStatus, adminRtdb, verifyIdToken } from './firebase-admin'
+import { adminAuth } from '@/lib/firebase-admin'
 
 /**
- * Verify request and extract user info from session cookie
+ * Verify request and extract user info from session cookie.
+ * Supports both session cookies (new) and raw ID tokens (legacy).
  */
 export async function verifyAuth(request: NextRequest) {
   try {
@@ -11,12 +13,14 @@ export async function verifyAuth(request: NextRequest) {
       return { user: null, error: 'No session' }
     }
 
-    const decoded = await verifyIdToken(session)
-    if (!decoded) {
+    try {
+      const decoded = await adminAuth.verifySessionCookie(session, true)
+      return { user: decoded, error: null }
+    } catch {
+      const decoded = await verifyIdToken(session)
+      if (decoded) return { user: decoded, error: null }
       return { user: null, error: 'Invalid token' }
     }
-
-    return { user: decoded, error: null }
   } catch (error) {
     return { user: null, error: 'Auth failed' }
   }

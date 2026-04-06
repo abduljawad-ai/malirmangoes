@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { adminAuth } from '@/lib/firebase-admin'
 
 export async function POST(request: Request) {
   const { token } = await request.json()
@@ -8,17 +9,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing token' }, { status: 400 })
   }
 
-  // Set the cookie with strict security settings
-  const cookieStore = await cookies()
-  cookieStore.set('session', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
-    path: '/',
-    maxAge: 60 * 60 * 24,
-  })
+  try {
+    const sessionCookie = await adminAuth.createSessionCookie(token, {
+      expiresIn: 14 * 24 * 60 * 60 * 1000,
+    })
 
-  return NextResponse.json({ success: true })
+    const cookieStore = await cookies()
+    cookieStore.set('session', sessionCookie, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+      maxAge: 14 * 24 * 60 * 60,
+    })
+
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
+  }
 }
 
 export async function DELETE() {
