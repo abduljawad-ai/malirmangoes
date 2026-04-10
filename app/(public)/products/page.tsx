@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, Suspense, useRef } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Filter } from 'lucide-react'
 import ProductCard from '@/components/products/ProductCard'
 import FilterSidebar from '@/components/products/FilterSidebar'

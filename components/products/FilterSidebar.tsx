@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Filter, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface FilterSidebarProps {

@@ -1,10 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, MessageSquare, Clock, CheckCircle, XCircle } from 'lucide-react'
+import { Search, MessageSquare, Clock, XCircle } from 'lucide-react'
 import { ChatConversation } from '@/types/chat'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 
 interface ChatListProps {
   conversations: ChatConversation[]

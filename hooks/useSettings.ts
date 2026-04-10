@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '@/lib/firebase'
@@ -130,7 +130,7 @@ export function useSettings() {
         // Initialize with default settings
         try {
           await setDoc(docRef, defaultSettings)
-        } catch (initError) {
+        } catch {
         }
       }
     } catch {
@@ -155,7 +155,7 @@ export function useSettings() {
       await updateDoc(docRef, { [key]: value })
       setSettings(prev => ({ ...prev, [key]: value }))
       toast.success('Setting updated successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to update setting')
     } finally {
       setSaving(false)
@@ -170,7 +170,7 @@ export function useSettings() {
       await updateDoc(docRef, newSettings)
       setSettings(prev => ({ ...prev, ...newSettings }))
       toast.success('Settings updated successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to update settings')
     } finally {
       setSaving(false)

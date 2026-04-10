@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 export function useReviews(productId: string) {
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [averageRating, setAverageRating] = useState(0)
   const { user } = useAuth()
 
@@ -51,6 +52,8 @@ export function useReviews(productId: string) {
       return false
     }
 
+    if (isSubmitting) return false
+
     if (rating < 1 || rating > 5) {
       toast.error('Please select a rating')
       return false
@@ -61,13 +64,15 @@ export function useReviews(productId: string) {
       return false
     }
 
-    // Check if user already reviewed
-    const existingReview = reviews.find(r => r.userId === user.uid)
+    // Check if user already reviewed using current state
+    const currentReviews = useReviews.getState?.()?.reviews || reviews
+    const existingReview = currentReviews.find(r => r.userId === user.uid)
     if (existingReview) {
       toast.error('You have already reviewed this product')
       return false
     }
 
+    setIsSubmitting(true)
     try {
       const reviewsRef = ref(rtdb, `reviews/${productId}`)
       const newReviewRef = push(reviewsRef)
@@ -86,11 +91,13 @@ export function useReviews(productId: string) {
       await set(newReviewRef, newReview)
       toast.success('Thank you for your feedback!')
       return true
-    } catch (error) {
+    } catch {
       toast.error('Failed to submit review')
       return false
+    } finally {
+      setIsSubmitting(false)
     }
-  }, [productId, user, reviews])
+  }, [productId, user, reviews, isSubmitting])
 
-  return { reviews, loading, averageRating, submitReview }
+  return { reviews, loading, averageRating, submitReview, isSubmitting }
 }

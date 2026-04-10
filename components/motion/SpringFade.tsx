@@ -25,7 +25,6 @@ export function SpringFade({
   delay = 0, 
   direction = 'up',
   className,
-  duration = 0.6,
   once = true
 }: SpringFadeProps) {
   const [reducedMotion, setReducedMotion] = useState(false)

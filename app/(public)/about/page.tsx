@@ -108,7 +108,7 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-8">
-            {values.map((value, i) => (
+            {values.map((value) => (
               <div
                 key={value.title}
                 className="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 flex gap-5 items-start"

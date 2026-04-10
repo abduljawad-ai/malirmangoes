@@ -274,8 +274,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, orderId })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Internal Server Error'
-
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
     }

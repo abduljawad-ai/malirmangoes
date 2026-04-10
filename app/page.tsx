@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Truck, Shield, Leaf, Star, Play } from 'lucide-react'
+import { ArrowRight, Truck, Shield, Leaf, Star } from 'lucide-react'
 import ProductCard from '@/components/products/ProductCard'
 import { useProducts } from '@/hooks/useProducts'
 import { useSettings } from '@/hooks/useSettings'
@@ -67,7 +67,7 @@ export default function HomePage() {
   const carouselSlides = !loading && settings.carouselImages && settings.carouselImages.length > 0
     ? settings.carouselImages
         .filter(img => img.src && img.src.trim() !== '')
-        .map((img, i) => ({
+        .map((img) => ({
           image: img.src,
           tagline: img.tagline,
           title: img.name,

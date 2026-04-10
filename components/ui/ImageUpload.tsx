@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
-import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react'
+import { X, Loader2, Image as ImageIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
 

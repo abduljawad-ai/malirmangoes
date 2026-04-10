@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { CartItem } from '@/types'
 import { useAuth } from './useAuth'
 import { ref, get, set } from 'firebase/database'
 import { rtdb } from '@/lib/firebase'
-import toast from 'react-hot-toast'
 
 interface CartState {
   items: CartItem[]
@@ -81,7 +80,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const cloudItems = (cartSnap.val().items || []) as CartItem[]
           
           // If local is empty but cloud has items, pull cloud
-          if (cloudItems.length > 0 && store.items.length === 0) {
+          // Use get() to avoid stale closure
+          const currentItems = useCartStore.getState().items
+          if (cloudItems.length > 0 && currentItems.length === 0) {
             store.setItems(cloudItems)
           } 
           // If local has items, the second useEffect will handle pushing them to cloud
@@ -95,6 +96,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     syncWithRTDB()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uid]) // Only run when user changes
 
   // 2. Push local changes to RTDB (Debounced)
@@ -115,6 +117,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }, 2000)
 
     return () => clearTimeout(timeoutId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.items, user?.uid, isSyncing])
 
   return <>{children}</>

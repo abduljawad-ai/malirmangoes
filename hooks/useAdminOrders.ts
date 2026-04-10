@@ -12,7 +12,7 @@ export function useAdminOrders() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true)
-  const [lastKey, setLastKey] = useState<string | null>(null)
+  const [, setLastKey] = useState<string | null>(null)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Use ref to prevent race conditions

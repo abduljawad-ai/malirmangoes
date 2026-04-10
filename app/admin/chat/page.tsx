@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MessageSquare } from 'lucide-react'
 import { useAdminChats } from '@/hooks/useAdminChats'
 import { useAuth } from '@/hooks/useAuth'
@@ -30,24 +30,25 @@ export default function AdminChatPage() {
 
   // Reset showUserInfo when user changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowUserInfo(false)
   }, [adminChats.selectedUserId])
 
   useEffect(() => {
-    if (!adminChats.selectedUserId) return
+    const userId = adminChats.selectedUserId
+    if (!userId) return
 
     const unsubscribe = adminChats.getTypingStatus(
-      adminChats.selectedUserId,
+      userId,
       (isTyping) => {
         setIsUserTyping(prev => ({
           ...prev,
-          [adminChats.selectedUserId!]: isTyping
+          [userId]: isTyping
         }))
       }
     )
 
     return () => unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminChats.selectedUserId, adminChats.getTypingStatus])
 
   if (!isAdmin) {

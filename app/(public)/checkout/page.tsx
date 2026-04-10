@@ -57,7 +57,7 @@ export default function CheckoutPage() {
         paymentMethod: 'COD'
       })
     }
-  }, [reset])
+  }, [reset, user])
 
   // Free shipping logic
   const FREE_SHIPPING_THRESHOLD = 5000

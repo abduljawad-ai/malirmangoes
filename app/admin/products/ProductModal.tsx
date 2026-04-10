@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Save, Package } from 'lucide-react'
+import { X, Package } from 'lucide-react'
 import { Product } from '@/types'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'

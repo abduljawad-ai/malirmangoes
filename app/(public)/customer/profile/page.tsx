@@ -6,7 +6,6 @@ import { MapPin, Plus, Trash2, User } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { Address } from '@/types'
-import { getValidImageUrl } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 function ProfileContent() {

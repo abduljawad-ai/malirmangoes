@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useMemo } from 'react'
-import { DollarSign, ShoppingBag, Package, Users, Clock, CheckCircle2, Truck, ArrowUpRight, TrendingUp, TrendingDown, ChevronRight } from 'lucide-react'
+import React from 'react'
+import { DollarSign, ShoppingBag, Package, Users, Clock, CheckCircle2, Truck, ArrowUpRight, ChevronRight } from 'lucide-react'
 import { formatPKR, cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ import { useProducts } from '@/hooks/useProducts'
 import { useUsers } from '@/hooks/useUsers'
 import { useAdminOrders } from '@/hooks/useAdminOrders'
 import Badge, { OrderStatusBadge } from '@/components/ui/Badge'
-import { StatCardSkeleton, ProductGridSkeleton } from '@/components/ui/Skeleton'
+import { StatCardSkeleton } from '@/components/ui/Skeleton'
 
 const orderStatusIcons: Record<string, React.ElementType> = {
   Pending: Clock,

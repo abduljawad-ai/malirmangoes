@@ -4,7 +4,6 @@ import React from 'react'
 import Link from 'next/link'
 import { X, Home, Package, MessageCircle, User, LogOut, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-import { cn } from '@/lib/utils'
 
 interface MobileMenuProps {
   open: boolean

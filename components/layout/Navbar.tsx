@@ -19,7 +19,7 @@ const navItems = [
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const { user, isAdmin, loading } = useAuth()
+  const { user, isAdmin } = useAuth()
   const { totalItems, toggleCart } = useCart()
   const chatUnreadCount = useChatUnreadCount(user?.uid || '')
   const { hideNavbar } = useLayout()

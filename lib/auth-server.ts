@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAdminStatus, adminRtdb, verifyIdToken } from './firebase-admin'
-import { adminAuth } from '@/lib/firebase-admin'
+import { verifyAdminStatus, adminRtdb, verifyIdToken, getAdminAuth } from './firebase-admin'
 
 /**
  * Verify request and extract user info from session cookie or Bearer token.
@@ -24,21 +23,17 @@ export async function verifyAuth(request: NextRequest) {
       return { user: null, error: 'No session' }
     }
 
-    // Try Admin SDK session cookie verification first (preferred method)
     try {
-      const decoded = await adminAuth.verifySessionCookie(token, true)
+      const auth = getAdminAuth()
+      const decoded = await auth.verifySessionCookie(token, true)
       return { user: decoded, error: null }
-    } catch (sessionError) {
-      // Session cookie verification failed, try ID token as fallback
-      // This handles cases where client still has an ID token from before session cookie migration
+    } catch {
       const decoded = await verifyIdToken(token)
       if (decoded) {
-        // Log this for monitoring - in production, you might want to track these occurrences
         console.warn('[Auth] Falling back to ID token verification for user:', decoded.uid)
         return { user: decoded, error: null }
       }
       
-      // Both verification methods failed
       return { user: null, error: 'Invalid or expired token' }
     }
   } catch (error) {
@@ -97,7 +92,7 @@ export async function checkOrderAccess(orderId: string, userId: string) {
     }
 
     return { hasAccess: true, order }
-  } catch (error) {
+  } catch {
     return { hasAccess: false, reason: 'Error checking access' }
   }
 }

@@ -1,13 +1,12 @@
 'use client'
 
 import React, { Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Check, Package } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
 
 function SuccessContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const orderId = searchParams.get('id')
 

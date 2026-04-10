@@ -38,7 +38,7 @@ export default function AdminProductsPage() {
       toast.success('Product deleted')
       setConfirmDeleteId(null)
       refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete product')
     }
   }

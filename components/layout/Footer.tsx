@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { MapPin, Phone, Mail, Leaf, Heart, Info } from 'lucide-react'
+import { MapPin, Phone, Mail, Leaf, Info } from 'lucide-react'
 import { useLayout } from './LayoutContext'
 import { useSettings } from '@/hooks/useSettings'
 

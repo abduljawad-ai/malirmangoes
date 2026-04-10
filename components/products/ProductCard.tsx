@@ -78,7 +78,7 @@ export default function ProductCard({ product, showFeatured = false }: ProductCa
         <div className="relative aspect-square bg-slate-100 overflow-hidden">
           {!imgLoaded && <div className="absolute inset-0 bg-slate-200 animate-pulse" />}
           <Image
-            src={getValidImageUrl(product.images?.[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/honey-mango.jpg')}
+            src={getValidImageUrl(product.images?.[0]?.webp, 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/honey-mango.jpg')}
             alt={`${product.name} product image`}
             priority={showFeatured}
             fill

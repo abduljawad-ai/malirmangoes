@@ -51,7 +51,7 @@ export default function AdminCustomersPage() {
       await update(ref(rtdb, `users/${userId}`), { isBanned: !isBanned })
       toast.success(isBanned ? 'User unbanned' : 'User banned')
       refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to update user')
     }
   }
@@ -88,8 +88,6 @@ export default function AdminCustomersPage() {
       ) : (
         <div className="space-y-3">
           {filteredUsers.map((user) => {
-            const userOrders = getUserOrders(user.uid)
-            const userSpent = getUserSpent(user.uid)
             const isSelected = selectedUser === user.uid
 
             return (

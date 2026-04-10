@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { Send, MoreVertical, ArrowLeft, ZoomIn, Loader2 } from 'lucide-react'
+import { Send, MoreVertical, ArrowLeft, ZoomIn } from 'lucide-react'
 import { ChatMessage, ChatMetadata } from '@/types/chat'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'

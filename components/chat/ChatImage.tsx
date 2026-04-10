@@ -8,11 +8,10 @@ import { cn } from '@/lib/utils'
 interface ChatImageProps {
   src: string
   alt?: string
-  onClick?: () => void
   className?: string
 }
 
-export default function ChatImage({ src, alt = 'Attached image', onClick, className }: ChatImageProps) {
+export default function ChatImage({ src, alt = 'Attached image', className }: ChatImageProps) {
   const [loaded, setLoaded] = useState(false)
 
   return (

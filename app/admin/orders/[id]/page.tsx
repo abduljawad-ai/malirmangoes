@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useAdminOrders } from '@/hooks/useAdminOrders'
 import { formatPKR } from '@/lib/utils'
-import { ArrowLeft, Clock, CheckCircle2, Truck, Package, XCircle, MapPin, Phone, Mail, User } from 'lucide-react'
+import { ArrowLeft, Clock, CheckCircle2, Truck, Package, XCircle, MapPin, Phone, User } from 'lucide-react'
 import { ref, update } from 'firebase/database'
 import { rtdb } from '@/lib/firebase'
 import { OrderStatus } from '@/types'

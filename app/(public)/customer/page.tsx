@@ -8,7 +8,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getValidImageUrl } from '@/lib/utils'
 import Badge, { OrderStatusBadge, PaymentStatusBadge } from '@/components/ui/Badge'
-import { ProductGridSkeleton } from '@/components/ui/Skeleton'
 
 const statusIcons: Record<string, React.ElementType> = {
   Pending: Clock,

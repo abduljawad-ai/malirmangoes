@@ -1,9 +1,7 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
-import Image from 'next/image'
-import { Paperclip, X, Loader2, Image as ImageIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import React, { useRef } from 'react'
+import { Paperclip } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ImageAttachmentProps {

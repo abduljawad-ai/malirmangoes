@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useChat } from '@/hooks/useChat'
 import { useAuth } from '@/hooks/useAuth'
 import { useSettings } from '@/hooks/useSettings'
-import { cn, formatPKR, getValidImageUrl } from '@/lib/utils'
+import { cn, formatPKR } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import ImageAttachment from './ImageAttachment'
@@ -183,6 +183,7 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
       groups[date].push(message)
       return groups
     }, {} as Record<string, typeof chat.messages>)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat.messages])
 
   if (!user) {

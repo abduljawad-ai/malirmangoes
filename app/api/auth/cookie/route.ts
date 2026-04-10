@@ -12,8 +12,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Create a secure session cookie from the ID token
-    const sessionCookie = await adminAuth.createSessionCookie(token, {
+    const auth = adminAuth
+    if (!auth) {
+      console.error('[Auth Cookie] Firebase Admin not initialized')
+      return NextResponse.json({ 
+        error: 'Server configuration error. Please contact support.' 
+      }, { status: 500 })
+    }
+
+    const sessionCookie = await auth.createSessionCookie(token, {
       expiresIn: SESSION_COOKIE_EXPIRY,
     })
 
@@ -21,15 +28,13 @@ export async function POST(request: Request) {
     cookieStore.set('session', sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const, // 'lax' for e-commerce (allows checkout redirects), 'strict' would block payment provider callbacks
+      sameSite: 'lax' as const,
       path: '/',
-      maxAge: SESSION_COOKIE_EXPIRY / 1000, // Convert to seconds
+      maxAge: SESSION_COOKIE_EXPIRY / 1000,
     })
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    // SECURITY FIX: Do NOT fall back to storing raw ID token
-    // Log the error for debugging but return an error to the client
     console.error('[Auth Cookie] Failed to create session cookie:', error)
     
     return NextResponse.json({ 

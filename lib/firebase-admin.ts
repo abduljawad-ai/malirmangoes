@@ -2,6 +2,10 @@ import { initializeApp, getApps, cert, type ServiceAccount } from 'firebase-admi
 import { getAuth } from 'firebase-admin/auth'
 import { getDatabase } from 'firebase-admin/database'
 
+let adminAuthInstance: ReturnType<typeof getAuth> | null = null
+let adminRtdbInstance: ReturnType<typeof getDatabase> | null = null
+let isInitialized = false
+
 function getServiceAccount(): ServiceAccount | undefined {
   const raw = process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT
   if (!raw) return undefined
@@ -12,47 +16,86 @@ function getServiceAccount(): ServiceAccount | undefined {
   }
 }
 
-const serviceAccount = getServiceAccount()
-
-if (!getApps().length) {
-  try {
-    if (serviceAccount) {
-      initializeApp({ 
-        credential: cert(serviceAccount),
-        databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
-      })
-    } else {
-      initializeApp({
-        databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
-      })
+function initializeFirebaseAdmin(): void {
+  if (isInitialized) return
+  
+  const serviceAccount = getServiceAccount()
+  
+  if (!getApps().length) {
+    try {
+      if (serviceAccount) {
+        initializeApp({ 
+          credential: cert(serviceAccount),
+          databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+        })
+      } else {
+        initializeApp({
+          databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+        })
+      }
+      adminAuthInstance = getAuth()
+      adminRtdbInstance = getDatabase()
+      isInitialized = true
+    } catch (error) {
+      console.error('[Firebase Admin] Failed to initialize:', error)
     }
-  } catch (error) {
+  } else {
+    adminAuthInstance = getAuth()
+    adminRtdbInstance = getDatabase()
+    isInitialized = true
   }
 }
 
-export const adminAuth = getAuth()
-export const adminRtdb = getDatabase()
+export function getAdminAuth(): ReturnType<typeof getAuth> {
+  if (!adminAuthInstance) {
+    initializeFirebaseAdmin()
+  }
+  if (!adminAuthInstance) {
+    throw new Error('Firebase Admin Auth not initialized. Check server logs.')
+  }
+  return adminAuthInstance
+}
 
-/**
- * Verify if a user is an admin by checking the RTDB admins collection
- * This is the authoritative server-side check
- */
+export function getAdminRtdb(): ReturnType<typeof getDatabase> {
+  if (!adminRtdbInstance) {
+    initializeFirebaseAdmin()
+  }
+  if (!adminRtdbInstance) {
+    throw new Error('Firebase Admin RTDB not initialized. Check server logs.')
+  }
+  return adminRtdbInstance
+}
+
+export const adminAuth = {
+  get auth() { return getAdminAuth() },
+  createSessionCookie: async (token: string, options: { expiresIn: number }) => {
+    return getAdminAuth().createSessionCookie(token, options)
+  },
+  verifyIdToken: async (token: string) => {
+    return getAdminAuth().verifyIdToken(token)
+  }
+}
+
+export const adminRtdb = {
+  get db() { return getAdminRtdb() },
+  ref: (path: string) => getAdminRtdb().ref(path)
+}
+
 export async function verifyAdminStatus(uid: string): Promise<boolean> {
   try {
-    const snapshot = await adminRtdb.ref(`admins/${uid}`).get()
+    const db = getAdminRtdb()
+    const snapshot = await db.ref(`admins/${uid}`).get()
     return snapshot.exists()
   } catch (error) {
+    console.error('[verifyAdminStatus] Error:', error)
     return false
   }
 }
 
-/**
- * Verify ID token and get user claims
- */
 export async function verifyIdToken(token: string) {
   try {
-    return await adminAuth.verifyIdToken(token)
-  } catch (error) {
+    return await getAdminAuth().verifyIdToken(token)
+  } catch {
     return null
   }
 }

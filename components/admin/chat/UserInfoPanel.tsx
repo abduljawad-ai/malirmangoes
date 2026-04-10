@@ -91,7 +91,7 @@ export default function UserInfoPanel({ userId, metadata, onClose }: UserInfoPan
       
       const userOrderRef = ref(rtdb, `orders/byUser/${userId}/${orderId}`)
       await update(userOrderRef, { orderStatus: newStatus, updatedAt: now })
-    } catch (error) {
+    } catch {
     }
   }
 

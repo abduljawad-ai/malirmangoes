@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useAdminOrders } from '@/hooks/useAdminOrders'
-import { formatPKR, cn } from '@/lib/utils'
+import { formatPKR } from '@/lib/utils'
 import { Clock, CheckCircle2, Truck, Package, Search, XCircle } from 'lucide-react'
 import { ref, update } from 'firebase/database'
 import { rtdb } from '@/lib/firebase'

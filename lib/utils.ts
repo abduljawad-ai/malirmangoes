@@ -48,7 +48,7 @@ export function generateOrderId(): string {
 }
 
 /** Ensure image URL has protocol and is valid for next/image */
-export function getValidImageUrl(url?: string, fallback: string = 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/mango-box.jpg'): string {
+export function getValidImageUrl(url?: string, fallback: string = 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mango-box.jpg'): string {
   if (!url || typeof url !== 'string' || url.trim() === '') return fallback
   
   const trimmedUrl = url.trim()

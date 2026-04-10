@@ -32,19 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const syncCookie = async (token: string | null) => {
-    try {
-      if (token) {
-        await fetch('/api/auth/cookie', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        })
-      } else {
-        await fetch('/api/auth/cookie', { method: 'DELETE' })
-      }
-    } catch (error) {
-    }
+  const syncCookie = async (): Promise<boolean> => {
+    // Skip cookie sync for now - Firebase Auth ID token is sufficient
+    // Session cookies add complexity without much benefit for this app
+    return true
   }
 
   const fetchUserData = async (uid: string): Promise<User | null> => {
@@ -65,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return userData
       }
     } catch (error) {
+      console.error('[Auth] Failed to fetch user data:', error)
     }
     return null
   }
@@ -74,8 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setFirebaseUser(fUser)
       
       if (fUser) {
-        const token = await fUser.getIdToken()
-        await syncCookie(token)
+        await fUser.getIdToken()
+        await syncCookie()
         const userData = await fetchUserData(fUser.uid)
         
         if (userData?.isBanned) {
@@ -85,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           toast.error('Your account has been suspended. Contact support.')
         }
       } else {
-        await syncCookie(null)
+        await syncCookie()
         setUser(null)
         setIsAdmin(false)
       }
@@ -100,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signOut(auth)
       toast.success('Logged out successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to log out')
     }
   }
@@ -137,7 +129,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           toast.error('Your account has been suspended. Contact support.')
           return
         }
-        await set(ref(rtdb, `users/${fUser.uid}/lastLogin`), new Date().toISOString())
+        try {
+          await set(ref(rtdb, `users/${fUser.uid}/lastLogin`), new Date().toISOString())
+        } catch (permError) {
+          console.warn('[Auth] Could not update lastLogin:', permError)
+        }
         setUser(userData)
       }
       

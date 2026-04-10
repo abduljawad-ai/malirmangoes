@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams, useRouter, notFound } from 'next/navigation'
+import { useParams, notFound } from 'next/navigation'
 import {
   ShoppingBag,
   ChevronLeft,
