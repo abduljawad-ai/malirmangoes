@@ -40,20 +40,9 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   // Use a key to force re-render when open changes, which resets the input
   const [inputKey, setInputKey] = useState(0)
 
-  // Simple filter without debounce - filter happens on client with small product list
-  const results = useMemo(() => {
-    const trimmed = query.trim()
-    if (trimmed.length < 2) return []
-    
-    const lowerQuery = trimmed.toLowerCase()
-    return products.filter(p =>
-      p.name.toLowerCase().includes(lowerQuery) ||
-      p.category?.toLowerCase().includes(lowerQuery)
-    ).slice(0, 6)
-  }, [products, query])
-
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputKey(k => k + 1)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
