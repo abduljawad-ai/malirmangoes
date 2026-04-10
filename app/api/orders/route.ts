@@ -26,11 +26,55 @@ const orderRequestSchema = z.object({
   zip: z.string().min(4).max(20),
 })
 
+const IDEMPOTENCY_TTL = 5 * 60 * 1000 // 5 minutes
+
+async function checkIdempotency(userId: string, idempotencyKey: string): Promise<string | null> {
+  const keyRef = adminRtdb.ref(`idempotency/${userId}/${idempotencyKey}`)
+  const snapshot = await keyRef.get()
+  
+  if (snapshot.exists()) {
+    const data = snapshot.val()
+    const createdAt = data.createdAt
+    const now = Date.now()
+    
+    // Check if key is still valid
+    if (now - createdAt < IDEMPOTENCY_TTL) {
+      return data.orderId // Return existing order ID
+    }
+  }
+  return null
+}
+
+async function storeIdempotencyKey(userId: string, idempotencyKey: string, orderId: string): Promise<void> {
+  const keyRef = adminRtdb.ref(`idempotency/${userId}/${idempotencyKey}`)
+  await keyRef.set({
+    orderId,
+    createdAt: Date.now()
+  })
+  
+  // Set expiry (RTDB doesn't auto-expire, so we rely on TTL check above)
+  // In production, consider using Firebase Functions to clean up expired keys
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { user, error } = await verifyAuth(req)
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Check for idempotency key
+    const idempotencyKey = req.headers.get('X-Idempotency-Key')
+    if (idempotencyKey) {
+      const existingOrderId = await checkIdempotency(user.uid, idempotencyKey)
+      if (existingOrderId) {
+        // Return the existing order to prevent duplicate creation
+        return NextResponse.json({ 
+          success: true, 
+          orderId: existingOrderId,
+          duplicate: true
+        })
+      }
     }
 
     const data = await req.json()
@@ -54,12 +98,21 @@ export async function POST(req: NextRequest) {
       zip: sanitizeString(zip, 20)
     }
 
-    // Fetch and validate all products, calculate total
-    let calculatedTotal = 0
-    const processedItems: Array<{ productId: string; qty: number; name: string; price: number; image: string; total: number }> = []
+    // Fetch and validate all products in parallel for better performance
+    // Use integer math (prices in cents) to avoid floating-point issues
+    let calculatedTotalCents = 0
+    const processedItems: Array<{ productId: string; qty: number; name: string; price: number; priceCents: number; image: string; total: number; totalCents: number }> = []
 
-    for (const item of items) {
-      const snap = await adminRtdb.ref(`products/${item.productId}`).get()
+    // Fetch all products in parallel
+    const productSnaps = await Promise.all(
+      items.map(item => adminRtdb.ref(`products/${item.productId}`).get())
+    )
+
+    // Validate and process each product
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      const snap = productSnaps[i]
+      
       if (!snap.exists()) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 })
       }
@@ -77,21 +130,27 @@ export async function POST(req: NextRequest) {
         )
       }
 
+      // Convert to cents for precise calculation
       const unitPrice = product.salePrice || product.price
-      const itemTotal = unitPrice * item.qty
-      calculatedTotal += itemTotal
+      const unitPriceCents = Math.round(unitPrice * 100)
+      const itemTotalCents = unitPriceCents * item.qty
+      calculatedTotalCents += itemTotalCents
 
       processedItems.push({
         productId: item.productId,
         qty: item.qty,
-        name: sanitizeString(product.name),
+        name: sanitizeString(product.name || 'Unknown Product'),
         price: unitPrice,
+        priceCents: unitPriceCents,
         image: product.images?.[0]?.webp || product.images?.[0]?.original || '',
-        total: itemTotal
+        total: itemTotalCents / 100,
+        totalCents: itemTotalCents
       })
     }
 
-    if (Math.abs(calculatedTotal - totalPrice) > 1) {
+    // Use exact integer comparison (prices in cents)
+    const totalPriceCents = Math.round(totalPrice * 100)
+    if (calculatedTotalCents !== totalPriceCents) {
       return NextResponse.json(
         { error: 'Price verification failed. Please refresh and try again.' },
         { status: 400 }
@@ -125,7 +184,8 @@ export async function POST(req: NextRequest) {
         image: item.image,
         total: item.total
       })),
-      total: calculatedTotal,
+      total: calculatedTotalCents / 100,
+      totalCents: calculatedTotalCents,
       status: 'pending',
       orderStatus: 'Pending',
       paymentStatus: 'Pending',
@@ -134,27 +194,48 @@ export async function POST(req: NextRequest) {
       updatedAt: now,
     }
 
-    // Atomic multi-path update with stock check
+    // Atomic multi-path update with stock check using RTDB transactions
     const updates: Record<string, unknown> = {}
     updates[`orders/all/${orderId}`] = orderData
     updates[`orders/byUser/${userId}/${orderId}`] = orderData
 
-    for (const item of processedItems) {
+    // Use transactions for each product's stock to prevent race conditions
+    const transactionPromises = processedItems.map(async (item) => {
       const stockRef = adminRtdb.ref(`products/${item.productId}/stock`)
-      const stockSnap = await stockRef.get()
-      const currentStock = (stockSnap.val() as number) || 0
+      
+      return stockRef.transaction((currentStock: number | null) => {
+        const stock = currentStock || 0
+        
+        if (stock < item.qty) {
+          // Transaction will abort if stock is insufficient
+          return undefined
+        }
+        
+        return stock - item.qty
+      })
+    })
 
-      if (currentStock < item.qty) {
+    const transactionResults = await Promise.all(transactionPromises)
+
+    // Check if any transaction was aborted (insufficient stock)
+    for (let i = 0; i < transactionResults.length; i++) {
+      const result = transactionResults[i]
+      if (result.committed === false || result.snapshot.val() === undefined) {
+        // Transaction was aborted due to insufficient stock
         return NextResponse.json(
-          { error: `Insufficient stock for an item` },
+          { error: `Insufficient stock for ${processedItems[i].name}` },
           { status: 409 }
         )
       }
-
-      updates[`products/${item.productId}/stock`] = currentStock - item.qty
     }
 
+    // All transactions succeeded, write the order
     await adminRtdb.ref().update(updates)
+
+    // Store idempotency key after successful order creation
+    if (idempotencyKey) {
+      await storeIdempotencyKey(userId, idempotencyKey, orderId)
+    }
 
     // Update user profile (non-critical, best effort)
     try {

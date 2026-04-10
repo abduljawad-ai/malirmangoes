@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { CartItem } from '@/types'
 import { useAuth } from './useAuth'
 import { ref, get, set } from 'firebase/database'
 import { rtdb } from '@/lib/firebase'
+import toast from 'react-hot-toast'
 
 interface CartState {
   items: CartItem[]
@@ -87,6 +88,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
         hasSynced.current = true
       } catch (error) {
+        console.error('Failed to sync cart:', error)
       } finally {
         setIsSyncing(false)
       }
@@ -108,6 +110,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }))
         await set(cartRef, { items: itemsToSync, updatedAt: new Date().toISOString() })
       } catch (error) {
+        console.error('Failed to save cart:', error)
       }
     }, 2000)
 
@@ -120,8 +123,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart() {
   const store = useCartStore()
   
-  const totalItems = store.items.reduce((acc, item) => acc + item.qty, 0)
-  const totalPrice = store.items.reduce((acc, item) => acc + (item.salePrice || item.price) * item.qty, 0)
+  const totalItems = useMemo(() => 
+    store.items.reduce((acc, item) => acc + item.qty, 0), 
+    [store.items]
+  )
+  
+  const totalPrice = useMemo(() => 
+    store.items.reduce((acc, item) => acc + (item.salePrice || item.price) * item.qty, 0),
+    [store.items]
+  )
   
   return {
     items: store.items,

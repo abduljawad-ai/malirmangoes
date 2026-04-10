@@ -21,13 +21,13 @@ export function useReviews(productId: string) {
       const data = snapshot.val()
       if (data) {
         const reviewsList: Review[] = Object.entries(data).map(([id, value]) => ({
-          ...(value as any),
+          ...(value as Review),
           id
         }))
         // Sort by newest first
         reviewsList.sort((a, b) => {
-          const dateA = new Date(a.createdAt as unknown as string).getTime()
-          const dateB = new Date(b.createdAt as unknown as string).getTime()
+          const dateA = new Date(a.createdAt).getTime()
+          const dateB = new Date(b.createdAt).getTime()
           return dateB - dateA
         })
         setReviews(reviewsList)
@@ -80,7 +80,7 @@ export function useReviews(productId: string) {
         comment: comment.trim(),
         verifiedPurchase: false,
         isVisible: true,
-        createdAt: new Date().toISOString() as any
+        createdAt: new Date().toISOString()
       }
 
       await set(newReviewRef, newReview)

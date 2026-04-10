@@ -21,6 +21,8 @@ export function useChat({ userId, userName, userEmail, userPhotoURL }: UseChatPr
   const [isSending, setIsSending] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
 
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   // Listen to messages
   useEffect(() => {
     if (!userId) return
@@ -78,6 +80,16 @@ export function useChat({ userId, userName, userEmail, userPhotoURL }: UseChatPr
     return () => unsubscribe()
   }, [userId])
 
+  // Cleanup typing timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+        typingTimeoutRef.current = null
+      }
+    }
+  }, [])
+
   const sendMessage = useCallback(async (text: string, productInfo?: { id: string; slug?: string; name: string; image?: string }, imageUrl?: string) => {
     if (!userId || (!text.trim() && !imageUrl) || isSending) return
 
@@ -103,32 +115,46 @@ export function useChat({ userId, userName, userEmail, userPhotoURL }: UseChatPr
 
     await set(messageRef, message)
 
-    // Update metadata
+    // Update only the specific metadata fields needed, preserving any admin-set fields
     const metadataRef = ref(rtdb, `chats/${userId}/metadata`)
-    const metadataSnap = await get(metadataRef)
-    const existingMetadata = metadataSnap.val() as ChatMetadata | null
     
-    const newMetadata: ChatMetadata = {
-      userId,
-      userName,
-      userEmail,
-      userPhotoURL,
+    // Build minimal update object - only update fields that should change on user message
+    const metadataUpdates: Record<string, unknown> = {
       lastMessage: imageUrl ? (text.trim() || '📷 Image') : text.trim(),
       lastMessageTime: now,
-      unreadByUser: 0,
-      unreadByAdmin: (existingMetadata?.unreadByAdmin || 0) + 1,
-      status: existingMetadata?.status || 'active',
-      createdAt: existingMetadata?.createdAt || now
+      unreadByUser: 0, // Reset user's unread count
+      // unreadByAdmin should only be incremented by admin, not by user
+      // Don't update status, createdAt, or any admin-only fields
     }
 
+    // Only update context if explicitly provided with product info
     if (productInfo) {
-      newMetadata.contextProductId = productInfo.id
-      if (productInfo.slug) newMetadata.contextProductSlug = productInfo.slug
-      newMetadata.contextProductName = productInfo.name
-      newMetadata.contextProductImage = productInfo.image
+      metadataUpdates.contextProductId = productInfo.id
+      if (productInfo.slug) metadataUpdates.contextProductSlug = productInfo.slug
+      metadataUpdates.contextProductName = productInfo.name
+      if (productInfo.image) metadataUpdates.contextProductImage = productInfo.image
     }
 
-    await update(metadataRef, newMetadata)
+    // Check if metadata exists, if not create initial metadata
+    const metadataSnap = await get(metadataRef)
+    if (!metadataSnap.exists()) {
+      // First message - create full metadata
+      await set(metadataRef, {
+        userId,
+        userName,
+        userEmail,
+        userPhotoURL: userPhotoURL || null,
+        lastMessage: metadataUpdates.lastMessage,
+        lastMessageTime: metadataUpdates.lastMessageTime,
+        unreadByUser: 0,
+        unreadByAdmin: 1, // First message is unread for admin
+        status: 'active',
+        createdAt: now
+      })
+    } else {
+      // Existing conversation - only update message-related fields
+      await update(metadataRef, metadataUpdates)
+    }
     setIsSending(false)
   }, [userId, userName, userEmail, userPhotoURL, isSending])
 
@@ -153,7 +179,7 @@ export function useChat({ userId, userName, userEmail, userPhotoURL }: UseChatPr
 
       const data = await res.json()
       return data.url
-    } catch (error: any) {
+    } catch {
       return null
     } finally {
       setIsUploading(false)
@@ -177,8 +203,6 @@ export function useChat({ userId, userName, userEmail, userPhotoURL }: UseChatPr
       await update(ref(rtdb), updates)
     }
   }, [userId, messages])
-
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const setTyping = useCallback((isTyping: boolean) => {
     if (!userId) return

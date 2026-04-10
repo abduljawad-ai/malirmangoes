@@ -18,8 +18,6 @@ import { getValidImageUrl } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import { Truck, CreditCard, ShieldCheck, ShoppingCart, ArrowRight, Check } from 'lucide-react'
 
-const FREE_SHIPPING_THRESHOLD = 5000
-
 type CheckoutForm = z.infer<typeof checkoutSchema>
 
 export default function CheckoutPage() {
@@ -59,7 +57,14 @@ export default function CheckoutPage() {
         paymentMethod: 'COD'
       })
     }
-  }, [user, reset])
+  }, [reset])
+
+  // Free shipping logic
+  const FREE_SHIPPING_THRESHOLD = 5000
+  const SHIPPING_COST = 200
+  const isEligibleForFreeShipping = totalPrice >= FREE_SHIPPING_THRESHOLD
+  const shippingCost = isEligibleForFreeShipping ? 0 : SHIPPING_COST
+  const grandTotal = totalPrice + shippingCost
 
   const onSubmit = async (data: CheckoutForm) => {
     if (items.length === 0) {
@@ -94,8 +99,9 @@ export default function CheckoutPage() {
       toast.success('Order placed successfully!')
       clearCart()
       router.push(`/checkout/success?id=${result.orderId}`)
-    } catch (error: any) {
-      toast.error(error.message || 'Something went wrong')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Something went wrong'
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -209,7 +215,7 @@ export default function CheckoutPage() {
               {items.map(item => (
                 <div key={item.productId} className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-slate-100 rounded-md overflow-hidden relative flex-shrink-0">
-                    <Image src={getValidImageUrl(item.image)} alt={item.name} fill sizes="48px" className="object-cover" unoptimized />
+                    <Image src={getValidImageUrl(item.image)} alt={item.name} fill sizes="48px" className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 truncate">{item.name}</p>
@@ -227,11 +233,18 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Shipping</span>
-                <span className="font-medium text-leaf">Free</span>
+                <span className={`font-medium ${isEligibleForFreeShipping ? 'text-leaf' : 'text-slate-900'}`}>
+                  {isEligibleForFreeShipping ? 'Free' : formatPKR(shippingCost)}
+                </span>
               </div>
+              {!isEligibleForFreeShipping && (
+                <p className="text-xs text-mango">
+                  Add {formatPKR(FREE_SHIPPING_THRESHOLD - totalPrice)} more for free shipping!
+                </p>
+              )}
               <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
                 <span>Total</span>
-                <span>{formatPKR(totalPrice)}</span>
+                <span>{formatPKR(grandTotal)}</span>
               </div>
             </div>
 

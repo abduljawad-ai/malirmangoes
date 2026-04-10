@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Send, ShoppingBag, ArrowLeft, MessageCircle, X, Loader2, Phone, Mail, MessageSquare } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useChat } from '@/hooks/useChat'
@@ -12,6 +12,11 @@ import Image from 'next/image'
 import ImageAttachment from './ImageAttachment'
 import ImagePreview from './ImagePreview'
 import toast from 'react-hot-toast'
+import DOMPurify from 'dompurify'
+
+function sanitize(str: string): string {
+  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
+}
 
 interface ChatInterfaceProps {
   productInfo?: {
@@ -46,7 +51,7 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
     if (lastMessageId) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [lastMessageId])
 
   // Mark as read when messages change (not on every render)
@@ -100,32 +105,44 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
     }
     chat.setTyping(false)
     
-    const textToSend = inputText
+    // Save to local variables before clearing state
+    const textToSend = inputText.trim()
     const imageToSend = pendingImage
-    setInputText('')
-    setPendingImage(null)
     
     let imageUrl: string | undefined
+    let sendError: string | null = null
 
-    if (imageToSend) {
-      const uploadedUrl = await chat.uploadImage(imageToSend.file)
-      if (!uploadedUrl) {
-        toast.error('Failed to upload image')
-        return
+    try {
+      // Upload image first if present
+      if (imageToSend) {
+        const uploadedUrl = await chat.uploadImage(imageToSend.file)
+        if (!uploadedUrl) {
+          toast.error('Failed to upload image. Please try again.')
+          return
+        }
+        imageUrl = uploadedUrl
       }
-      imageUrl = uploadedUrl
+      
+      // Send the message
+      await chat.sendMessage(
+        textToSend,
+        productInfo ? {
+          id: productInfo.id,
+          slug: productInfo.slug,
+          name: productInfo.name,
+          image: productInfo.image
+        } : undefined,
+        imageUrl
+      )
+      
+      // Only clear state after successful send
+      setInputText('')
+      setPendingImage(null)
+    } catch (error) {
+      sendError = error instanceof Error ? error.message : 'Failed to send message'
+      toast.error(sendError)
+      // Don't clear state - let user retry
     }
-    
-    await chat.sendMessage(
-      textToSend,
-      productInfo ? {
-        id: productInfo.id,
-        slug: productInfo.slug,
-        name: productInfo.name,
-        image: productInfo.image
-      } : undefined,
-      imageUrl
-    )
   }, [inputText, pendingImage, chat, productInfo])
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -157,14 +174,16 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
     }
   }
 
-  const groupedMessages = chat.messages.reduce((groups, message) => {
-    const date = new Date(message.timestamp).toDateString()
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(message)
-    return groups
-  }, {} as Record<string, typeof chat.messages>)
+  const groupedMessages = useMemo(() => {
+    return chat.messages.reduce((groups, message) => {
+      const date = new Date(message.timestamp).toDateString()
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(message)
+      return groups
+    }, {} as Record<string, typeof chat.messages>)
+  }, [chat.messages])
 
   if (!user) {
     return (
@@ -361,7 +380,7 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
                       </button>
                     )}
                     {message.text && (
-                      <p className="text-sm leading-relaxed">{message.text}</p>
+                      <p className="text-sm leading-relaxed">{sanitize(message.text)}</p>
                     )}
                     <p 
                       className={cn(

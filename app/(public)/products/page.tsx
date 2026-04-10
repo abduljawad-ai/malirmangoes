@@ -21,6 +21,7 @@ function ProductsContent() {
 
   useEffect(() => {
     const cat = searchParams.get('category') || ''
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedCategory(cat)
   }, [searchParams])
 

@@ -122,7 +122,7 @@ export default function AdminDashboard() {
                     <tr key={order.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => router.push(`/admin/orders?highlight=${order.id}`)}>
                       <td className="px-4 py-3">
                         <p className="font-mono text-xs font-medium text-slate-900">#{order.id.slice(-6).toUpperCase()}</p>
-                        <p className="text-xs text-slate-400">{new Date(order.createdAt as any).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-400">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
                       </td>
                       <td className="px-4 py-3 hidden sm:table-cell">
                         <p className="text-sm text-slate-900">{order.customerSnapshot?.name}</p>

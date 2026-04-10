@@ -1,10 +1,15 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Send, MoreVertical, ArrowLeft, ZoomIn, Loader2 } from 'lucide-react'
 import { ChatMessage, ChatMetadata } from '@/types/chat'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import DOMPurify from 'dompurify'
+
+function sanitize(str: string): string {
+  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
+}
 
 interface ChatWindowProps {
   userId: string
@@ -106,14 +111,16 @@ export default function ChatWindow({
   }
 
   // Group messages by date
-  const groupedMessages = messages.reduce((groups, message) => {
-    const date = new Date(message.timestamp).toDateString()
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(message)
-    return groups
-  }, {} as Record<string, typeof messages>)
+  const groupedMessages = useMemo(() => {
+    return messages.reduce((groups, message) => {
+      const date = new Date(message.timestamp).toDateString()
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(message)
+      return groups
+    }, {} as Record<string, typeof messages>)
+  }, [messages])
 
   return (
     <div className="flex flex-col h-full bg-white">
@@ -254,7 +261,7 @@ export default function ChatWindow({
                       </button>
                     )}
                     {message.text && (
-                      <p className="text-sm leading-relaxed">{message.text}</p>
+                      <p className="text-sm leading-relaxed">{sanitize(message.text)}</p>
                     )}
                     <p 
                       className={cn(

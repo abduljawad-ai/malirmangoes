@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { 
   ref, 
   get, 
+  query,
   orderByChild,
   equalTo,
 } from 'firebase/database'
@@ -91,20 +92,21 @@ export function useProduct(slug: string) {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      if (!slug) {
+        setProduct(null)
+        setLoading(false)
+        return
+      }
+      
       setLoading(true)
       try {
         const productsRef = ref(rtdb, 'products')
-        const snapshot = await get(productsRef)
+        const snapshot = await get(query(productsRef, orderByChild('slug'), equalTo(slug)))
         
         if (snapshot.exists()) {
-          let found: Product | null = null
-          snapshot.forEach((child) => {
-            const data = child.val()
-            if (data && data.slug === slug) {
-              found = { id: child.key, ...data } as Product
-            }
-          })
-          setProduct(found)
+          const key = Object.keys(snapshot.val())[0]
+          const data = snapshot.val()[key]
+          setProduct({ id: key, ...data } as Product)
         } else {
           setProduct(null)
         }
@@ -116,7 +118,7 @@ export function useProduct(slug: string) {
       }
     }
 
-    if (slug) fetchProduct()
+    fetchProduct()
   }, [slug])
 
   return { product, loading, error }

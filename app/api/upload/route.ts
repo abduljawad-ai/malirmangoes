@@ -1,13 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { verifyAuth } from '@/lib/auth-server'
 import { adminRtdb } from '@/lib/firebase-admin'
-
-const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME
-const UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET
-const FOLDER = process.env.CLOUDINARY_FOLDER || 'mangostore'
-
-const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/avif']
-const MAX_SIZE = 10 * 1024 * 1024 // 10MB
+import { uploadToCloudinary, validateFile, DEFAULT_ALLOWED_TYPES, DEFAULT_MAX_SIZE } from '@/lib/upload'
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,41 +23,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({
-        error: `Invalid file type. Allowed: ${ALLOWED_TYPES.map(t => t.split('/')[1]).join(', ')}`
-      }, { status: 400 })
+    // Validate file
+    const validationError = validateFile(file, {
+      folder: 'products',
+      maxSize: DEFAULT_MAX_SIZE,
+      allowedTypes: DEFAULT_ALLOWED_TYPES,
+    })
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 })
     }
 
-    // Validate file size
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json({
-        error: `File too large. Maximum size: ${MAX_SIZE / 1024 / 1024}MB`
-      }, { status: 400 })
-    }
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(file, {
+      folder: 'products',
+    })
 
-    const cloudinaryForm = new FormData()
-    cloudinaryForm.append('file', file)
-    cloudinaryForm.append('upload_preset', UPLOAD_PRESET!)
-    cloudinaryForm.append('folder', FOLDER)
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      { method: 'POST', body: cloudinaryForm }
-    )
-
-    if (!res.ok) {
-      const err = await res.json()
-      return NextResponse.json({ error: err.error?.message || 'Upload failed' }, { status: 500 })
-    }
-
-    const data = await res.json()
     return NextResponse.json({
-      url: data.secure_url,
-      publicId: data.public_id,
-      width: data.width,
-      height: data.height,
+      url: result.url,
+      publicId: result.publicId,
+      width: result.width,
+      height: result.height,
     })
   } catch (error: unknown) {
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 })

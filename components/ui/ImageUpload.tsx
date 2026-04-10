@@ -54,8 +54,9 @@ export default function ImageUpload({ value, onChange, label = 'Upload Image', c
       const data = await res.json()
       onChange(data.url)
       toast.success('Image uploaded successfully')
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to upload image')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to upload image'
+      toast.error(message)
       setPreview(value || null)
     } finally {
       setUploading(false)

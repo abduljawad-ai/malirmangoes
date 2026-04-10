@@ -48,7 +48,7 @@ function SignupContent() {
   const onSubmit = async (data: SignupForm) => {
     setLoading(true)
     try {
-      const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth')
+      const { createUserWithEmailAndPassword, updateProfile, deleteUser } = await import('firebase/auth')
       const { auth } = await import('@/lib/firebase')
       const { ref, set } = await import('firebase/database')
       const { rtdb } = await import('@/lib/firebase')
@@ -56,19 +56,28 @@ function SignupContent() {
       const cred = await createUserWithEmailAndPassword(auth, data.email, data.password)
       await updateProfile(cred.user, { displayName: data.name })
 
-      await set(ref(rtdb, `users/${cred.user.uid}`), {
-        name: data.name,
-        email: data.email,
-        role: 'customer',
-        createdAt: new Date().toISOString(),
-      })
+      // Write user data to RTDB
+      try {
+        await set(ref(rtdb, `users/${cred.user.uid}`), {
+          name: data.name,
+          email: data.email,
+          role: 'customer',
+          createdAt: new Date().toISOString(),
+        })
+      } catch (dbError) {
+        // Rollback: Delete the auth user if RTDB write fails
+        console.error('Failed to write user data to RTDB, rolling back auth user:', dbError)
+        await deleteUser(cred.user)
+        throw new Error('Failed to create account. Please try again.')
+      }
 
       toast.success('Account created!')
       router.push(isAdmin ? '/admin' : redirect)
-    } catch (error: any) {
-      const msg = error.code === 'auth/email-already-in-use'
+    } catch (error: unknown) {
+      const err = error as { code?: string; message?: string }
+      const msg = err.code === 'auth/email-already-in-use'
         ? 'Email already registered'
-        : 'Signup failed. Please try again.'
+        : err.message || 'Signup failed. Please try again.'
       toast.error(msg)
     } finally {
       setLoading(false)

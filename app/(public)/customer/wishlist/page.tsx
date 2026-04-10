@@ -44,7 +44,7 @@ function WishlistContent() {
           </div>
           <div>
             <h2 className="text-base font-bold text-slate-900">Wishlist feature coming soon!</h2>
-            <p className="text-sm text-slate-500 mt-0.5">We're working on a way for you to save your favorite mangoes. Check back soon.</p>
+            <p className="text-sm text-slate-500 mt-0.5">We&apos;re working on a way for you to save your favorite mangoes. Check back soon.</p>
           </div>
         </div>
       </div>

@@ -36,6 +36,8 @@ export default function Button({
   className,
   disabled,
   children,
+  type = 'button',
+  onClick,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? 'span' : 'button'
@@ -52,7 +54,9 @@ export default function Button({
         className
       )}
       disabled={disabled || loading}
-      {...(props as any)}
+      type={type}
+      onClick={onClick}
+      {...props}
     >
       {loading && <Loader2 className="w-4 h-4 animate-spin" />}
       {!loading && icon}

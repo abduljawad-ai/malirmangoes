@@ -110,7 +110,7 @@ export default function AdminOrdersPage() {
                   <div className="flex items-center gap-3">
                     <div>
                       <p className="text-sm font-mono font-medium text-slate-900">#{order.id.slice(-6).toUpperCase()}</p>
-                      <p className="text-xs text-slate-400">{new Date(order.createdAt as any).toLocaleString()}</p>
+                      <p className="text-xs text-slate-400">{order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</p>
                     </div>
                     <OrderStatusBadge status={order.orderStatus} />
                   </div>
@@ -128,7 +128,7 @@ export default function AdminOrdersPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-slate-100">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{order.customerSnapshot.name}</p>
-                    <p className="text-xs text-slate-500">{order.customerSnapshot.email} · {order.customerSnapshot.phone}</p>
+                    <p className="text-xs text-slate-500">{order.customerSnapshot?.email} · {order.customerSnapshot?.phone}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-slate-900">{formatPKR(order.total)}</p>

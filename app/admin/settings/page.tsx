@@ -2,13 +2,82 @@
 
 import React, { useState, useRef } from 'react'
 import { useSettings } from '@/hooks/useSettings'
-import { Upload, ImageIcon, Type, Phone, Mail, MapPin, Globe, Share2, Save, Loader2 } from 'lucide-react'
+import { Upload, ImageIcon, Type, Phone, Mail, MapPin, Globe, Share2, Save, Loader2, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
+
+interface CarouselModalProps {
+  isOpen: boolean
+  currentName: string
+  currentTagline: string
+  onConfirm: (name: string, tagline: string) => void
+  onCancel: () => void
+}
+
+function CarouselModal({ isOpen, currentName, currentTagline, onConfirm, onCancel }: CarouselModalProps) {
+  const [name, setName] = useState(currentName)
+  const [tagline, setTagline] = useState(currentTagline)
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6 m-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Carousel Image Details</h3>
+          <button onClick={onCancel} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Mango Variety Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Chaunsa Premium"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Tagline
+            </label>
+            <input
+              type="text"
+              value={tagline}
+              onChange={(e) => setTagline(e.target.value)}
+              placeholder="e.g. King of Mangoes"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
+            />
+          </div>
+        </div>
+        <div className="flex justify-end gap-3 mt-6">
+          <Button variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={() => onConfirm(name, tagline)}>
+            Save
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function AdminSettingsPage() {
   const { settings, loading, saving, updateSetting, updateHeroImage, updateLogo, updateCarouselImage } = useSettings()
   const [activeTab, setActiveTab] = useState('general')
   const [editForm, setEditForm] = useState<Record<string, string>>({})
+  const [carouselModal, setCarouselModal] = useState<{
+    isOpen: boolean
+    index: number
+    file: File | null
+  }>({ isOpen: false, index: -1, file: null })
   
   const heroFileRefs = useRef<(HTMLInputElement | null)[]>([])
   const logoFileRef = useRef<HTMLInputElement>(null)
@@ -28,7 +97,7 @@ export default function AdminSettingsPage() {
 
   const saveTextSetting = async (key: string) => {
     if (editForm[key] !== undefined) {
-      await updateSetting(key as any, editForm[key])
+      await updateSetting(key, editForm[key])
       setEditForm(prev => {
         const newForm = { ...prev }
         delete newForm[key]
@@ -41,20 +110,39 @@ export default function AdminSettingsPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    try {
-      if (type === 'hero' && index !== undefined) {
+    if (type === 'hero' && index !== undefined) {
+      try {
         await updateHeroImage(index, file)
-      } else if (type === 'logo') {
-        await updateLogo(file)
-      } else if (type === 'carousel' && index !== undefined) {
-        const name = prompt('Enter mango variety name:') || settings.carouselImages[index].name
-        const tagline = prompt('Enter tagline:') || settings.carouselImages[index].tagline
-        await updateCarouselImage(index, file, name, tagline)
+      } catch (error) {
+        console.error('Failed to update hero image:', error)
       }
-    } catch (error) {
+    } else if (type === 'logo') {
+      try {
+        await updateLogo(file)
+      } catch (error) {
+        console.error('Failed to update logo:', error)
+      }
+    } else if (type === 'carousel' && index !== undefined) {
+      // Open modal for carousel images
+      setCarouselModal({ isOpen: true, index, file })
     }
-    
+
     e.target.value = ''
+  }
+
+  const handleCarouselModalConfirm = async (name: string, tagline: string) => {
+    if (carouselModal.file && carouselModal.index >= 0) {
+      try {
+        await updateCarouselImage(carouselModal.index, carouselModal.file, name, tagline)
+      } catch (error) {
+        console.error('Failed to update carousel image:', error)
+      }
+    }
+    setCarouselModal({ isOpen: false, index: -1, file: null })
+  }
+
+  const handleCarouselModalCancel = () => {
+    setCarouselModal({ isOpen: false, index: -1, file: null })
   }
 
   const tabs = [
@@ -501,6 +589,14 @@ export default function AdminSettingsPage() {
           </div>
         </div>
       )}
+      
+      <CarouselModal
+        isOpen={carouselModal.isOpen}
+        currentName={carouselModal.index >= 0 ? settings.carouselImages[carouselModal.index]?.name || '' : ''}
+        currentTagline={carouselModal.index >= 0 ? settings.carouselImages[carouselModal.index]?.tagline || '' : ''}
+        onConfirm={handleCarouselModalConfirm}
+        onCancel={handleCarouselModalCancel}
+      />
     </div>
   )
 }

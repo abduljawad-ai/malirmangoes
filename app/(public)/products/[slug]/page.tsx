@@ -112,7 +112,7 @@ export default function ProductDetailPage() {
                     activeImage === i ? 'border-mango' : 'border-transparent opacity-60 hover:opacity-100'
                   )}
                 >
-                  <Image src={getValidImageUrl(img.webp)} alt="" fill sizes="64px" className="object-cover" unoptimized />
+                  <Image src={getValidImageUrl(img.webp)} alt="" fill sizes="64px" className="object-cover" />
                 </button>
               ))}
             </div>

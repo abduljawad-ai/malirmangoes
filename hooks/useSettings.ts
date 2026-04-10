@@ -133,7 +133,7 @@ export function useSettings() {
         } catch (initError) {
         }
       }
-    } catch (error: any) {
+    } catch {
       const cached = localStorage.getItem('siteSettings')
       if (cached) {
         try {
@@ -147,12 +147,8 @@ export function useSettings() {
     }
   }, [])
 
-  useEffect(() => {
-    fetchSettings()
-  }, [fetchSettings])
-
   // Update a single setting field
-  const updateSetting = useCallback(async (key: keyof SiteSettings, value: any) => {
+  const updateSetting = useCallback(async (key: string, value: unknown) => {
     try {
       setSaving(true)
       const docRef = doc(db, 'settings', 'site')

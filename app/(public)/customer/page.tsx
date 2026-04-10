@@ -76,9 +76,9 @@ function OrdersContent() {
                   #{order.id.slice(-6).toUpperCase()}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {new Date(order.createdAt as any).toLocaleDateString('en-US', {
+                  {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric'
-                  })}
+                  }) : 'N/A'}
                 </p>
               </div>
               <div className="flex items-center gap-2">

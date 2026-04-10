@@ -125,8 +125,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isBanned: false,
           profileCompleted: false,
           wishlist: [],
-          createdAt: new Date().toISOString() as any,
-          lastLogin: new Date().toISOString() as any,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
         }
         await set(userRef, newUser)
         setUser(newUser)
@@ -142,8 +142,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       toast.success('Logged in with Google!')
-    } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
+    } catch (error: unknown) {
+      const firebaseError = error as { code?: string }
+      if (firebaseError.code !== 'auth/popup-closed-by-user') {
         toast.error('Failed to log in with Google')
       }
     }

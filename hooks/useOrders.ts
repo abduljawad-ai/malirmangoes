@@ -34,15 +34,15 @@ export function useOrders() {
         
         // Sort by date descending
         ordersList.sort((a, b) => 
-          new Date(b.createdAt as any).getTime() - new Date(a.createdAt as any).getTime()
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
         
         setOrders(ordersList)
       } else {
         setOrders([])
       }
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch orders')
     } finally {
       setLoading(false)
     }

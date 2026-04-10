@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/hooks/useCart'
 import { useChatUnreadCount } from '@/hooks/useChatUnreadCount'
 import { useLayout } from './LayoutContext'
+import { cn } from '@/lib/utils'
 import MobileMenu from './MobileMenu'
 import SearchOverlay from './SearchOverlay'
 
@@ -136,8 +137,4 @@ export default function Navbar() {
       <SearchOverlay open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   )
-}
-
-function cn(...classes: (string | undefined | false | null)[]) {
-  return classes.filter(Boolean).join(' ')
 }

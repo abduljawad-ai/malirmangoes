@@ -51,7 +51,6 @@ export default function AboutPage() {
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 py-20 sm:py-28 text-center">

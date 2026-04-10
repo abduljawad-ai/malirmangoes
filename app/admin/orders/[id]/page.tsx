@@ -88,7 +88,7 @@ export default function AdminOrderDetailPage() {
               Order <span className="font-mono">#{order.id.slice(-6).toUpperCase()}</span>
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
-              Placed on {new Date(order.createdAt as any).toLocaleString()}
+              Placed on {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}
             </p>
           </div>
         </div>

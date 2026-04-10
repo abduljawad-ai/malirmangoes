@@ -73,9 +73,9 @@ export default function OrderDetailPage() {
             </span>
           </div>
           <p className="text-sm text-muted mt-2">
-            Placed on {new Date(order.createdAt as any).toLocaleDateString('en-US', { 
+            Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', { 
               weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-            })}
+            }) : 'N/A'}
           </p>
         </div>
 

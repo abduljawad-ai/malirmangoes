@@ -1,12 +1,28 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Star, MessageSquare, ChevronRight, User } from 'lucide-react'
 import { useReviews } from '@/hooks/useReviews'
 import { useAuth } from '@/hooks/useAuth'
 import Button from '@/components/ui/Button'
 import Textarea from '@/components/ui/Textarea'
 import { cn } from '@/lib/utils'
+import DOMPurify from 'dompurify'
+
+function sanitize(str: string): string {
+  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] })
+}
+
+function formatDate(dateValue: string | number | undefined): string {
+  if (!dateValue) return 'N/A'
+  try {
+    const date = new Date(dateValue)
+    if (isNaN(date.getTime())) return 'N/A'
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+  } catch {
+    return 'N/A'
+  }
+}
 
 interface ReviewSystemProps {
   productId: string
@@ -31,11 +47,11 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
     setSubmitting(false)
   }
 
-  const ratingsCount = [5, 4, 3, 2, 1].map(r => ({
+  const ratingsCount = useMemo(() => [5, 4, 3, 2, 1].map(r => ({
     stars: r,
     count: reviews.filter(rev => rev.rating === r).length,
     percentage: reviews.length > 0 ? (reviews.filter(rev => rev.rating === r).length / reviews.length) * 100 : 0
-  }))
+  })), [reviews])
 
   return (
     <div className="mt-24 pt-24 border-t border-border/50">
@@ -87,7 +103,7 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
           </div>
 
           {/* Review Stats */}
-          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
             <div className="p-6 bg-surface rounded-3xl border border-border/50">
               <div className="w-10 h-10 rounded-xl bg-leaf/10 flex items-center justify-center text-leaf mb-3">
                 <MessageSquare className="w-5 h-5" />
@@ -99,7 +115,11 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
               <div className="w-10 h-10 rounded-xl bg-mango/10 flex items-center justify-center text-mango mb-3">
                 <ChevronRight className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-black text-dark">98%</p>
+              <p className="text-2xl font-black text-dark">
+                {reviews.length > 0
+                  ? Math.round((reviews.filter(r => r.rating >= 4).length / reviews.length) * 100)
+                  : 0}%
+              </p>
               <p className="text-[10px] font-bold text-muted uppercase tracking-widest">Recommended</p>
             </div>
           </div>
@@ -120,30 +140,36 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
                   <p className="text-muted font-medium mb-6">Share your experience with this variety</p>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        className="transition-transform active:scale-95"
-                        onMouseEnter={() => setHover(s)}
-                        onMouseLeave={() => setHover(0)}
-                        onClick={() => setRating(s)}
-                        aria-label={`Rate ${s} stars`}
-                      >
-                        <Star 
-                          className={cn(
-                            "w-8 h-8 transition-all duration-200",
-                            s <= (hover || rating) ? "text-mango fill-current" : "text-border"
-                          )} 
-                        />
-                      </button>
-                    ))}
-                    <span className="ml-2 text-sm font-bold text-muted">
-                      {rating > 0 ? `${rating} Stars` : 'Select rating'}
-                    </span>
-                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2" role="radiogroup" aria-label="Rating">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          className="transition-transform active:scale-95"
+                          onMouseEnter={() => setHover(s)}
+                          onMouseLeave={() => setHover(0)}
+                          onClick={() => setRating(s)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'ArrowRight' && s < 5) setRating(s + 1)
+                            if (e.key === 'ArrowLeft' && s > 1) setRating(s - 1)
+                          }}
+                          role="radio"
+                          aria-checked={rating === s}
+                          aria-label={`Rate ${s} stars`}
+                        >
+                          <Star 
+                            className={cn(
+                              "w-8 h-8 transition-all duration-200",
+                              s <= (hover || rating) ? "text-mango fill-current" : "text-border"
+                            )} 
+                          />
+                        </button>
+                      ))}
+                      <span className="ml-2 text-sm font-bold text-muted">
+                        {rating > 0 ? `${rating} Stars` : 'Select rating'}
+                      </span>
+                    </div>
 
                   <Textarea 
                     placeholder="Tell others what you think about the taste, pulp quality, and delivery..."
@@ -199,12 +225,12 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
                   <div key={review.id} className="p-8 bg-surface rounded-[32px] border border-border/50 hover:border-mango/30 transition-all group">
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-mango/10 flex items-center justify-center text-mango font-black text-xl">
-                          {review.userName[0]}
+                        <div className="w-12 h-12 rounded-2xl bg-mango/10 flex items-center justify-center text-mango font-black text-xl" aria-hidden="true">
+                          {sanitize(review.userName || 'A')[0]?.toUpperCase() || 'A'}
                         </div>
                         <div>
-                          <p className="font-bold text-dark">{review.userName}</p>
-                          <div className="flex text-mango">
+                          <p className="font-bold text-dark">{sanitize(review.userName || 'Anonymous')}</p>
+                          <div className="flex text-mango" role="img" aria-label={`${review.rating} out of 5 stars`}>
                             {[1, 2, 3, 4, 5].map((s) => (
                               <Star 
                                 key={s} 
@@ -218,15 +244,11 @@ export default function ReviewSystem({ productId }: ReviewSystemProps) {
                         </div>
                       </div>
                       <p className="text-[10px] font-bold text-muted uppercase tracking-widest">
-                        {new Date(review.createdAt as unknown as string).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {formatDate(review.createdAt)}
                       </p>
                     </div>
                     <p className="text-dark/80 leading-relaxed font-medium">
-                      {review.comment}
+                      {sanitize(review.comment)}
                     </p>
                     {review.verifiedPurchase && (
                       <div className="mt-4 flex items-center gap-1 text-[10px] font-black text-leaf uppercase tracking-widest">

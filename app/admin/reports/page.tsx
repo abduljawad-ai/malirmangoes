@@ -60,7 +60,7 @@ function computeWeeklyData(
   })
 
   orders.forEach(order => {
-    const orderDate = new Date(order.createdAt as any)
+    const orderDate = new Date(order.createdAt)
     if (orderDate >= start && orderDate <= end) {
       let dayIndex: number
       if (capped <= 7) {
@@ -89,7 +89,7 @@ export default function AdminReportsPage() {
 
   const filteredOrders = useMemo(
     () => orders.filter(o => {
-      const date = new Date(o.createdAt as any)
+      const date = new Date(o.createdAt)
       return date >= start && date <= end
     }),
     [orders, start, end]

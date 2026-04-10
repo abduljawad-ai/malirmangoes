@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useUsers } from '@/hooks/useUsers'
 import { useAdminOrders } from '@/hooks/useAdminOrders'
 import { Search, User, Mail, Phone, Calendar, Ban, Check } from 'lucide-react'
@@ -24,10 +24,27 @@ export default function AdminCustomersPage() {
     )
   })
 
-  const getUserOrders = (userId: string) => orders.filter(o => o.userId === userId)
-  const getUserSpent = (userId: string) => getUserOrders(userId)
-    .filter(o => o.paymentStatus === 'Verified')
-    .reduce((acc, o) => acc + o.total, 0)
+  const userOrderMap = useMemo(() => {
+    const map = new Map<string, typeof orders>()
+    for (const order of orders) {
+      if (!map.has(order.userId)) {
+        map.set(order.userId, [])
+      }
+      map.get(order.userId)!.push(order)
+    }
+    return map
+  }, [orders])
+
+  const userSpentMap = useMemo(() => {
+    const map = new Map<string, number>()
+    userOrderMap.forEach((userOrders, userId) => {
+      const total = userOrders
+        .filter(o => o.paymentStatus === 'Verified')
+        .reduce((acc, o) => acc + o.total, 0)
+      map.set(userId, total)
+    })
+    return map
+  }, [userOrderMap])
 
   const toggleBan = async (userId: string, isBanned: boolean) => {
     try {
@@ -95,11 +112,11 @@ export default function AdminCustomersPage() {
                   </div>
                   <div className="hidden sm:flex items-center gap-6 text-sm">
                     <div className="text-right">
-                      <p className="font-semibold text-dark">{userOrders.length}</p>
+                      <p className="font-semibold text-dark">{(userOrderMap.get(user.uid) || []).length}</p>
                       <p className="text-xs text-muted">Orders</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-dark">{formatPKR(userSpent)}</p>
+                      <p className="font-semibold text-dark">{formatPKR(userSpentMap.get(user.uid) || 0)}</p>
                       <p className="text-xs text-muted">Spent</p>
                     </div>
                   </div>
@@ -118,7 +135,7 @@ export default function AdminCustomersPage() {
                       </div>
                       <div className="flex items-center gap-2 text-muted">
                         <Calendar className="w-4 h-4" />
-                        <span>{user.createdAt ? new Date(user.createdAt as any).toLocaleDateString() : 'N/A'}</span>
+                        <span>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span>
                       </div>
                     </div>
                     <div className="mt-3 flex gap-2">

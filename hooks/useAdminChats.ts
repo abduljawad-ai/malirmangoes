@@ -5,13 +5,14 @@ import { ref, onValue, push, set, update } from 'firebase/database'
 import { rtdb } from '@/lib/firebase'
 import { ChatMessage, ChatMetadata, ChatConversation, TypingStatus } from '@/types/chat'
 
+const MESSAGE_PREVIEW_LIMIT = 3
+
 export function useAdminChats() {
   const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [totalUnread, setTotalUnread] = useState(0)
 
-  // Listen to metadata only (not messages) for the conversation list
   useEffect(() => {
     if (!rtdb) {
       setLoading(false)
@@ -19,32 +20,37 @@ export function useAdminChats() {
     }
 
     const chatsRef = ref(rtdb, 'chats')
-    let timeoutId: NodeJS.Timeout
+    let timeoutId: NodeJS.Timeout | null = null
 
     const unsubscribe = onValue(
       chatsRef,
       (snapshot) => {
-        clearTimeout(timeoutId)
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+          timeoutId = null
+        }
         if (snapshot.exists()) {
           const data = snapshot.val()
           const conversationsList: ChatConversation[] = []
 
           Object.keys(data).forEach(userId => {
             const chatData = data[userId]
-            const messages = chatData.messages || {}
+            const allMessages = chatData.messages || {}
             const metadata = chatData.metadata || {}
 
-            const messagesList = Object.keys(messages).map(key => ({
+            const allMessagesList = Object.keys(allMessages).map(key => ({
               id: key,
-              ...messages[key]
+              ...allMessages[key]
             })) as ChatMessage[]
 
-            messagesList.sort((a, b) => a.timestamp - b.timestamp)
+            allMessagesList.sort((a, b) => a.timestamp - b.timestamp)
+
+            const lastMessages = allMessagesList.slice(-MESSAGE_PREVIEW_LIMIT)
 
             conversationsList.push({
               userId,
               metadata: metadata as ChatMetadata,
-              messages: messagesList
+              messages: lastMessages
             })
           })
 
@@ -66,20 +72,25 @@ export function useAdminChats() {
         }
         setLoading(false)
       },
-      (error) => {
-        clearTimeout(timeoutId)
+      () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+          timeoutId = null
+        }
         setLoading(false)
       }
     )
 
-    // Safety timeout: if RTDB never responds within 5s, stop loading
     timeoutId = setTimeout(() => {
       setLoading(false)
+      timeoutId = null
     }, 5000)
 
     return () => {
       unsubscribe()
-      clearTimeout(timeoutId)
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
     }
   }, [])
 
@@ -130,7 +141,7 @@ export function useAdminChats() {
       })
 
       if (Object.keys(updates).length > 0) {
-        update(ref(rtdb), updates)
+        await update(ref(rtdb), updates)
       }
     }, { onlyOnce: true })
   }, [])

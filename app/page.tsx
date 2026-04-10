@@ -82,6 +82,7 @@ export default function HomePage() {
 
   // Reset to first slide when slides source changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentSlide(0)
   }, [safeSlides.length])
 
@@ -127,7 +128,6 @@ export default function HomePage() {
               sizes="100vw"
               className="object-cover"
               priority={currentSlide === 0}
-              unoptimized
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
@@ -297,7 +297,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/mangostore/mangostore/farm_harvest.jpg',
+                image: 'https://res.cloudinary.com/dzimmsjyx/image/upload/v1775577169/mangostore/farm_harvest.jpg',
                 title: settings.whyUs1Title || 'Tree to Table Freshness',
                 desc: settings.whyUs1Desc || "Hand-picked at peak ripeness, packed same day. You'll taste the difference from the first bite.",
               },
@@ -327,7 +327,6 @@ export default function HomePage() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    unoptimized
                   />
                 </div>
                 <div className="p-5">
@@ -351,7 +350,6 @@ export default function HomePage() {
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 py-16 sm:py-20 text-center">

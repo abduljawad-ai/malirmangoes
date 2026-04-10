@@ -2,30 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminStatus, adminRtdb, verifyIdToken } from './firebase-admin'
 import { adminAuth } from '@/lib/firebase-admin'
 
-async function verifyTokenWithRestApi(token: string) {
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
-  if (!apiKey) return null
-
-  const res = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken: token }),
-    }
-  )
-
-  if (!res.ok) return null
-  const data = await res.json()
-  if (data.users && data.users.length > 0) {
-    return { uid: data.users[0].localId }
-  }
-  return null
-}
-
 /**
  * Verify request and extract user info from session cookie or Bearer token.
- * Supports both session cookies (new) and raw ID tokens (legacy).
+ * Supports both session cookies (preferred) and Firebase ID tokens.
+ * 
+ * Security Note: We only use Firebase Admin SDK methods here.
+ * The REST API fallback has been removed as it poses security risks.
  */
 export async function verifyAuth(request: NextRequest) {
   try {
@@ -42,23 +24,26 @@ export async function verifyAuth(request: NextRequest) {
       return { user: null, error: 'No session' }
     }
 
-    // Try Admin SDK session cookie verification first
+    // Try Admin SDK session cookie verification first (preferred method)
     try {
       const decoded = await adminAuth.verifySessionCookie(token, true)
       return { user: decoded, error: null }
-    } catch {
-      // Try Admin SDK ID token verification
+    } catch (sessionError) {
+      // Session cookie verification failed, try ID token as fallback
+      // This handles cases where client still has an ID token from before session cookie migration
       const decoded = await verifyIdToken(token)
-      if (decoded) return { user: decoded, error: null }
-
-      // Fallback: use Firebase REST API (works without Admin SDK credentials)
-      const restDecoded = await verifyTokenWithRestApi(token)
-      if (restDecoded) return { user: restDecoded, error: null }
-
-      return { user: null, error: 'Invalid token' }
+      if (decoded) {
+        // Log this for monitoring - in production, you might want to track these occurrences
+        console.warn('[Auth] Falling back to ID token verification for user:', decoded.uid)
+        return { user: decoded, error: null }
+      }
+      
+      // Both verification methods failed
+      return { user: null, error: 'Invalid or expired token' }
     }
   } catch (error) {
-    return { user: null, error: 'Auth failed' }
+    console.error('[Auth] Authentication error:', error)
+    return { user: null, error: 'Authentication failed' }
   }
 }
 
@@ -118,28 +103,94 @@ export async function checkOrderAccess(orderId: string, userId: string) {
 }
 
 /**
- * Rate limiting helper
+ * Rate limiting helper with automatic cleanup
+ * Note: For serverless environments, consider using Redis or a distributed rate limiter
  */
-const requestCounts = new Map<string, { count: number; resetTime: number }>()
+interface RateLimitRecord {
+  count: number
+  resetTime: number
+}
 
-export function checkRateLimit(key: string, maxRequests: number = 5, windowSeconds: number = 60): boolean {
+const requestCounts = new Map<string, RateLimitRecord>()
+let lastCleanup = Date.now()
+const CLEANUP_INTERVAL = 60 * 1000 // Cleanup every minute
+const MAX_MAP_SIZE = 10000 // Prevent memory exhaustion
+
+function cleanupExpiredRecords(): void {
   const now = Date.now()
+  
+  // Only cleanup periodically
+  if (now - lastCleanup < CLEANUP_INTERVAL) return
+  lastCleanup = now
+  
+  // Clean up expired entries
+  for (const [key, record] of requestCounts.entries()) {
+    if (now > record.resetTime) {
+      requestCounts.delete(key)
+    }
+  }
+  
+  // Emergency cleanup if map is too large
+  if (requestCounts.size > MAX_MAP_SIZE) {
+    const entries = Array.from(requestCounts.entries())
+    entries.sort((a, b) => a[1].resetTime - b[1].resetTime)
+    
+    // Remove oldest half
+    const toRemove = entries.slice(0, Math.floor(entries.length / 2))
+    for (const [key] of toRemove) {
+      requestCounts.delete(key)
+    }
+  }
+}
+
+export function checkRateLimit(
+  key: string, 
+  maxRequests: number = 5, 
+  windowSeconds: number = 60
+): { allowed: boolean; remaining: number; resetIn: number } {
+  const now = Date.now()
+  
+  // Periodic cleanup
+  cleanupExpiredRecords()
+  
   const record = requestCounts.get(key)
 
-  if (!record) {
-    requestCounts.set(key, { count: 1, resetTime: now + windowSeconds * 1000 })
-    return true
-  }
-
-  if (now > record.resetTime) {
-    requestCounts.set(key, { count: 1, resetTime: now + windowSeconds * 1000 })
-    return true
+  if (!record || now > record.resetTime) {
+    const newRecord: RateLimitRecord = { 
+      count: 1, 
+      resetTime: now + windowSeconds * 1000 
+    }
+    requestCounts.set(key, newRecord)
+    return { 
+      allowed: true, 
+      remaining: maxRequests - 1, 
+      resetIn: windowSeconds 
+    }
   }
 
   if (record.count >= maxRequests) {
-    return false
+    const resetIn = Math.ceil((record.resetTime - now) / 1000)
+    return { 
+      allowed: false, 
+      remaining: 0, 
+      resetIn 
+    }
   }
 
   record.count++
-  return true
+  const remaining = maxRequests - record.count
+  const resetIn = Math.ceil((record.resetTime - now) / 1000)
+  
+  return { allowed: true, remaining, resetIn }
+}
+
+/**
+ * Get rate limit headers for response
+ */
+export function getRateLimitHeaders(result: ReturnType<typeof checkRateLimit>): Record<string, string> {
+  return {
+    'X-RateLimit-Limit': '60',
+    'X-RateLimit-Remaining': result.remaining.toString(),
+    'X-RateLimit-Reset': result.resetIn.toString(),
+  }
 }

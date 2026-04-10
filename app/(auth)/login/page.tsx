@@ -14,13 +14,25 @@ import Link from 'next/link'
 
 type LoginForm = z.infer<typeof loginSchema>
 
+const ALLOWED_REDIRECT_PATHS = ['/', '/checkout', '/cart', '/products', '/about', '/customer', '/customer/orders', '/customer/profile', '/wishlist']
+
+function isValidRedirect(url: string): boolean {
+  if (!url || url === '') return false
+  if (url.startsWith('/') && !url.startsWith('//')) {
+    const pathname = url.split('?')[0]
+    return pathname === '/' || ALLOWED_REDIRECT_PATHS.some(path => pathname === path || pathname.startsWith(path + '/'))
+  }
+  return false
+}
+
 function LoginContent() {
   const { loginWithGoogle, user, loading: authLoading, isAdmin } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [loading, setLoading] = React.useState(false)
 
-  const redirect = searchParams.get('redirect') || '/'
+  const rawRedirect = searchParams.get('redirect') || '/'
+  const redirect = isValidRedirect(rawRedirect) ? rawRedirect : '/'
 
   React.useEffect(() => {
     if (!authLoading && user) {
@@ -44,10 +56,11 @@ function LoginContent() {
       const { auth } = await import('@/lib/firebase')
       await signInWithEmailAndPassword(auth, data.email, data.password)
       router.push(isAdmin ? '/admin' : redirect)
-    } catch (error: any) {
-      const msg = error.code === 'auth/invalid-credential'
+    } catch (error: unknown) {
+      const authError = error as { code?: string }
+      const msg = authError.code === 'auth/invalid-credential'
         ? 'Invalid email or password'
-        : error.code === 'auth/user-not-found'
+        : authError.code === 'auth/user-not-found'
         ? 'No account found with this email'
         : 'Login failed. Please try again.'
       toast.error(msg)

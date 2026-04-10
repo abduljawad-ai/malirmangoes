@@ -30,6 +30,7 @@ export default function AdminChatPage() {
 
   // Reset showUserInfo when user changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowUserInfo(false)
   }, [adminChats.selectedUserId])
 
