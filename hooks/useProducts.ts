@@ -15,7 +15,6 @@ interface UseProductsOptions {
   category?: string
   limitCount?: number
   featuredOnly?: boolean
-  searchQuery?: string
 }
 
 export function useProducts(options: UseProductsOptions = {}) {

@@ -37,6 +37,7 @@ export default function Navbar() {
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
                 className="p-1.5 text-slate-600 hover:bg-slate-50 rounded-md transition-colors"
+                aria-label="Open menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
