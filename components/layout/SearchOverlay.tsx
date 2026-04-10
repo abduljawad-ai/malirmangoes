@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Search, X, ArrowRight } from 'lucide-react'
@@ -12,15 +12,49 @@ interface SearchOverlayProps {
   onClose: () => void
 }
 
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
 export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const { products } = useProducts({ limitCount: 50 })
+  
+  // Debounce the search query (300ms delay)
+  const debouncedQuery = useDebounce(query, 300)
+
+  // Use a key to force re-render when open changes, which resets the input
+  const [inputKey, setInputKey] = useState(0)
+
+  // Simple filter without debounce - filter happens on client with small product list
+  const results = useMemo(() => {
+    const trimmed = query.trim()
+    if (trimmed.length < 2) return []
+    
+    const lowerQuery = trimmed.toLowerCase()
+    return products.filter(p =>
+      p.name.toLowerCase().includes(lowerQuery) ||
+      p.category?.toLowerCase().includes(lowerQuery)
+    ).slice(0, 6)
+  }, [products, query])
 
   useEffect(() => {
     if (open) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setQuery('')
+      setInputKey(k => k + 1)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
   }, [open])
@@ -33,14 +67,25 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     return () => document.removeEventListener('keydown', handleKey)
   }, [open, onClose])
 
+  // Memoize the filtered results
+  const results = useMemo(() => {
+    const trimmed = debouncedQuery.trim()
+    if (trimmed.length < 2) return []
+    
+    const lowerQuery = trimmed.toLowerCase()
+    return products.filter(p =>
+      p.name.toLowerCase().includes(lowerQuery) ||
+      p.category?.toLowerCase().includes(lowerQuery)
+    ).slice(0, 6)
+  }, [products, debouncedQuery])
+
+  const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value)
+  }, [])
+
   if (!open) return null
 
-  const results = query.trim().length < 2
-    ? []
-    : products.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.category?.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6)
+  const showInitial = query.trim().length < 2
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] px-4">
@@ -49,10 +94,11 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
           <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
           <input
+            key={inputKey}
             ref={inputRef}
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            defaultValue=""
+            onChange={handleQueryChange}
             placeholder="Search mangoes..."
             className="flex-1 text-base text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
           />
@@ -62,7 +108,7 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         </div>
 
         <div className="max-h-80 overflow-y-auto">
-          {query.trim().length < 2 ? (
+          {showInitial ? (
             <p className="text-sm text-slate-400 text-center py-8">Type at least 2 characters to search</p>
           ) : results.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-8">No results for &ldquo;{query}&rdquo;</p>

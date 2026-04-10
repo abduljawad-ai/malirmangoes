@@ -54,14 +54,15 @@ export default function ChatInterface({ productInfo }: ChatInterfaceProps) {
    
   }, [lastMessageId])
 
-  // Mark as read when messages change (not on every render)
+  // Mark as read only when there are unread admin messages
   const messagesLength = chat.messages.length
+  const hasUnreadAdminMessages = chat.messages.some(msg => msg.sender === 'admin' && !msg.seen)
   useEffect(() => {
-    if (messagesLength > 0) {
+    if (messagesLength > 0 && hasUnreadAdminMessages) {
       chat.markAsRead()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messagesLength])
+  }, [messagesLength, hasUnreadAdminMessages])
 
   // Focus input on load
   useEffect(() => {

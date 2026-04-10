@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { 
   ref, 
   get, 
@@ -25,7 +25,8 @@ export function useProducts(options: UseProductsOptions = {}) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true)
-
+  const [displayCount, setDisplayCount] = useState(limitCount)
+  
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
@@ -55,32 +56,46 @@ export function useProducts(options: UseProductsOptions = {}) {
           items = items.filter(p => p.isFeatured)
         }
 
-        const paginatedItems = items.slice(0, limitCount)
-        setProducts(paginatedItems)
-        setHasMore(items.length > limitCount)
+        // Store all filtered products and slice based on displayCount
+        setProducts(items)
+        setHasMore(items.length > displayCount)
+        setError(null)
       } else {
         setProducts([])
         setHasMore(false)
+        setError(null)
       }
-      setError(null)
     } catch (err: unknown) {
       console.error('[useProducts] Failed to fetch products:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch products')
     } finally {
       setLoading(false)
     }
-  }, [category, featuredOnly, limitCount])
+  }, [category, featuredOnly, displayCount])
+
+  const loadMore = useCallback(() => {
+    const nextCount = displayCount + limitCount
+    setDisplayCount(nextCount)
+    setHasMore(products.length > nextCount)
+  }, [displayCount, limitCount, products.length])
 
   useEffect(() => {
     fetchProducts()
-  }, [fetchProducts])
+    setDisplayCount(limitCount) // Reset on category/filter change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchProducts, category, featuredOnly])
+
+  // Return sliced products based on displayCount
+  const displayProducts = useMemo(() => {
+    return products.slice(0, displayCount)
+  }, [products, displayCount])
 
   return {
-    products,
+    products: displayProducts,
     loading,
     error,
     hasMore,
-    loadMore: () => {},
+    loadMore,
     refresh: () => fetchProducts()
   }
 }
