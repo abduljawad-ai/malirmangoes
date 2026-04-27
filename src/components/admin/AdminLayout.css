@@ -1,0 +1,88 @@
+.admin-layout {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.admin-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-logo {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-logo .logo-text {
+  color: var(--color-text);
+}
+
+.admin-logo .logo-accent {
+  color: var(--color-primary);
+}
+
+.view-site-btn {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 8px 16px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.view-site-btn:hover {
+  background: #e5e7eb;
+}
+
+.admin-nav {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+}
+
+.nav-tab {
+  padding: 16px 20px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-tab:hover {
+  color: var(--color-text);
+}
+
+.nav-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.admin-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}

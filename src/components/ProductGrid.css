@@ -1,0 +1,48 @@
+.product-grid-section {
+  padding: 80px 24px;
+  background: var(--color-surface);
+}
+
+.product-grid-section:nth-child(even) {
+  background: var(--color-background);
+}
+
+.product-grid-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product-grid-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.product-grid-title {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.product-grid-subtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .product-grid-section {
+    padding: 48px 16px;
+  }
+}
