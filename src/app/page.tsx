@@ -13,11 +13,11 @@ import FacebookIcon from "@/components/FacebookIcon";
 import InstagramIcon from "@/components/InstagramIcon";
 
 export default function Home() {
-  const [settings, setSettings] = useState<SiteSettings>(DEMO_SETTINGS);
-  const [products, setProducts] = useState<Product[]>(DEMO_PRODUCTS);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load live data smoothly without blocking the initial render
     async function loadData() {
       try {
         const [s, p] = await Promise.all([getSettings(), getProducts()]);
@@ -25,10 +25,24 @@ export default function Home() {
         setProducts(p);
       } catch (e) {
         console.error("Failed to load data", e);
+        setSettings(DEMO_SETTINGS);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadData();
   }, []);
+
+  if (isLoading || !settings) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1d140a", color: "#fff" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px" }}>🥭</div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
