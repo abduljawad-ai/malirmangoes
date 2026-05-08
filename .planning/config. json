@@ -1,0 +1,17 @@
+{
+  "mode": "yolo",
+  "granularity": "coarse",
+  "parallelization": true,
+  "commit_docs": false,
+  "model_profile": "inherit",
+  "planning": {
+    "sub_repos": []
+  },
+  "workflow": {
+    "research": false,
+    "plan_check": false,
+    "verifier": false,
+    "nyquist_validation": false,
+    "auto_advance": false
+  }
+}
