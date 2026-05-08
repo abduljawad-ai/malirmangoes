@@ -10,6 +10,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase only if we have the config
-const app = !getApps().length && firebaseConfig.projectId ? initializeApp(firebaseConfig) : getApp();
+let app = null;
+if (firebaseConfig.projectId) {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+}
+
 export const db = app ? getFirestore(app) : null;
