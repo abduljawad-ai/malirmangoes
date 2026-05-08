@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Natural Mango Palette */
+  --cream: #FDFAF4;
+  --cream-dark: #F5EFE0;
+  --mango-50: #FFF8E7;
+  --mango-100: #FFECB3;
+  --mango-300: #FFD54F;
+  --mango-400: #FFCA28;
+  --mango-500: #FFC107;
+  --mango-600: #FFB300;
+  --mango-700: #FF8F00;
+  --mango-800: #E65100;
+  --leaf-900: #1B3E2D;
+  --leaf-800: #2D6A4F;
+  --leaf-700: #40916C;
+  --leaf-600: #52B788;
+  --bark-900: #3D2B1F;
+  --bark-700: #6B4226;
+  --bark-400: #A0785A;
+  --white: #FFFFFF;
+  --shadow-warm: rgba(61, 43, 31, 0.08);
+  --shadow-warm-md: rgba(61, 43, 31, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--cream);
+  color: var(--bark-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream-dark); }
+::-webkit-scrollbar-thumb { background: var(--mango-600); border-radius: 3px; }
+
+/* Typography utilities */
+.font-serif { font-family: 'Lora', serif; }
+.text-balance { text-wrap: balance; }
+
+/* Organic noise texture overlay for hero */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(253, 250, 244, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 179, 0, 0.15);
+}
+
+/* WhatsApp button */
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  font-weight: 700;
+  border-radius: 50px;
+  padding: 14px 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.45);
+}
+
+.btn-whatsapp:active {
+  transform: translateY(0);
+}
+
+/* Primary mango button */
+.btn-primary {
+  background: var(--mango-600);
+  color: var(--bark-900);
+  font-weight: 700;
+  border-radius: 50px;
+  padding: 14px 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 16px rgba(255, 179, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--mango-700);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 143, 0, 0.45);
+}
+
+/* Section padding */
+.section-py { padding-top: 64px; padding-bottom: 64px; }
+@media (min-width: 768px) { .section-py { padding-top: 96px; padding-bottom: 96px; } }
+
+/* Animate on scroll — initial state */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+}
+.anim-fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Product card hover lift */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px var(--shadow-warm-md);
+}
