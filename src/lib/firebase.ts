@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, initializeFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,16 +12,4 @@ const firebaseConfig = {
 
 // Initialize Firebase only if we have the config
 const app = !getApps().length && firebaseConfig.projectId ? initializeApp(firebaseConfig) : getApp();
-
-let firestoreDb = null;
-if (app) {
-  try {
-    // Force long polling to avoid GRPC errors in Next.js Server Components
-    firestoreDb = initializeFirestore(app, { experimentalForceLongPolling: true });
-  } catch (e) {
-    // Fallback if already initialized
-    firestoreDb = getFirestore(app);
-  }
-}
-
-export const db = firestoreDb;
+export const db = app ? getFirestore(app) : null;
