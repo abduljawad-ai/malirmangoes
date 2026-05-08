@@ -72,64 +72,7 @@ export function buildWhatsAppUrl(
 
 // ---- Demo Data Fallbacks ----
 
-export const DEMO_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "Sindhri Mango",
-    variety: "Sindhri",
-    description: "The 'King of Mangoes' — famous for its fibre-less, buttery-sweet flesh and heavenly fragrance. Grown in the heart of Mirpurkhas.",
-    price_per_box: 2800,
-    image_url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=800&q=80",
-    image_urls: [
-      "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=800&q=80",
-      "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=800&q=80"
-    ],
-    origin: "Mirpurkhas, Sindh",
-    season: "May – July",
-    taste_notes: "Sweet, fibre-less, buttery",
-    in_stock: true,
-    featured: true,
-  },
-  {
-    id: "2",
-    name: "Chaunsa Mango",
-    variety: "Chaunsa",
-    description: "Creamy, honey-sweet and juicy with a perfectly smooth texture. Pakistan's most exported premium mango variety.",
-    price_per_box: 3200,
-    image_url: "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=800&q=80",
-    origin: "Rahim Yar Khan, Punjab",
-    season: "July – September",
-    taste_notes: "Creamy, honey-sweet, aromatic",
-    in_stock: true,
-    featured: true,
-  },
-  {
-    id: "3",
-    name: "Anwar Ratol",
-    variety: "Anwar Ratol",
-    description: "A small, intensely flavourful mango with an unmatched sugar-rich sweetness. Highly prized by connoisseurs worldwide.",
-    price_per_box: 3600,
-    image_url: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=800&q=80",
-    origin: "Bahawalpur, Punjab",
-    season: "July – August",
-    taste_notes: "Intensely sweet, rich, sugar-packed",
-    in_stock: true,
-    featured: false,
-  },
-  {
-    id: "4",
-    name: "Langra Mango",
-    variety: "Langra",
-    description: "Distinguished by its unique tangy-sweet flavour profile and bright green skin even when fully ripe. A true classic.",
-    price_per_box: 2500,
-    image_url: "https://images.unsplash.com/photo-1605027990121-cbae9e0642df?w=800&q=80",
-    origin: "Muzaffargarh, Punjab",
-    season: "June – August",
-    taste_notes: "Tangy-sweet, fibrous, refreshing",
-    in_stock: false,
-    featured: false,
-  },
-];
+export const DEMO_PRODUCTS: Product[] = [];
 
 export const DEMO_SETTINGS: SiteSettings = {
   id: "1",

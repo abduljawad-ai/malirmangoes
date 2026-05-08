@@ -1,19 +1,34 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { DEMO_SETTINGS, Product, SiteSettings } from "@/lib/types";
+import { DEMO_SETTINGS, DEMO_PRODUCTS, Product, SiteSettings } from "@/lib/types";
 import { getProducts, getSettings } from "@/lib/store";
 import { Truck, Package, ShieldCheck, Star, Loader2, Leaf, MapPin, ShoppingBag } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import FacebookIcon from "@/components/FacebookIcon";
 import InstagramIcon from "@/components/InstagramIcon";
 
-export const dynamic = "force-dynamic";
+export default function Home() {
+  const [settings, setSettings] = useState<SiteSettings>(DEMO_SETTINGS);
+  const [products, setProducts] = useState<Product[]>(DEMO_PRODUCTS);
 
-export default async function Home() {
-  const [settings, products] = await Promise.all([getSettings(), getProducts()]);
+  useEffect(() => {
+    // Load live data smoothly without blocking the initial render
+    async function loadData() {
+      try {
+        const [s, p] = await Promise.all([getSettings(), getProducts()]);
+        setSettings(s);
+        setProducts(p);
+      } catch (e) {
+        console.error("Failed to load data", e);
+      }
+    }
+    loadData();
+  }, []);
 
   return (
     <>
