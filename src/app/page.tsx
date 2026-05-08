@@ -34,6 +34,18 @@ export default function Home() {
     loadData();
   }, []);
 
+  const heroImages = settings?.hero_image_urls && settings.hero_image_urls.length > 0 
+    ? settings.hero_image_urls 
+    : settings?.hero_image_url ? [settings.hero_image_url] : [];
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
   if (isLoading || !settings) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1d140a", color: "#fff" }}>
@@ -45,19 +57,6 @@ export default function Home() {
     );
   }
 
-  const heroImages = settings.hero_image_urls && settings.hero_image_urls.length > 0 
-    ? settings.hero_image_urls 
-    : [settings.hero_image_url];
-
-  // Auto-slide effect
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (heroImages.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
 
   return (
     <>
