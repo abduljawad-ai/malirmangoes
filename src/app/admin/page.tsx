@@ -482,6 +482,48 @@ export default function AdminDashboard() {
                 </div>
               ))}
 
+              {/* Hero Slider Images */}
+              <div>
+                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: "4px" }}>Hero Background Slider Images</label>
+                <p style={{ fontSize: "11px", color: "var(--bark-400)", marginBottom: "12px" }}>Add multiple images here to create an auto-playing smooth background slider.</p>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {(settings.hero_image_urls || []).map((url, idx) => (
+                    <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                      <div style={{ flex: 1 }}>
+                        <ImageUploader
+                          value={url}
+                          onChange={(newUrl) => {
+                            const newUrls = [...(settings.hero_image_urls || [])];
+                            newUrls[idx] = newUrl;
+                            setSettings({ ...settings, hero_image_urls: newUrls });
+                          }}
+                          placeholder="Upload or paste slider image link"
+                        />
+                      </div>
+                      <button
+                        onClick={() => {
+                          const newUrls = (settings.hero_image_urls || []).filter((_, i) => i !== idx);
+                          setSettings({ ...settings, hero_image_urls: newUrls });
+                        }}
+                        style={{ padding: "10px", background: "#FEF2F2", color: "#EF4444", border: "1px solid #FCA5A5", borderRadius: "10px", cursor: "pointer", height: "46px" }}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    const newUrls = [...(settings.hero_image_urls || []), ""];
+                    setSettings({ ...settings, hero_image_urls: newUrls });
+                  }}
+                  style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--cream-dark)", border: "none", padding: "8px 16px", borderRadius: "50px", fontSize: "12px", fontWeight: 700, color: "var(--bark-700)", cursor: "pointer", marginTop: "8px" }}
+                >
+                  <Plus size={14} /> Add Slider Image
+                </button>
+              </div>
+
               <button id="save-settings-btn" onClick={handleSaveSettings} className="btn-primary" style={{ alignSelf: "flex-start", padding: "14px 32px" }}>
                 <Save size={16} /> Save All Settings
               </button>

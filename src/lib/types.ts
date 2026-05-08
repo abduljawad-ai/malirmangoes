@@ -35,6 +35,7 @@ export interface SiteSettings {
   farm_tagline: string;
   farm_location: string;
   hero_image_url: string;
+  hero_image_urls?: string[]; // Multiple hero images for auto-slider
   about_image_url: string;
   about_subtitle: string;
   about_title: string;
@@ -82,6 +83,11 @@ export const DEMO_SETTINGS: SiteSettings = {
   farm_tagline: "From our farm to your table — pure, fresh, and unforgettable.",
   farm_location: "Mirpurkhas, Sindh, Pakistan",
   hero_image_url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=1400&q=85",
+  hero_image_urls: [
+    "https://images.unsplash.com/photo-1553279768-865429fa0078?w=1400&q=85",
+    "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=1400&q=85",
+    "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=1400&q=85"
+  ],
   about_image_url: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=900&q=80",
   about_subtitle: "🌿 Our Story",
   about_title: "Grown with Care,\nDelivered with Pride",

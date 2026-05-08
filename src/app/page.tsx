@@ -16,6 +16,7 @@ export default function Home() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   useEffect(() => {
     async function loadData() {
@@ -44,6 +45,20 @@ export default function Home() {
     );
   }
 
+  const heroImages = settings.hero_image_urls && settings.hero_image_urls.length > 0 
+    ? settings.hero_image_urls 
+    : [settings.hero_image_url];
+
+  // Auto-slide effect
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
   return (
     <>
       <Navbar farmName={settings.farm_name} logoUrl={settings.logo_url} />
@@ -59,16 +74,21 @@ export default function Home() {
           overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url(${settings.hero_image_url})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center 30%",
-            filter: "brightness(0.55)",
-          }}
-        />
+        {heroImages.map((url, index) => (
+          <div
+            key={url + index}
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url(${url})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center 30%",
+              filter: "brightness(0.55)",
+              opacity: index === currentHeroIndex ? 1 : 0,
+              transition: "opacity 1.5s ease-in-out",
+            }}
+          />
+        ))}
         <div
           style={{
             position: "absolute",
