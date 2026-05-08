@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import ImageUploader from "@/components/ImageUploader";
 import { CustomSection, DEMO_SETTINGS, Product, SiteSettings } from "@/lib/types";
 import { getProducts, getSettings, saveProduct, removeProduct, saveSettings } from "@/lib/store";
 import {
@@ -439,14 +440,14 @@ export default function AdminDashboard() {
             <div style={{ background: "var(--white)", borderRadius: "24px", padding: "28px", boxShadow: "0 4px 20px var(--shadow-warm)", display: "flex", flexDirection: "column", gap: "20px" }}>
               {(
                 [
-                  { label: "Logo URL", key: "logo_url", type: "url", hint: "Paste a direct image link (JPG/PNG). Leave empty for default." },
+                  { label: "Logo URL", key: "logo_url", type: "image", hint: "Paste a direct image link (JPG/PNG). Leave empty for default." },
                   { label: "Farm Name", key: "farm_name", type: "text" },
                   { label: "Tagline", key: "farm_tagline", type: "text" },
                   { label: "Location", key: "farm_location", type: "text" },
                   { label: "WhatsApp Number (with country code, no +)", key: "whatsapp_number", type: "text", hint: "e.g. 923001234567" },
                   { label: "Leopard Delivery Charge (Rs per box)", key: "delivery_charge", type: "number" },
-                  { label: "Hero Image URL", key: "hero_image_url", type: "url", hint: "Paste a Cloudinary or direct image link" },
-                  { label: "About Image URL", key: "about_image_url", type: "url", hint: "Paste an image link for the 'Our Story' section" },
+                  { label: "Hero Image URL", key: "hero_image_url", type: "image", hint: "Paste a Cloudinary or direct image link" },
+                  { label: "About Image URL", key: "about_image_url", type: "image", hint: "Paste an image link for the 'Our Story' section" },
                   { label: "About Subtitle", key: "about_subtitle", type: "text", hint: "e.g. 🌿 Our Story" },
                   { label: "About Title", key: "about_title", type: "textarea", hint: "Main heading of the about section" },
                   { label: "About Text", key: "about_text", type: "textarea" },
@@ -460,7 +461,13 @@ export default function AdminDashboard() {
                     {field.label}
                   </label>
                   {field.hint && <p style={{ fontSize: "11px", color: "var(--bark-400)", marginBottom: "6px" }}>{field.hint}</p>}
-                  {field.type === "textarea" ? (
+                  {field.type === "image" ? (
+                    <ImageUploader
+                      value={(settings[field.key] as string) || ""}
+                      onChange={(url) => setSettings({ ...settings, [field.key]: url })}
+                      placeholder="Upload or paste image link"
+                    />
+                  ) : field.type === "textarea" ? (
                     <textarea id={`settings-${field.key}`}
                       value={settings[field.key] as string}
                       onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
@@ -507,7 +514,7 @@ export default function AdminDashboard() {
                   { label: "Variety", key: "variety", type: "text", hint: "e.g. Sindhri" },
                   { label: "Description", key: "description", type: "textarea" },
                   { label: "Price per Box (Rs)", key: "price_per_box", type: "number" },
-                  { label: "Primary Image URL (Cloudinary or direct link)", key: "image_url", type: "url" },
+                  { label: "Primary Image URL (Cloudinary or direct link)", key: "image_url", type: "image" },
                   { label: "Origin", key: "origin", type: "text", hint: "e.g. Mirpurkhas, Sindh" },
                   { label: "Season", key: "season", type: "text", hint: "e.g. May – July" },
                   { label: "Taste Notes", key: "taste_notes", type: "text", hint: "e.g. Sweet, buttery" },
@@ -516,7 +523,13 @@ export default function AdminDashboard() {
                 <div key={field.key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: field.hint ? "2px" : "5px" }}>{field.label}</label>
                   {field.hint && <p style={{ fontSize: "11px", color: "var(--bark-400)", marginBottom: "5px" }}>{field.hint}</p>}
-                  {field.type === "textarea" ? (
+                  {field.type === "image" ? (
+                    <ImageUploader
+                      value={(editingProduct[field.key] as string) || ""}
+                      onChange={(url) => setEditingProduct({ ...editingProduct, [field.key]: url })}
+                      placeholder="Upload or paste image link"
+                    />
+                  ) : field.type === "textarea" ? (
                     <textarea id={`product-${field.key}`}
                       value={editingProduct[field.key] as string}
                       onChange={(e) => setEditingProduct({ ...editingProduct, [field.key]: e.target.value })}
@@ -536,18 +549,18 @@ export default function AdminDashboard() {
                 <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: "5px" }}>Additional Images</label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {(editingProduct.image_urls || []).map((url, idx) => (
-                    <div key={idx} style={{ display: "flex", gap: "8px" }}>
-                      <input
-                        type="url"
-                        value={url}
-                        onChange={(e) => {
-                          const newUrls = [...(editingProduct.image_urls || [])];
-                          newUrls[idx] = e.target.value;
-                          setEditingProduct({ ...editingProduct, image_urls: newUrls });
-                        }}
-                        style={{ flex: 1, padding: "10px 12px", borderRadius: "10px", border: "2px solid var(--cream-dark)", fontSize: "14px", outline: "none" }}
-                        placeholder="Image URL..."
-                      />
+                    <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                      <div style={{ flex: 1 }}>
+                        <ImageUploader
+                          value={url}
+                          onChange={(newUrl) => {
+                            const newUrls = [...(editingProduct.image_urls || [])];
+                            newUrls[idx] = newUrl;
+                            setEditingProduct({ ...editingProduct, image_urls: newUrls });
+                          }}
+                          placeholder="Upload or paste additional image link"
+                        />
+                      </div>
                       <button
                         onClick={() => {
                           const newUrls = (editingProduct.image_urls || []).filter((_, i) => i !== idx);
@@ -650,7 +663,7 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {(
                 [
-                  { label: "Image URL", key: "image_url", type: "url", hint: "Direct image link (JPG/PNG)" },
+                  { label: "Image URL", key: "image_url", type: "image", hint: "Direct image link (JPG/PNG)" },
                   { label: "Subtitle", key: "subtitle", type: "text", hint: "Small text above title" },
                   { label: "Title", key: "title", type: "text", hint: "Main heading" },
                   { label: "Content Text", key: "text", type: "textarea", hint: "Paragraph text" },
@@ -659,7 +672,13 @@ export default function AdminDashboard() {
                 <div key={field.key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: field.hint ? "2px" : "5px" }}>{field.label}</label>
                   {field.hint && <p style={{ fontSize: "11px", color: "var(--bark-400)", marginBottom: "5px" }}>{field.hint}</p>}
-                  {field.type === "textarea" ? (
+                  {field.type === "image" ? (
+                    <ImageUploader
+                      value={(editingSection[field.key] as string) || ""}
+                      onChange={(url) => setEditingSection({ ...editingSection, [field.key]: url })}
+                      placeholder="Upload or paste image link"
+                    />
+                  ) : field.type === "textarea" ? (
                     <textarea value={editingSection[field.key] as string}
                       onChange={(e) => setEditingSection({ ...editingSection, [field.key]: e.target.value })}
                       rows={4}
