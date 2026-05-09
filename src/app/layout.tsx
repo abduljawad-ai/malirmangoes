@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { CartProvider } from "@/lib/CartContext";
 
 export const metadata: Metadata = {
   title: "Mango Farm Pakistan | Fresh Premium Mangoes Delivered",
@@ -27,9 +28,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <CartProvider>
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </CartProvider>
       </body>
     </html>
   );

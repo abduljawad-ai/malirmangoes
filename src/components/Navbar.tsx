@@ -2,12 +2,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, ShoppingCart } from "lucide-react";
 import WhatsAppIcon from "./WhatsAppIcon";
+import { useCart } from "@/lib/CartContext";
 
 export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUrl?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -106,6 +108,52 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
             <a href="#varieties" className="btn-primary" style={{ padding: "10px 22px", fontSize: "14px" }}>
               <ShoppingBag size={16} />
               Order Now
+            </a>
+          </li>
+          {/* Cart badge */}
+          <li>
+            <a
+              href="#varieties"
+              id="navbar-cart-badge"
+              aria-label={`Cart: ${totalItems} items`}
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: totalItems > 0 ? "var(--mango-50)" : "transparent",
+                border: totalItems > 0 ? "1.5px solid var(--mango-300)" : "1.5px solid transparent",
+                color: "var(--bark-900)",
+                textDecoration: "none",
+                transition: "background 0.2s, border-color 0.2s",
+              }}
+            >
+              <ShoppingCart size={18} />
+              {totalItems > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-4px",
+                    right: "-4px",
+                    background: "var(--mango-600)",
+                    color: "var(--bark-900)",
+                    borderRadius: "50%",
+                    width: "18px",
+                    height: "18px",
+                    fontSize: "10px",
+                    fontWeight: 800,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1,
+                  }}
+                >
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
             </a>
           </li>
         </ul>
