@@ -28,8 +28,12 @@ const STORAGE_KEY = "malir_mangoes_cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  // `mounted` stays false until after the first client render where
+  // localStorage has been read. This prevents a hydration mismatch
+  // (server renders empty cart → client flashes to "items in cart" state).
+  const [mounted, setMounted] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount — runs only on the client
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -37,12 +41,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore parse errors
     }
+    setMounted(true);
   }, []);
 
-  // Persist to localStorage on every change
+  // Persist to localStorage on every change (skip the initial empty state)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-  }, [cart]);
+    if (mounted) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    }
+  }, [cart, mounted]);
 
   const addToCart = useCallback((productId: string) => {
     setCart((prev) => {
