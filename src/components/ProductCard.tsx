@@ -133,17 +133,20 @@ export default function ProductCard({
           {[
             { icon: <Sun size={12} />, text: product.season },
             { icon: <Sparkles size={12} />, text: product.taste_notes },
-          ].map((chip) => (
+          ].filter((chip) => chip.text).map((chip) => (
             <span
               key={chip.text}
+              title={chip.text}
               style={{
                 display: "inline-flex", alignItems: "center", gap: "4px",
                 background: "var(--mango-50)", color: "var(--bark-700)",
                 fontSize: "11px", fontWeight: 600, padding: "4px 10px",
                 borderRadius: "50px", border: "1px solid var(--mango-100)",
+                maxWidth: "180px", overflow: "hidden",
               }}
             >
-              {chip.icon} {chip.text}
+              <span style={{ flexShrink: 0, display: "flex" }}>{chip.icon}</span>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{chip.text}</span>
             </span>
           ))}
         </div>

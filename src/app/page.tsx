@@ -7,7 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { DEMO_SETTINGS, DEMO_PRODUCTS, Product, SiteSettings } from "@/lib/types";
 import { getProducts, getSettings } from "@/lib/store";
-import { Truck, Package, ShieldCheck, Star, Loader2, Leaf, MapPin, ShoppingBag } from "lucide-react";
+import { Truck, Package, ShieldCheck, Star, Loader2, Leaf, MapPin, ShoppingBag, Phone } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import FacebookIcon from "@/components/FacebookIcon";
 import InstagramIcon from "@/components/InstagramIcon";
@@ -205,7 +205,7 @@ export default function Home() {
       </div>
 
       {/* ─── PRODUCTS ─────────────────────────────────── */}
-      <section id="varieties" className="section-py" style={{ maxWidth: "1200px", margin: "0 auto", padding: "80px 20px" }}>
+      <section id="varieties" className="section-py" style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 20px" }}>
         <AnimateOnScroll>
           <div style={{ textAlign: "center", marginBottom: "56px" }}>
             <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -254,7 +254,7 @@ export default function Home() {
       {/* ─── HOW IT WORKS ─────────────────────────────── */}
       <section
         id="how-it-works"
-        style={{ background: "var(--cream-dark)", padding: "80px 20px" }}
+        style={{ background: "var(--cream-dark)", padding: "60px 20px" }}
       >
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <AnimateOnScroll>
@@ -349,7 +349,7 @@ export default function Home() {
       </section>
 
       {/* ─── ABOUT ────────────────────────────────────── */}
-      <section id="about" style={{ maxWidth: "1100px", margin: "0 auto", padding: "80px 20px" }}>
+      <section id="about" style={{ maxWidth: "1100px", margin: "0 auto", padding: "60px 20px" }}>
         <div
           style={{
             display: "grid",
@@ -381,8 +381,8 @@ export default function Home() {
             </div>
           </AnimateOnScroll>
           <AnimateOnScroll delay={120}>
-            <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              {settings.about_subtitle}
+            <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <Leaf size={12} /> {(settings.about_subtitle || '').replace(/^[^\w\s]+\s*/, '')}
             </span>
             <h2
               style={{
@@ -425,7 +425,7 @@ export default function Home() {
               gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
               gap: "48px",
               alignItems: "center",
-              marginTop: "100px",
+              marginTop: "64px",
             }}
           >
             {section.image_position === "left" && (
@@ -506,8 +506,8 @@ export default function Home() {
       </section>
 
       {/* ─── TRUST BADGES ────────────────────────────── */}
-      <section style={{ background: "var(--leaf-900)", padding: "60px 20px" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "32px" }}>
+      <section style={{ background: "var(--leaf-900)", padding: "48px 20px" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px" }}>
           {[
             { icon: <ShieldCheck size={32} color="var(--mango-400)" />, title: "Quality Guaranteed", desc: "Every mango is hand-inspected before packing." },
             { icon: <Star size={32} color="var(--mango-400)" />, title: "Premium Varieties", desc: "Sindhri, Chaunsa, Anwar Ratol & more." },
@@ -526,10 +526,10 @@ export default function Home() {
       </section>
 
       {/* ─── CONTACT CTA ─────────────────────────────── */}
-      <section id="contact" style={{ maxWidth: "700px", margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
+      <section id="contact" style={{ maxWidth: "700px", margin: "0 auto", padding: "40px 20px", textAlign: "center" }}>
         <AnimateOnScroll>
-          <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-            📞 Get in Touch
+          <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <Phone size={12} /> Get in Touch
           </span>
           <h2
             style={{
@@ -572,9 +572,11 @@ export default function Home() {
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
                 {settings.logo_url ? (
-                  <Image src={settings.logo_url} alt="Logo" width={24} height={24} style={{ borderRadius: "6px", objectFit: "contain" }} />
+                  <img src={settings.logo_url} alt="Logo" width={24} height={24} style={{ borderRadius: "6px", objectFit: "contain" }} />
                 ) : (
-                  <span style={{ fontSize: "24px" }}>🥭</span>
+                  <div style={{ background: "var(--mango-600)", padding: "4px", borderRadius: "7px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bark-900)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  </div>
                 )}
                 <span style={{ fontFamily: "'Lora', serif", fontSize: "16px", fontWeight: 600, color: "white" }}>
                   {settings.farm_name}
@@ -589,7 +591,7 @@ export default function Home() {
                 <a
                   key={href}
                   href={href}
-                  style={{ display: "block", fontSize: "13px", color: "rgba(255,255,255,0.6)", textDecoration: "none", marginBottom: "8px" }}
+                  style={{ display: "block", fontSize: "13px", color: "rgba(255,255,255,0.6)", textDecoration: "none", marginBottom: "4px" }}
                 >
                   {href.replace("#", "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                 </a>
@@ -606,12 +608,20 @@ export default function Home() {
               >
                 <WhatsAppIcon size={14} /> WhatsApp Us
               </a>
-              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
-                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  <InstagramIcon size={20} />
+              <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
+                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                  style={{ color: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.18)")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)")}
+                >
+                  <InstagramIcon size={22} />
                 </a>
-                <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  <FacebookIcon size={20} />
+                <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+                  style={{ color: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.18)")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)")}
+                >
+                  <FacebookIcon size={22} />
                 </a>
               </div>
             </div>
