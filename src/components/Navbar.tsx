@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ShoppingBag, ShoppingCart } from "lucide-react";
 import WhatsAppIcon from "./WhatsAppIcon";
 import { useCart } from "@/lib/CartContext";
@@ -37,7 +38,6 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
           ? "rgba(253,250,244,0.92)"
           : "transparent",
         backdropFilter: scrolled ? "blur(16px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
         boxShadow: scrolled ? "0 2px 20px rgba(61,43,31,0.08)" : "none",
         borderBottom: scrolled ? "1px solid rgba(255,179,0,0.12)" : "none",
       }}
@@ -53,7 +53,6 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
           justifyContent: "space-between",
         }}
       >
-        {/* Logo */}
         <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
           {logoUrl ? (
             <Image src={logoUrl} alt={farmName} width={36} height={36} style={{ objectFit: "contain", borderRadius: "8px" }} />
@@ -64,18 +63,18 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
           )}
           <span
             style={{
-              fontFamily: "'Lora', serif",
+              fontFamily: "var(--font-heading), serif",
               fontSize: "18px",
               fontWeight: 600,
-              color: "var(--bark-900)",
+              color: scrolled ? "var(--bark-900)" : "white",
               lineHeight: 1.2,
+              transition: "color 0.3s ease",
             }}
           >
             {farmName}
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <ul
           style={{
             display: "none",
@@ -92,13 +91,13 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
                 style={{
                   fontSize: "14px",
                   fontWeight: 600,
-                  color: "var(--bark-700)",
+                  color: scrolled ? "var(--bark-700)" : "rgba(255,255,255,0.85)",
                   textDecoration: "none",
                   letterSpacing: "0.01em",
                   transition: "color 0.2s",
                 }}
                 onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "var(--mango-700)")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "var(--bark-700)")}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = scrolled ? "var(--bark-700)" : "rgba(255,255,255,0.85)")}
               >
                 {l.label}
               </a>
@@ -110,7 +109,6 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
               Order Now
             </a>
           </li>
-          {/* Cart badge */}
           <li>
             <a
               href="#varieties"
@@ -126,7 +124,7 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
                 borderRadius: "50%",
                 background: totalItems > 0 ? "var(--mango-50)" : "transparent",
                 border: totalItems > 0 ? "1.5px solid var(--mango-300)" : "1.5px solid transparent",
-                color: "var(--bark-900)",
+                color: scrolled ? "var(--bark-900)" : "white",
                 textDecoration: "none",
                 transition: "background 0.2s, border-color 0.2s",
               }}
@@ -158,7 +156,6 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
           </li>
         </ul>
 
-        {/* Mobile hamburger */}
         <button
           id="mobile-menu-toggle"
           onClick={() => setOpen(!open)}
@@ -168,62 +165,72 @@ export default function Navbar({ farmName, logoUrl }: { farmName: string; logoUr
             border: "none",
             cursor: "pointer",
             padding: "8px",
-            color: "var(--bark-900)",
+            color: scrolled ? "var(--bark-900)" : "white",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            transition: "color 0.3s ease",
           }}
         >
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </nav>
 
-      {/* Mobile drawer */}
-      {open && (
-        <div
-          style={{
-            background: "rgba(253,250,244,0.98)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            borderTop: "1px solid rgba(255,179,0,0.15)",
-            padding: "24px 20px 32px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-          }}
-        >
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              style={{
-                display: "block",
-                padding: "14px 16px",
-                fontSize: "16px",
-                fontWeight: 600,
-                color: "var(--bark-900)",
-                textDecoration: "none",
-                borderRadius: "12px",
-                transition: "background 0.2s",
-              }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.background = "var(--mango-50)")}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.background = "transparent")}
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
-            href="#varieties"
-            onClick={() => setOpen(false)}
-            className="btn-primary"
-            style={{ marginTop: "16px", justifyContent: "center" }}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            style={{
+              background: "rgba(253,250,244,0.98)",
+              backdropFilter: "blur(20px)",
+              borderTop: "1px solid rgba(255,179,0,0.15)",
+              overflow: "hidden",
+            }}
           >
-            <WhatsAppIcon size={18} />
-            Order Now via WhatsApp
-          </a>
-        </div>
-      )}
+            <div style={{ padding: "24px 20px 32px", display: "flex", flexDirection: "column", gap: "4px" }}>
+              {links.map((l, i) => (
+                <motion.a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.2 }}
+                  style={{
+                    display: "block",
+                    padding: "14px 16px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--bark-900)",
+                    textDecoration: "none",
+                    borderRadius: "12px",
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.background = "var(--mango-50)")}
+                  onMouseLeave={(e) => ((e.target as HTMLElement).style.background = "transparent")}
+                >
+                  {l.label}
+                </motion.a>
+              ))}
+              <motion.a
+                href="#varieties"
+                onClick={() => setOpen(false)}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.2 }}
+                className="btn-primary"
+                style={{ marginTop: "16px", justifyContent: "center" }}
+              >
+                <WhatsAppIcon size={18} />
+                Order Now via WhatsApp
+              </motion.a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         @media (min-width: 768px) {

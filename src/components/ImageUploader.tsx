@@ -19,11 +19,9 @@ export default function ImageUploader({ value, onChange, label, placeholder }: I
 
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-    
-    console.log("Checking Cloudinary Envs - Cloud:", cloudName ? "Exists" : "Missing", "Preset:", uploadPreset ? "Exists" : "Missing");
 
     if (!cloudName || !uploadPreset) {
-      setError("Cloudinary configuration missing in .env.local");
+      setError("Cloudinary configuration missing in environment variables");
       return;
     }
 

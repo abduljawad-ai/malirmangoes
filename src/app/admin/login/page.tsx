@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -48,7 +49,10 @@ export default function AdminLogin() {
         padding: "24px",
       }}
     >
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         style={{
           background: "var(--white)",
           borderRadius: "28px",
@@ -60,10 +64,16 @@ export default function AdminLogin() {
         }}
       >
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <span style={{ fontSize: "48px" }}>🥭</span>
+          <motion.span
+            style={{ fontSize: "48px", display: "inline-block" }}
+            animate={{ rotate: [0, 8, -8, 0] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+          >
+            🥭
+          </motion.span>
           <h1
             style={{
-              fontFamily: "'Lora', serif",
+              fontFamily: "var(--font-heading), serif",
               fontSize: "24px",
               fontWeight: 700,
               color: "var(--bark-900)",
@@ -93,6 +103,7 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter admin password"
               required
+              autoFocus
               style={{
                 width: "100%",
                 padding: "14px 48px 14px 16px",
@@ -117,9 +128,13 @@ export default function AdminLogin() {
           </div>
 
           {error && (
-            <p style={{ fontSize: "13px", color: "#E53E3E", marginBottom: "16px", fontWeight: 500 }}>
-              ⚠ {error}
-            </p>
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{ fontSize: "13px", color: "#E53E3E", marginBottom: "16px", fontWeight: 500 }}
+            >
+              {error}
+            </motion.p>
           )}
 
           <button
@@ -129,16 +144,20 @@ export default function AdminLogin() {
             className="btn-primary"
             style={{ width: "100%", justifyContent: "center", opacity: loading ? 0.7 : 1 }}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? (
+              <><Loader2 size={16} className="animate-spin" /> Signing in...</>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 
         <p style={{ fontSize: "12px", color: "var(--bark-400)", textAlign: "center", marginTop: "24px" }}>
           <Link href="/" style={{ color: "var(--leaf-700)", textDecoration: "none", fontWeight: 600 }}>
-            ← Back to Store
+            &larr; Back to Store
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

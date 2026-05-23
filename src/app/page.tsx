@@ -1,16 +1,53 @@
 "use client";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import HowItWorks from "@/components/HowItWorks";
+import Footer from "@/components/Footer";
 import { DEMO_SETTINGS, DEMO_PRODUCTS, Product, SiteSettings } from "@/lib/types";
 import { getProducts, getSettings } from "@/lib/store";
-import { Truck, Package, ShieldCheck, Star, Loader2, Leaf, MapPin, ShoppingBag, Phone } from "lucide-react";
+import { Truck, Package, ShieldCheck, Star, Leaf, MapPin, ShoppingBag, Phone } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import FacebookIcon from "@/components/FacebookIcon";
-import InstagramIcon from "@/components/InstagramIcon";
+
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } },
+};
+
+function LoadingSkeleton() {
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1d140a", color: "#fff" }}>
+      <motion.div
+        style={{ textAlign: "center" }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          style={{ fontSize: "56px", marginBottom: "16px", display: "inline-block" }}
+          animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          🥭
+        </motion.div>
+        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", letterSpacing: "0.06em" }}>Loading farm-fresh goodness...</p>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
@@ -34,32 +71,24 @@ export default function Home() {
     loadData();
   }, []);
 
-  const heroImages = settings?.hero_image_urls && settings.hero_image_urls.length > 0 
-    ? settings.hero_image_urls 
+  const heroImages = settings?.hero_image_urls && settings.hero_image_urls.length > 0
+    ? settings.hero_image_urls
     : settings?.hero_image_url ? [settings.hero_image_url] : [];
 
   useEffect(() => {
     if (heroImages.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
   if (isLoading || !settings) {
-    return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1d140a", color: "#fff" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "48px", marginBottom: "16px" }}>🥭</div>
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
-
   return (
-    <>
+    <motion.div variants={containerVariants} initial="hidden" animate="visible">
       <Navbar farmName={settings.farm_name} logoUrl={settings.logo_url} />
 
       {/* ─── HERO ─────────────────────────────────────── */}
@@ -82,9 +111,9 @@ export default function Home() {
               backgroundImage: `url(${url})`,
               backgroundSize: "cover",
               backgroundPosition: "center 30%",
-              filter: "brightness(0.55)",
+              filter: "brightness(0.5)",
               opacity: index === currentHeroIndex ? 1 : 0,
-              transition: "opacity 1.5s ease-in-out",
+              transition: "opacity 1.8s ease-in-out",
             }}
           />
         ))}
@@ -93,7 +122,7 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(to top, rgba(29,20,10,0.9) 0%, rgba(29,20,10,0.35) 55%, transparent 100%)",
+              "linear-gradient(to top, rgba(29,20,10,0.92) 0%, rgba(29,20,10,0.4) 50%, rgba(29,20,10,0.1) 100%)",
           }}
         />
         <div className="noise-overlay" />
@@ -108,39 +137,42 @@ export default function Home() {
             width: "100%",
           }}
         >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "rgba(255,179,0,0.15)",
-              border: "1px solid rgba(255,179,0,0.4)",
-              borderRadius: "50px",
-              padding: "6px 16px",
-              marginBottom: "24px",
-            }}
-          >
-            <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--mango-400)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-              <MapPin size={12} style={{ display: "inline-block", verticalAlign: "middle" }} /> {settings.farm_location}
-            </span>
-          </div>
+          <motion.div variants={itemVariants}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "rgba(255,179,0,0.12)",
+                border: "1px solid rgba(255,179,0,0.3)",
+                borderRadius: "50px",
+                padding: "6px 16px",
+                marginBottom: "24px",
+              }}
+            >
+              <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--mango-400)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                <MapPin size={12} style={{ display: "inline-block", verticalAlign: "middle", marginRight: "4px" }} /> {settings.farm_location}
+              </span>
+            </div>
+          </motion.div>
 
-          <h1
+          <motion.h1
+            variants={itemVariants}
             style={{
-              fontFamily: "'Lora', serif",
-              fontSize: "clamp(36px, 9vw, 72px)",
+              fontFamily: "var(--font-heading), serif",
+              fontSize: "clamp(38px, 9vw, 78px)",
               fontWeight: 700,
               color: "white",
-              lineHeight: 1.1,
+              lineHeight: 1.08,
               marginBottom: "20px",
-              maxWidth: "720px",
+              maxWidth: "740px",
             }}
-            className="text-balance"
           >
             Pakistan&apos;s Finest<br />
             <span style={{ color: "var(--mango-400)", fontStyle: "italic" }}>Farm-Fresh</span> Mangoes
-          </h1>
-          <p
+          </motion.h1>
+          <motion.p
+            variants={itemVariants}
             style={{
               fontSize: "clamp(15px, 2.5vw, 18px)",
               color: "rgba(255,255,255,0.82)",
@@ -150,9 +182,9 @@ export default function Home() {
             }}
           >
             {settings.farm_tagline} Hand-picked at peak ripeness, packed in 10kg wooden boxes and delivered across Pakistan via Leopard Courier.
-          </p>
+          </motion.p>
 
-          <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+          <motion.div variants={itemVariants} style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
             <a href="#varieties" className="btn-primary" id="hero-shop-btn">
               <ShoppingBag size={18} /> Browse Varieties
             </a>
@@ -166,9 +198,9 @@ export default function Home() {
               <WhatsAppIcon size={18} />
               Chat with Us
             </a>
-          </div>
+          </motion.div>
 
-          <div style={{ display: "flex", gap: "24px", marginTop: "56px", flexWrap: "wrap" }}>
+          <motion.div variants={itemVariants} style={{ display: "flex", gap: "24px", marginTop: "56px", flexWrap: "wrap" }}>
             {[
               { icon: <Truck size={18} />, label: "Leopard Courier" },
               { icon: <Package size={18} />, label: "10kg Wooden Box" },
@@ -182,12 +214,16 @@ export default function Home() {
                 </span>
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ─── DELIVERY BANNER ──────────────────────────── */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
         style={{
           background: "var(--leaf-900)",
           color: "white",
@@ -198,11 +234,11 @@ export default function Home() {
           letterSpacing: "0.01em",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
           <Truck size={16} color="var(--mango-400)" />
           <span>Leopard Courier delivery — only <strong style={{ color: "var(--mango-400)" }}>Rs {settings.delivery_charge}</strong> per 10kg box &nbsp;|&nbsp; Delivering across Pakistan</span>
         </div>
-      </div>
+      </motion.div>
 
       {/* ─── PRODUCTS ─────────────────────────────────── */}
       <section id="varieties" className="section-py" style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 20px" }}>
@@ -213,11 +249,11 @@ export default function Home() {
             </span>
             <h2
               style={{
-                fontFamily: "'Lora', serif",
+                fontFamily: "var(--font-heading), serif",
                 fontSize: "clamp(28px, 6vw, 44px)",
                 fontWeight: 700,
                 color: "var(--bark-900)",
-                marginTop: "8px",
+                marginTop: "10px",
                 marginBottom: "12px",
               }}
             >
@@ -230,126 +266,43 @@ export default function Home() {
         </AnimateOnScroll>
 
         {products.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--bark-400)" }}>
-            <span style={{ fontSize: "48px", display: "block", marginBottom: "16px" }}>🥭</span>
-            <p style={{ fontSize: "16px" }}>Products are being loaded...</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ textAlign: "center", padding: "60px 20px", color: "var(--bark-400)" }}
+          >
+            <motion.span
+              style={{ fontSize: "64px", display: "block", marginBottom: "16px" }}
+              animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            >
+              🥭
+            </motion.span>
+            <div className="skeleton" style={{ width: "200px", height: "20px", margin: "0 auto 12px" }} />
+            <div className="skeleton" style={{ width: "280px", height: "14px", margin: "0 auto" }} />
+          </motion.div>
         ) : (
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "24px",
+              gap: "28px",
             }}
           >
             {products.map((product, i) => (
               <AnimateOnScroll key={product.id} delay={i * 80}>
-                <ProductCard product={product} settings={settings} />
+                <ProductCard product={product} settings={settings} priority={i < 3} />
               </AnimateOnScroll>
             ))}
           </div>
         )}
       </section>
 
-      {/* ─── HOW IT WORKS ─────────────────────────────── */}
-      <section
-        id="how-it-works"
-        style={{ background: "var(--cream-dark)", padding: "60px 20px" }}
-      >
-        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <AnimateOnScroll>
-            <div style={{ textAlign: "center", marginBottom: "52px" }}>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                Simple Process
-              </span>
-              <h2
-                style={{
-                  fontFamily: "'Lora', serif",
-                  fontSize: "clamp(26px, 5vw, 40px)",
-                  fontWeight: 700,
-                  color: "var(--bark-900)",
-                  marginTop: "8px",
-                }}
-              >
-                How to Order in 3 Steps
-              </h2>
-            </div>
-          </AnimateOnScroll>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
-            {[
-              {
-                step: "01",
-                icon: <Package size={28} color="var(--mango-700)" />,
-                title: "Pick Your Variety",
-                desc: "Browse our mango varieties above. Each listing shows the season, taste notes, and price per 10kg wooden box.",
-              },
-              {
-                step: "02",
-                icon: <WhatsAppIcon size={28} color="var(--mango-700)" />,
-                title: "Order on WhatsApp",
-                desc: "Click 'Order Now', choose your quantity, and you'll be redirected to WhatsApp with your order pre-filled.",
-              },
-              {
-                step: "03",
-                icon: <Truck size={28} color="var(--mango-700)" />,
-                title: "We Deliver via Leopard",
-                desc: "We ship your fresh mangoes nationwide via Leopard Courier. Delivery charge is just Rs 400 per box.",
-              },
-            ].map((item, i) => (
-              <AnimateOnScroll key={item.step} delay={i * 100}>
-                <div
-                  style={{
-                    background: "var(--white)",
-                    borderRadius: "24px",
-                    padding: "28px 24px",
-                    boxShadow: "0 4px 20px var(--shadow-warm)",
-                    border: "1px solid rgba(255,179,0,0.08)",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: "16px",
-                      right: "20px",
-                      fontSize: "48px",
-                      fontWeight: 900,
-                      color: "var(--mango-100)",
-                      lineHeight: 1,
-                      fontFamily: "'Lora', serif",
-                    }}
-                  >
-                    {item.step}
-                  </span>
-                  <div
-                    style={{
-                      width: "52px",
-                      height: "52px",
-                      background: "var(--mango-50)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "16px",
-                    }}
-                  >
-                    {item.icon}
-                  </div>
-                  <h3 style={{ fontSize: "17px", fontWeight: 700, color: "var(--bark-900)", marginBottom: "8px" }}>
-                    {item.title}
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "var(--bark-400)", lineHeight: 1.6 }}>{item.desc}</p>
-                </div>
-              </AnimateOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HowItWorks />
 
       {/* ─── ABOUT ────────────────────────────────────── */}
-      <section id="about" style={{ maxWidth: "1100px", margin: "0 auto", padding: "60px 20px" }}>
+      <section id="about" style={{ maxWidth: "1100px", margin: "0 auto", padding: "80px 20px" }}>
+        <hr className="divider-mango" style={{ marginBottom: "64px" }} />
         <div
           style={{
             display: "grid",
@@ -382,11 +335,11 @@ export default function Home() {
           </AnimateOnScroll>
           <AnimateOnScroll delay={120}>
             <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-              <Leaf size={12} /> {(settings.about_subtitle || '').replace(/^[^\w\s]+\s*/, '')}
+              <Leaf size={12} /> {settings.about_subtitle || "Our Story"}
             </span>
             <h2
               style={{
-                fontFamily: "'Lora', serif",
+                fontFamily: "var(--font-heading), serif",
                 fontSize: "clamp(26px, 5vw, 38px)",
                 fontWeight: 700,
                 color: "var(--bark-900)",
@@ -407,16 +360,21 @@ export default function Home() {
                 { value: `${products.length}+`, label: "Mango Varieties" },
                 { value: `Rs ${settings.delivery_charge}`, label: "Delivery / Box" },
               ].map((stat) => (
-                <div key={stat.label}>
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4 }}
+                >
                   <p style={{ fontSize: "26px", fontWeight: 800, color: "var(--mango-700)", lineHeight: 1 }}>{stat.value}</p>
                   <p style={{ fontSize: "12px", color: "var(--bark-400)", fontWeight: 600, marginTop: "4px" }}>{stat.label}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </AnimateOnScroll>
         </div>
 
-        {/* ─── CUSTOM SECTIONS ────────────────────────── */}
         {settings.custom_sections?.map((section, idx) => (
           <div
             key={section.id}
@@ -452,7 +410,7 @@ export default function Home() {
                 </div>
               </AnimateOnScroll>
             )}
-            
+
             <AnimateOnScroll delay={120}>
               {section.subtitle && (
                 <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -461,7 +419,7 @@ export default function Home() {
               )}
               <h2
                 style={{
-                  fontFamily: "'Lora', serif",
+                  fontFamily: "var(--font-heading), serif",
                   fontSize: "clamp(26px, 5vw, 38px)",
                   fontWeight: 700,
                   color: "var(--bark-900)",
@@ -506,8 +464,9 @@ export default function Home() {
       </section>
 
       {/* ─── TRUST BADGES ────────────────────────────── */}
-      <section style={{ background: "var(--leaf-900)", padding: "48px 20px" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px" }}>
+      <section style={{ background: "var(--leaf-900)", padding: "48px 20px", position: "relative", overflow: "hidden" }}>
+        <div className="mango-pattern" style={{ position: "absolute", inset: 0, opacity: 0.03 }} />
+        <div style={{ maxWidth: "900px", margin: "0 auto", position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "24px" }}>
           {[
             { icon: <ShieldCheck size={32} color="var(--mango-400)" />, title: "Quality Guaranteed", desc: "Every mango is hand-inspected before packing." },
             { icon: <Star size={32} color="var(--mango-400)" />, title: "Premium Varieties", desc: "Sindhri, Chaunsa, Anwar Ratol & more." },
@@ -515,25 +474,29 @@ export default function Home() {
             { icon: <Package size={32} color="var(--mango-400)" />, title: "Wooden Box Packed", desc: "Safe, sturdy 10kg wooden boxes." },
           ].map((badge) => (
             <AnimateOnScroll key={badge.title}>
-              <div style={{ textAlign: "center", color: "white" }}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                style={{ textAlign: "center", color: "white" }}
+              >
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>{badge.icon}</div>
                 <h4 style={{ fontSize: "15px", fontWeight: 700, marginBottom: "6px" }}>{badge.title}</h4>
                 <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", lineHeight: 1.55 }}>{badge.desc}</p>
-              </div>
+              </motion.div>
             </AnimateOnScroll>
           ))}
         </div>
       </section>
 
       {/* ─── CONTACT CTA ─────────────────────────────── */}
-      <section id="contact" style={{ maxWidth: "700px", margin: "0 auto", padding: "40px 20px", textAlign: "center" }}>
+      <section id="contact" style={{ maxWidth: "700px", margin: "0 auto", padding: "60px 20px", textAlign: "center" }}>
         <AnimateOnScroll>
           <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--leaf-700)", letterSpacing: "0.1em", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
             <Phone size={12} /> Get in Touch
           </span>
           <h2
             style={{
-              fontFamily: "'Lora', serif",
+              fontFamily: "var(--font-heading), serif",
               fontSize: "clamp(26px, 5vw, 40px)",
               fontWeight: 700,
               color: "var(--bark-900)",
@@ -545,7 +508,9 @@ export default function Home() {
           <p style={{ fontSize: "15px", color: "var(--bark-400)", lineHeight: 1.65, marginBottom: "36px" }}>
             The fastest way to reach us is via WhatsApp. We reply within minutes during business hours.
           </p>
-          <a
+          <motion.a
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             href={`https://wa.me/${settings.whatsapp_number}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -555,88 +520,11 @@ export default function Home() {
           >
             <WhatsAppIcon size={20} />
             Open WhatsApp Chat
-          </a>
+          </motion.a>
         </AnimateOnScroll>
       </section>
 
-      {/* ─── FOOTER ───────────────────────────────────── */}
-      <footer
-        style={{
-          background: "var(--bark-900)",
-          color: "rgba(255,255,255,0.7)",
-          padding: "48px 20px 32px",
-        }}
-      >
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "40px", marginBottom: "40px" }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                {settings.logo_url ? (
-                  <img src={settings.logo_url} alt="Logo" width={24} height={24} style={{ borderRadius: "6px", objectFit: "contain" }} />
-                ) : (
-                  <div style={{ background: "var(--mango-600)", padding: "4px", borderRadius: "7px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bark-900)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                  </div>
-                )}
-                <span style={{ fontFamily: "'Lora', serif", fontSize: "16px", fontWeight: 600, color: "white" }}>
-                  {settings.farm_name}
-                </span>
-              </div>
-              <p style={{ fontSize: "13px", lineHeight: 1.65 }}>{settings.farm_location}</p>
-            </div>
-
-            <div>
-              <h5 style={{ color: "white", fontWeight: 700, fontSize: "14px", marginBottom: "16px" }}>Quick Links</h5>
-              {["#varieties", "#how-it-works", "#about", "#contact"].map((href) => (
-                <a
-                  key={href}
-                  href={href}
-                  style={{ display: "block", fontSize: "13px", color: "rgba(255,255,255,0.6)", textDecoration: "none", marginBottom: "4px" }}
-                >
-                  {href.replace("#", "").replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                </a>
-              ))}
-            </div>
-
-            <div>
-              <h5 style={{ color: "white", fontWeight: 700, fontSize: "14px", marginBottom: "16px" }}>Contact</h5>
-              <a
-                href={`https://wa.me/${settings.whatsapp_number}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.6)", textDecoration: "none", marginBottom: "10px" }}
-              >
-                <WhatsAppIcon size={14} /> WhatsApp Us
-              </a>
-              <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
-                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                  style={{ color: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", transition: "background 0.2s" }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.18)")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)")}
-                >
-                  <InstagramIcon size={22} />
-                </a>
-                <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-                  style={{ color: "rgba(255,255,255,0.75)", display: "flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", borderRadius: "50%", background: "rgba(255,255,255,0.08)", transition: "background 0.2s" }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.18)")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)")}
-                >
-                  <FacebookIcon size={22} />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-            <p style={{ fontSize: "13px" }}>
-              © {new Date().getFullYear()} {settings.farm_name}. All rights reserved.
-            </p>
-            <a href="/admin" style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>
-              Admin Panel
-            </a>
-          </div>
-        </div>
-      </footer>
-    </>
+      <Footer settings={settings} />
+    </motion.div>
   );
 }

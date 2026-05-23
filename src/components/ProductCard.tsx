@@ -8,9 +8,11 @@ import { useCart } from "@/lib/CartContext";
 export default function ProductCard({
   product,
   settings,
+  priority,
 }: {
   product: Product;
   settings: SiteSettings;
+  priority?: boolean;
 }) {
   const router = useRouter();
   const { getQty, addToCart, updateQty } = useCart();
@@ -86,6 +88,7 @@ export default function ProductCard({
           onMouseEnter={(e) => ((e.target as HTMLElement).style.transform = "scale(1.06)")}
           onMouseLeave={(e) => ((e.target as HTMLElement).style.transform = "scale(1)")}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={priority}
         />
 
         {/* Badges */}
@@ -121,7 +124,7 @@ export default function ProductCard({
 
       {/* ── Content ───────────────────────────────────────── */}
       <div style={{ padding: "20px" }}>
-        <h3 style={{ fontSize: "19px", fontWeight: 800, color: "var(--bark-900)", marginBottom: "6px", lineHeight: 1.2 }}>
+        <h3 style={{ fontFamily: "var(--font-heading), serif", fontSize: "19px", fontWeight: 700, color: "var(--bark-900)", marginBottom: "6px", lineHeight: 1.2 }}>
           {product.name}
         </h3>
         <p style={{ fontSize: "13px", color: "var(--bark-400)", marginBottom: "12px", lineHeight: 1.55, minHeight: "40px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>

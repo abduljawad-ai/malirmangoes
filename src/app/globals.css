@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap');
 @import "tailwindcss";
 
 :root {
-  /* Natural Mango Palette */
   --cream: #FDFAF4;
   --cream-dark: #F5EFE0;
   --mango-50: #FFF8E7;
@@ -18,11 +16,20 @@
   --leaf-700: #40916C;
   --leaf-600: #52B788;
   --bark-900: #3D2B1F;
+  --bark-800: #5C3A21;
   --bark-700: #6B4226;
   --bark-400: #A0785A;
+  --bark-300: #C4A882;
   --white: #FFFFFF;
   --shadow-warm: rgba(61, 43, 31, 0.08);
   --shadow-warm-md: rgba(61, 43, 31, 0.14);
+  --shadow-warm-lg: rgba(61, 43, 31, 0.2);
+  --shadow-gold: rgba(255, 179, 0, 0.25);
+  --shadow-gold-lg: rgba(255, 143, 0, 0.35);
+  --gold-gradient: linear-gradient(135deg, #FFB300, #FF8F00);
+  --gold-gradient-subtle: linear-gradient(135deg, rgba(255,179,0,0.12), rgba(255,143,0,0.06));
+  --dark-gradient: linear-gradient(180deg, rgba(29,20,10,0) 0%, rgba(29,20,10,0.85) 100%);
+  --glass-bg: rgba(253, 250, 244, 0.85);
 }
 
 * {
@@ -37,7 +44,7 @@ html {
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body), sans-serif;
   background-color: var(--cream);
   color: var(--bark-900);
   -webkit-font-smoothing: antialiased;
@@ -45,16 +52,28 @@ body {
   overflow-x: hidden;
 }
 
-/* Scrollbar */
+::selection {
+  background: var(--mango-300);
+  color: var(--bark-900);
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--cream-dark); }
 ::-webkit-scrollbar-thumb { background: var(--mango-600); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mango-700); }
 
-/* Typography utilities */
-.font-serif { font-family: 'Lora', serif; }
-.text-balance { text-wrap: balance; }
+.font-serif { font-family: 'Playfair Display', serif; }
 
-/* Organic noise texture overlay for hero */
+/* ── Utility animations ── */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-shimmer { background: linear-gradient(90deg, var(--cream-dark) 25%, var(--mango-50) 50%, var(--cream-dark) 75%); background-size: 200% 100%; animation: shimmer 1.8s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+/* ── Organic noise texture ── */
 .noise-overlay {
   position: absolute;
   inset: 0;
@@ -63,18 +82,25 @@ body {
   mix-blend-mode: multiply;
 }
 
-/* Glass card */
+/* ── Decorative mango pattern ── */
+.mango-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23FFCA28' stroke-width='1' opacity='0.06'%3E%3Cpath d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z'/%3E%3Cpath d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+/* ── Glass card ── */
 .glass-card {
-  background: rgba(253, 250, 244, 0.85);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 179, 0, 0.15);
 }
 
-/* WhatsApp button */
+/* ── Buttons ── */
 .btn-whatsapp {
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  color: white;
+  background: #25D366;
+  color: #075E54;
   font-weight: 700;
   border-radius: 50px;
   padding: 14px 28px;
@@ -83,23 +109,23 @@ body {
   gap: 8px;
   font-size: 15px;
   letter-spacing: 0.01em;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   cursor: pointer;
-  border: none;
+  border: 1.5px solid #25D366;
   text-decoration: none;
 }
 
 .btn-whatsapp:hover {
+  background: #20BD5A;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.45);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
 }
 
 .btn-whatsapp:active {
   transform: translateY(0);
 }
 
-/* Primary mango button */
 .btn-primary {
   background: var(--mango-600);
   color: var(--bark-900);
@@ -124,11 +150,11 @@ body {
   box-shadow: 0 8px 24px rgba(255, 143, 0, 0.45);
 }
 
-/* Section padding */
+/* ── Section padding ── */
 .section-py { padding-top: 64px; padding-bottom: 64px; }
 @media (min-width: 768px) { .section-py { padding-top: 96px; padding-bottom: 96px; } }
 
-/* Animate on scroll — initial state */
+/* ── Animate on scroll ── */
 .anim-fade-up {
   opacity: 0;
   transform: translateY(20px);
@@ -141,11 +167,42 @@ body {
   will-change: auto;
 }
 
-/* Product card hover lift */
+/* ── Product card ── */
 .product-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 20px 48px var(--shadow-warm-md);
+}
+
+/* ── Skeleton loading ── */
+.skeleton {
+  background: linear-gradient(90deg, var(--cream-dark) 25%, var(--mango-50) 50%, var(--cream-dark) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+/* ── Decorative divider ── */
+.divider-mango {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--mango-300), var(--mango-600), var(--mango-300), transparent);
+  border: none;
+  margin: 0;
+}
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid var(--mango-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

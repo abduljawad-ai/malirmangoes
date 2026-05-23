@@ -1,15 +1,11 @@
-// ============================================================
-// Mango Store — Shared data types & constants
-// ============================================================
-
 export interface Product {
   id: string;
   name: string;
   variety: string;
   description: string;
-  price_per_box: number; // PKR per 10kg wooden box
+  price_per_box: number;
   image_url: string;
-  image_urls?: string[]; // Multiple image support
+  image_urls?: string[];
   origin: string;
   season: string;
   taste_notes: string;
@@ -29,13 +25,13 @@ export interface CustomSection {
 
 export interface SiteSettings {
   id: string;
-  whatsapp_number: string;        // e.g. "923001234567"
-  delivery_charge: number;        // PKR per box — Leopard
+  whatsapp_number: string;
+  delivery_charge: number;
   farm_name: string;
   farm_tagline: string;
   farm_location: string;
   hero_image_url: string;
-  hero_image_urls?: string[]; // Multiple hero images for auto-slider
+  hero_image_urls?: string[];
   about_image_url: string;
   about_subtitle: string;
   about_title: string;
@@ -43,11 +39,10 @@ export interface SiteSettings {
   years_farming: string;
   instagram_url: string;
   facebook_url: string;
-  logo_url: string;            // URL to logo image; leave empty to use default 🥭 emoji
+  logo_url: string;
   custom_sections?: CustomSection[];
 }
 
-// ---- WhatsApp URL builder ----
 export function buildWhatsAppUrl(
   product: Product,
   qty: number,
@@ -71,31 +66,90 @@ export function buildWhatsAppUrl(
   return `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`;
 }
 
-// ---- Demo Data Fallbacks ----
-
-export const DEMO_PRODUCTS: Product[] = [];
+export const DEMO_PRODUCTS: Product[] = [
+  {
+    id: "sindhri",
+    name: "Sindhri Mango",
+    variety: "Sindhri",
+    description:
+      "The crown jewel of Pakistani mangoes. Known for its golden-yellow skin, smooth texture, and exceptionally sweet, aromatic flesh. The Sindhri is a large, kidney-shaped mango with minimal fiber, making it the most sought-after variety both locally and internationally.",
+    price_per_box: 3500,
+    image_url:
+      "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=85",
+    origin: "Mirpurkhas, Sindh",
+    season: "May – July",
+    taste_notes: "Very sweet, aromatic, buttery",
+    in_stock: true,
+    featured: true,
+  },
+  {
+    id: "chaunsa",
+    name: "Chaunsa Mango",
+    variety: "Chaunsa",
+    description:
+      "Often called the 'King of Mangoes', Chaunsa is renowned for its rich, creamy texture and honey-like sweetness. It has a distinct golden-yellow skin with a pinkish blush. The flesh is firm, fiberless, and melts in your mouth with a complex flavor profile.",
+    price_per_box: 3800,
+    image_url:
+      "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=600&q=85",
+    origin: "Multan, Punjab",
+    season: "June – August",
+    taste_notes: "Honey-sweet, creamy, rich",
+    in_stock: true,
+    featured: true,
+  },
+  {
+    id: "anwar-ratol",
+    name: "Anwar Ratol Mango",
+    variety: "Anwar Ratol",
+    description:
+      "Small in size but enormous in flavor. Anwar Ratol is a premium variety prized for its intensely sweet, aromatic flesh and smooth, fiberless texture. Despite its modest size, it commands premium prices for its exceptional taste and fragrance.",
+    price_per_box: 4200,
+    image_url:
+      "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=600&q=85",
+    origin: "Rahim Yar Khan, Punjab",
+    season: "May – July",
+    taste_notes: "Intensely sweet, fragrant, delicate",
+    in_stock: true,
+    featured: false,
+  },
+  {
+    id: "langra",
+    name: "Langra Mango",
+    variety: "Langra",
+    description:
+      "A beloved variety with a distinctive green skin that remains green even when ripe. Langra has a unique tangy-sweet flavor profile that sets it apart from other varieties. The flesh is juicy, fiberless, and has a refreshing citrus undertone.",
+    price_per_box: 3200,
+    image_url:
+      "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=85",
+    origin: "Haripur, KPK",
+    season: "June – August",
+    taste_notes: "Tangy-sweet, juicy, citrus undertones",
+    in_stock: true,
+    featured: false,
+  },
+];
 
 export const DEMO_SETTINGS: SiteSettings = {
   id: "1",
   whatsapp_number: "923001234567",
   delivery_charge: 400,
-  farm_name: "Mango Farm Pakistan",
+  farm_name: "Malir Mangoes",
   farm_tagline: "From our farm to your table — pure, fresh, and unforgettable.",
   farm_location: "Mirpurkhas, Sindh, Pakistan",
   hero_image_url: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=1400&q=85",
   hero_image_urls: [
     "https://images.unsplash.com/photo-1553279768-865429fa0078?w=1400&q=85",
     "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=1400&q=85",
-    "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=1400&q=85"
+    "https://images.unsplash.com/photo-1618897996318-5a901fa18a1f?w=1400&q=85",
   ],
   about_image_url: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=900&q=80",
-  about_subtitle: "🌿 Our Story",
+  about_subtitle: "Our Story",
   about_title: "Grown with Care,\nDelivered with Pride",
-  about_text: "We are a family-run mango farm with over 30 years of experience cultivating the finest mango varieties in Sindh. Our mangoes are hand-picked at peak ripeness and delivered fresh to your doorstep across Pakistan via Leopard Courier.",
+  about_text:
+    "We are a family-run mango farm with over 30 years of experience cultivating the finest mango varieties in Sindh. Our mangoes are hand-picked at peak ripeness and delivered fresh to your doorstep across Pakistan via Leopard Courier.",
   years_farming: "30+",
   instagram_url: "#",
   facebook_url: "#",
   logo_url: "",
   custom_sections: [],
 };
-

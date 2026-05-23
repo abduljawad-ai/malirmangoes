@@ -45,7 +45,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           justifyContent: "center",
           padding: "24px",
           textAlign: "center",
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontFamily: "var(--font-body), sans-serif",
         }}>
           <div style={{
             background: "#FFF5F5",

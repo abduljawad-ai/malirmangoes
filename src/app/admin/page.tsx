@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ImageUploader from "@/components/ImageUploader";
 import { CustomSection, DEMO_SETTINGS, Product, SiteSettings } from "@/lib/types";
 import { getProducts, getSettings, saveProduct, removeProduct, saveSettings } from "@/lib/store";
 import {
-  LogOut, Plus, Pencil, Trash2, Package, Settings, Save, X, Eye, EyeOff, CheckCircle, Leaf, Loader2, Image as ImageIcon, Layers, MoveUp, MoveDown
+  LogOut, Plus, Pencil, Trash2, Package, Settings, Save, X, Eye, CheckCircle, Leaf, Loader2, Layers, MoveUp, MoveDown
 } from "lucide-react";
 
 function generateId(): string {
@@ -40,6 +41,7 @@ function Toast({ message }: { message: string }) {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [tab, setTab] = useState<Tab>("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [settings, setSettings] = useState<SiteSettings>(DEMO_SETTINGS);
@@ -80,7 +82,6 @@ export default function AdminDashboard() {
     window.location.href = "/admin/login";
   };
 
-  // ── Product actions — save immediately to Firebase ──
   const handleDeleteProduct = async (id: string) => {
     const previousProducts = [...products];
     const updated = products.filter((p) => p.id !== id);
@@ -90,7 +91,7 @@ export default function AdminDashboard() {
       showToast("Product deleted.");
     } catch (e) {
       setProducts(previousProducts);
-      showError(`❌ Delete failed. Check Firebase rules: ${(e as Error).message}`);
+      showError(`Delete failed: ${(e as Error).message}`);
     }
   };
 
@@ -106,20 +107,19 @@ export default function AdminDashboard() {
       showToast("Stock status updated.");
     } catch (e) {
       setProducts(previousProducts);
-      showError(`❌ Save failed. Check Firebase rules: ${(e as Error).message}`);
+      showError(`Save failed: ${(e as Error).message}`);
     }
   };
 
   const handleSaveProduct = async (product: Product) => {
-    const validationErrors: string[] = [];
-    if (!product.name.trim()) validationErrors.push("Product name is required");
-    if (product.price_per_box <= 0) validationErrors.push("Price must be greater than 0");
+    const errors: string[] = [];
+    if (!product.name.trim()) errors.push("Product name is required");
+    if (product.price_per_box <= 0) errors.push("Price must be greater than 0");
     if (product.image_url && !isValidUrl(product.image_url)) {
-      validationErrors.push("Please enter a valid image URL");
+      errors.push("Please enter a valid image URL");
     }
-
-    if (validationErrors.length > 0) {
-      showError("❌ " + validationErrors[0]);
+    if (errors.length > 0) {
+      showError(errors[0]);
       return;
     }
 
@@ -132,27 +132,27 @@ export default function AdminDashboard() {
     setShowAddForm(false);
     try {
       await saveProduct(product);
-      showToast(exists ? "Product updated! ✓" : "Product added! ✓");
+      showToast(exists ? "Product updated!" : "Product added!");
     } catch (e) {
       setProducts(previousProducts);
-      showError(`❌ Save failed. Check Firebase rules: ${(e as Error).message}`);
+      showError(`Save failed: ${(e as Error).message}`);
     }
   };
 
   const handleSaveSettings = async () => {
     if (!settings.whatsapp_number || !/^\d{10,15}$/.test(settings.whatsapp_number)) {
-      showError("❌ WhatsApp number must be 10-15 digits (without +)");
+      showError("WhatsApp number must be 10-15 digits (without +)");
       return;
     }
     if (settings.delivery_charge < 0) {
-      showError("❌ Delivery charge cannot be negative");
+      showError("Delivery charge cannot be negative");
       return;
     }
     try {
       await saveSettings(settings);
-      showToast("Settings saved! Changes are live on the store ✓");
+      showToast("Settings saved! Changes are live on the store.");
     } catch (e) {
-      showError(`❌ Settings save failed. Check Firebase rules: ${(e as Error).message}`);
+      showError(`Settings save failed: ${(e as Error).message}`);
     }
   };
 
@@ -171,19 +171,16 @@ export default function AdminDashboard() {
     return (
       <div style={{ minHeight: "100svh", background: "var(--cream)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
-          <Loader2 size={40} color="var(--mango-600)" className="animate-spin" style={{ margin: "0 auto 16px" }} />
-          <style>{`.animate-spin { animation: spin 1s linear infinite; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-          <p style={{ color: "var(--bark-400)", fontSize: "14px" }}>Loading...</p>
+          <Loader2 size={40} color="var(--mango-600)" className="animate-spin" style={{ margin: "0 auto 16px", display: "block" }} />
+          <p style={{ color: "var(--bark-400)", fontSize: "14px" }}>Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100svh", background: "var(--cream)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      {/* Success Toast */}
+    <div style={{ minHeight: "100svh", background: "var(--cream)", fontFamily: "var(--font-body), sans-serif" }}>
       {toast && <Toast message={toast} />}
-      {/* Error Toast */}
       {toastError && (
         <div style={{
           position: "fixed", bottom: "24px", left: "50%", transform: "translateX(-50%)",
@@ -196,7 +193,6 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Top bar */}
       <header
         style={{
           background: "var(--white)",
@@ -221,7 +217,7 @@ export default function AdminDashboard() {
             </div>
           <div>
             <p style={{ fontSize: "14px", fontWeight: 700, color: "var(--bark-900)", lineHeight: 1 }}>Admin Panel</p>
-            <p style={{ fontSize: "11px", color: "var(--bark-400)" }}>Mango Farm Pakistan</p>
+            <p style={{ fontSize: "11px", color: "var(--bark-400)" }}>{settings.farm_name}</p>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -237,13 +233,12 @@ export default function AdminDashboard() {
       </header>
 
       <div style={{ maxWidth: "960px", margin: "0 auto", padding: "32px 20px" }}>
-        {/* Tabs */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "32px" }}>
           {([
-            { id: "products", icon: <Package size={16} />, label: "Products" },
-            { id: "sections", icon: <Layers size={16} />, label: "Page Sections" },
-            { id: "settings", icon: <Settings size={16} />, label: "Settings" },
-          ] as { id: Tab; icon: React.ReactNode; label: string }[]).map((t) => (
+            { id: "products" as Tab, icon: <Package size={16} />, label: "Products" },
+            { id: "sections" as Tab, icon: <Layers size={16} />, label: "Page Sections" },
+            { id: "settings" as Tab, icon: <Settings size={16} />, label: "Settings" },
+          ]).map((t) => (
             <button key={t.id} id={`tab-${t.id}`} onClick={() => setTab(t.id)}
               style={{
                 display: "flex", alignItems: "center", gap: "8px",
@@ -259,11 +254,10 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* ── PRODUCTS TAB ── */}
         {tab === "products" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)" }}>
+              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)", fontFamily: "var(--font-heading), serif" }}>
                 Products ({products.length})
               </h2>
               <button id="add-product-btn"
@@ -314,27 +308,16 @@ export default function AdminDashboard() {
                       <button id={`toggle-stock-${product.id}`} onClick={() => handleToggleStock(product.id)}
                         title={product.in_stock ? "Mark as Out of Stock" : "Mark as In Stock"}
                         style={{
-                          width: "42px",
-                          height: "24px",
-                          borderRadius: "20px",
+                          width: "42px", height: "24px", borderRadius: "20px",
                           background: product.in_stock ? "var(--leaf-600)" : "var(--bark-300)",
-                          position: "relative",
-                          border: "none",
-                          cursor: "pointer",
-                          transition: "background 0.3s ease",
-                          padding: 0,
-                          flexShrink: 0
+                          position: "relative", border: "none", cursor: "pointer",
+                          transition: "background 0.3s ease", padding: 0, flexShrink: 0
                         }}>
                         <div style={{
-                          width: "20px",
-                          height: "20px",
-                          borderRadius: "50%",
-                          background: "var(--white)",
-                          position: "absolute",
-                          top: "2px",
+                          width: "20px", height: "20px", borderRadius: "50%",
+                          background: "var(--white)", position: "absolute", top: "2px",
                           left: product.in_stock ? "20px" : "2px",
-                          transition: "left 0.3s ease",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                          transition: "left 0.3s ease", boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
                         }} />
                       </button>
                       <button id={`edit-product-${product.id}`}
@@ -354,11 +337,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── SECTIONS TAB ── */}
         {tab === "sections" && (
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)" }}>
+              <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)", fontFamily: "var(--font-heading), serif" }}>
                 Custom Sections
               </h2>
               <button onClick={() => { setEditingSection({ id: generateId(), title: "", subtitle: "", text: "", image_url: "", image_position: "left" }); setShowSectionForm(true); }}
@@ -366,7 +348,7 @@ export default function AdminDashboard() {
                 <Plus size={16} /> Add Section
               </button>
             </div>
-            
+
             {(!settings.custom_sections || settings.custom_sections.length === 0) ? (
               <div style={{ textAlign: "center", padding: "60px", color: "var(--bark-400)", background: "var(--white)", borderRadius: "20px" }}>
                 <Layers size={40} color="var(--bark-300)" style={{ margin: "0 auto 12px", display: "block" }} />
@@ -399,7 +381,7 @@ export default function AdminDashboard() {
                         setSettings(updated);
                         await saveSettings(updated);
                       }} style={{ padding: "8px", borderRadius: "8px", border: "1px solid var(--cream-dark)", background: "var(--cream)", cursor: idx === 0 ? "default" : "pointer", opacity: idx === 0 ? 0.5 : 1 }}><MoveUp size={14} /></button>
-                      
+
                       <button disabled={idx === (settings.custom_sections?.length || 0) - 1} onClick={async () => {
                         const newSections = [...(settings.custom_sections || [])];
                         [newSections[idx + 1], newSections[idx]] = [newSections[idx], newSections[idx + 1]];
@@ -431,30 +413,29 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── SETTINGS TAB ── */}
         {tab === "settings" && (
           <div>
-            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)", marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 800, color: "var(--bark-900)", fontFamily: "var(--font-heading), serif", marginBottom: "24px" }}>
               Site Settings
             </h2>
             <div style={{ background: "var(--white)", borderRadius: "24px", padding: "28px", boxShadow: "0 4px 20px var(--shadow-warm)", display: "flex", flexDirection: "column", gap: "20px" }}>
               {(
                 [
-                  { label: "Logo URL", key: "logo_url", type: "image", hint: "Paste a direct image link (JPG/PNG). Leave empty for default." },
-                  { label: "Farm Name", key: "farm_name", type: "text" },
-                  { label: "Tagline", key: "farm_tagline", type: "text" },
-                  { label: "Location", key: "farm_location", type: "text" },
-                  { label: "WhatsApp Number (with country code, no +)", key: "whatsapp_number", type: "text", hint: "e.g. 923001234567" },
-                  { label: "Leopard Delivery Charge (Rs per box)", key: "delivery_charge", type: "number" },
-                  { label: "Hero Image URL", key: "hero_image_url", type: "image", hint: "Paste a Cloudinary or direct image link" },
-                  { label: "About Image URL", key: "about_image_url", type: "image", hint: "Paste an image link for the 'Our Story' section" },
-                  { label: "About Subtitle", key: "about_subtitle", type: "text", hint: "e.g. 🌿 Our Story" },
-                  { label: "About Title", key: "about_title", type: "textarea", hint: "Main heading of the about section" },
-                  { label: "About Text", key: "about_text", type: "textarea" },
-                  { label: "Years Farming", key: "years_farming", type: "text", hint: "e.g. 30+" },
-                  { label: "Instagram URL", key: "instagram_url", type: "url" },
-                  { label: "Facebook URL", key: "facebook_url", type: "url" },
-                ] as { label: string; key: keyof SiteSettings; type: string; hint?: string }[]
+                  { label: "Logo URL", key: "logo_url" as const, type: "image", hint: "Paste a direct image link (JPG/PNG). Leave empty for default." },
+                  { label: "Farm Name", key: "farm_name" as const, type: "text" },
+                  { label: "Tagline", key: "farm_tagline" as const, type: "text" },
+                  { label: "Location", key: "farm_location" as const, type: "text" },
+                  { label: "WhatsApp Number (with country code, no +)", key: "whatsapp_number" as const, type: "text", hint: "e.g. 923001234567" },
+                  { label: "Leopard Delivery Charge (Rs per box)", key: "delivery_charge" as const, type: "number" },
+                  { label: "Hero Image URL", key: "hero_image_url" as const, type: "image", hint: "Paste a Cloudinary or direct image link" },
+                  { label: "About Image URL", key: "about_image_url" as const, type: "image", hint: "Paste an image link for the 'Our Story' section" },
+                  { label: "About Subtitle", key: "about_subtitle" as const, type: "text", hint: "e.g. Our Story" },
+                  { label: "About Title", key: "about_title" as const, type: "textarea", hint: "Main heading of the about section" },
+                  { label: "About Text", key: "about_text" as const, type: "textarea" },
+                  { label: "Years Farming", key: "years_farming" as const, type: "text", hint: "e.g. 30+" },
+                  { label: "Instagram URL", key: "instagram_url" as const, type: "url" },
+                  { label: "Facebook URL", key: "facebook_url" as const, type: "url" },
+                ]
               ).map((field) => (
                 <div key={field.key}>
                   <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: "4px" }}>
@@ -482,11 +463,10 @@ export default function AdminDashboard() {
                 </div>
               ))}
 
-              {/* Hero Slider Images */}
               <div>
                 <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: "4px" }}>Hero Background Slider Images</label>
                 <p style={{ fontSize: "11px", color: "var(--bark-400)", marginBottom: "12px" }}>Add multiple images here to create an auto-playing smooth background slider.</p>
-                
+
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {(settings.hero_image_urls || []).map((url, idx) => (
                     <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
@@ -532,15 +512,14 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* ── PRODUCT FORM MODAL ── */}
       {showAddForm && editingProduct && (
         <div
           style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(29,20,10,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}
           onClick={() => setShowAddForm(false)}>
           <div onClick={(e) => e.stopPropagation()}
-            style={{ background: "var(--white)", borderRadius: "28px", padding: "28px", width: "100%", maxWidth: "520px", maxHeight: "90svh", overflowY: "auto", boxShadow: "0 16px 64px rgba(61,43,31,0.2)" }}>
+            style={{ background: "var(--white)", borderRadius: "28px", padding: "28px", width: "100%", maxWidth: "520px", maxHeight: "90svh", overflowY: "auto", boxShadow: "0 16px 64px var(--shadow-warm-lg)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: 800, color: "var(--bark-900)" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, color: "var(--bark-900)", fontFamily: "var(--font-heading), serif" }}>
                 {products.find((p) => p.id === editingProduct.id) ? "Edit Product" : "Add New Product"}
               </h3>
               <button onClick={() => setShowAddForm(false)}
@@ -552,15 +531,15 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {(
                 [
-                  { label: "Product Name", key: "name", type: "text", hint: "e.g. Sindhri Mango" },
-                  { label: "Variety", key: "variety", type: "text", hint: "e.g. Sindhri" },
-                  { label: "Description", key: "description", type: "textarea" },
-                  { label: "Price per Box (Rs)", key: "price_per_box", type: "number" },
-                  { label: "Primary Image URL (Cloudinary or direct link)", key: "image_url", type: "image" },
-                  { label: "Origin", key: "origin", type: "text", hint: "e.g. Mirpurkhas, Sindh" },
-                  { label: "Season", key: "season", type: "text", hint: "e.g. May – July" },
-                  { label: "Taste Notes", key: "taste_notes", type: "text", hint: "e.g. Sweet, buttery" },
-                ] as { label: string; key: keyof Product; type: string; hint?: string }[]
+                  { label: "Product Name", key: "name" as const, type: "text", hint: "e.g. Sindhri Mango" },
+                  { label: "Variety", key: "variety" as const, type: "text", hint: "e.g. Sindhri" },
+                  { label: "Description", key: "description" as const, type: "textarea" },
+                  { label: "Price per Box (Rs)", key: "price_per_box" as const, type: "number" },
+                  { label: "Primary Image URL (Cloudinary or direct link)", key: "image_url" as const, type: "image" },
+                  { label: "Origin", key: "origin" as const, type: "text", hint: "e.g. Mirpurkhas, Sindh" },
+                  { label: "Season", key: "season" as const, type: "text", hint: "e.g. May – July" },
+                  { label: "Taste Notes", key: "taste_notes" as const, type: "text", hint: "e.g. Sweet, buttery" },
+                ]
               ).map((field) => (
                 <div key={field.key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: field.hint ? "2px" : "5px" }}>{field.label}</label>
@@ -586,7 +565,6 @@ export default function AdminDashboard() {
                 </div>
               ))}
 
-              {/* Additional Images */}
               <div>
                 <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: "5px" }}>Additional Images</label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -626,7 +604,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Image preview */}
               {editingProduct.image_url && (
                 <div style={{ borderRadius: "14px", overflow: "hidden", height: "140px", position: "relative" }}>
                   <Image src={editingProduct.image_url} alt="Preview"
@@ -685,15 +662,14 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* ── SECTION FORM MODAL ── */}
       {showSectionForm && editingSection && (
         <div
           style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(29,20,10,0.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}
           onClick={() => setShowSectionForm(false)}>
           <div onClick={(e) => e.stopPropagation()}
-            style={{ background: "var(--white)", borderRadius: "28px", padding: "28px", width: "100%", maxWidth: "520px", maxHeight: "90svh", overflowY: "auto", boxShadow: "0 16px 64px rgba(61,43,31,0.2)" }}>
+            style={{ background: "var(--white)", borderRadius: "28px", padding: "28px", width: "100%", maxWidth: "520px", maxHeight: "90svh", overflowY: "auto", boxShadow: "0 16px 64px var(--shadow-warm-lg)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-              <h3 style={{ fontSize: "18px", fontWeight: 800, color: "var(--bark-900)" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: 800, color: "var(--bark-900)", fontFamily: "var(--font-heading), serif" }}>
                 {settings.custom_sections?.find(s => s.id === editingSection.id) ? "Edit Section" : "Add New Section"}
               </h3>
               <button onClick={() => setShowSectionForm(false)}
@@ -705,11 +681,11 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {(
                 [
-                  { label: "Image URL", key: "image_url", type: "image", hint: "Direct image link (JPG/PNG)" },
-                  { label: "Subtitle", key: "subtitle", type: "text", hint: "Small text above title" },
-                  { label: "Title", key: "title", type: "text", hint: "Main heading" },
-                  { label: "Content Text", key: "text", type: "textarea", hint: "Paragraph text" },
-                ] as { label: string; key: keyof CustomSection; type: string; hint?: string }[]
+                  { label: "Image URL", key: "image_url" as const, type: "image", hint: "Direct image link (JPG/PNG)" },
+                  { label: "Subtitle", key: "subtitle" as const, type: "text", hint: "Small text above title" },
+                  { label: "Title", key: "title" as const, type: "text", hint: "Main heading" },
+                  { label: "Content Text", key: "text" as const, type: "textarea", hint: "Paragraph text" },
+                ]
               ).map((field) => (
                 <div key={field.key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--bark-700)", display: "block", marginBottom: field.hint ? "2px" : "5px" }}>{field.label}</label>
@@ -755,7 +731,7 @@ export default function AdminDashboard() {
                 const existingIdx = newSections.findIndex(s => s.id === editingSection.id);
                 if (existingIdx >= 0) newSections[existingIdx] = editingSection;
                 else newSections.push(editingSection);
-                
+
                 const updated = { ...settings, custom_sections: newSections };
                 setSettings(updated);
                 setShowSectionForm(false);
